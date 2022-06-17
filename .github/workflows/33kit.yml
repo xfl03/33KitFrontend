@@ -22,5 +22,5 @@ jobs:
           args: delete -r -f / && upload -r ./out/ /
           secret_id: ${{ secrets.TENCENT_SECRET_ID }}
           secret_key: ${{ secrets.TENCENT_SECRET_KEY }}
-          bucket: ${{ secrets.TENCENT_BUCKET }}
-          region: ${{ secrets.TENCENT_REGION }}
+          bucket: ${{ secrets.TENCENT_COS_BUCKET }}
+          region: ${{ secrets.TENCENT_COS_REGION }}
