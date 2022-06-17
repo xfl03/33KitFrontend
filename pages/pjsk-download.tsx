@@ -11,8 +11,8 @@ export default function PjskDownload(
     }
 ) {
     return (
-        <AppBase>
-                <Button>新建文件夹</Button>
+        <AppBase title="下载">
+            <Button>新建文件夹</Button>
         </AppBase>
     )
 }

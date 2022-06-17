@@ -35,7 +35,7 @@ export default function Home(
     const hcaptchaSiteKey: string = process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY
 
     return (
-        <AppBase>
+        <AppBase title="主页">
             <Grid container spacing={2}>
                 {
                     alert !== "" &&
