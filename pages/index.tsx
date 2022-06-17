@@ -14,7 +14,7 @@ export default function Home(
     return (
         <AppBase subtitle="主页">
             <Grid container spacing={2}>
-                <Grid item xs={10}>
+                <Grid item xs={12}>
                     <Alert severity="info">
                         <AlertTitle>内测中！</AlertTitle>
                         33Kit还在<strong>内部测试</strong>中，出现问题请<strong>向33反馈</strong>。
