@@ -1,7 +1,8 @@
-import Button from '@mui/material/Button'
 import * as React from 'react';
 import AppBase from "../components/AppBase";
 import {loadPjskDownloadInfo, PjskDownloadInfo} from "../utils/pjsk-download";
+import {Grid} from "@mui/material";
+import PjskDownloadButton from "../components/PjskDownloadButton";
 
 export default function PjskDownload(
     {
@@ -11,8 +12,10 @@ export default function PjskDownload(
     }
 ) {
     return (
-        <AppBase title="下载">
-            <Button>新建文件夹</Button>
+        <AppBase subtitle="下载">
+            <Grid container spacing={2}>
+                {pjskDownloadInfo.map(info => (<PjskDownloadButton key={info.server} info={info}/>))}
+            </Grid>
         </AppBase>
     )
 }

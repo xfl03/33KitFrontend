@@ -16,7 +16,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import {Download, Home} from "@mui/icons-material";
+import {Download, GitHub, Home, LiveTv} from "@mui/icons-material";
 import {useRouter} from 'next/router'
 import Head from 'next/head'
 import ReactGA from "react-ga4";
@@ -94,7 +94,7 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})
 );
 
 type AppBaseProps = {
-    title: string,
+    subtitle: string,
     children: JSX.Element,
 }
 
@@ -111,7 +111,8 @@ const drawItems = [
     },
 ]
 
-export default function AppBase({title, children}: AppBaseProps) {
+export default function AppBase({subtitle, children}: AppBaseProps) {
+    console.log(subtitle);
     const router = useRouter()
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
@@ -133,7 +134,7 @@ export default function AppBase({title, children}: AppBaseProps) {
     return (
         <div>
             <Head>
-                <title>{title} - 33 Kit</title>
+                <title>{subtitle} - 33 Kit</title>
             </Head>
             <Box sx={{display: 'flex'}}>
                 <CssBaseline/>
@@ -151,9 +152,27 @@ export default function AppBase({title, children}: AppBaseProps) {
                         >
                             <MenuIcon/>
                         </IconButton>
-                        <Typography variant="h6" noWrap component="div">
+                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                             33 Kit
                         </Typography>
+                        <div>
+                            <IconButton
+                                size="large"
+                                aria-label="bilibili"
+                                href="https://space.bilibili.com/8919498"
+                                color="inherit"
+                            >
+                                <LiveTv />
+                            </IconButton>
+                            <IconButton
+                                size="large"
+                                aria-label="GitHub"
+                                href="https://github.com/xfl03"
+                                color="inherit"
+                            >
+                                <GitHub />
+                            </IconButton>
+                        </div>
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>

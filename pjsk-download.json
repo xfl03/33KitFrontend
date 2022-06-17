@@ -5,5 +5,26 @@
     "version": "2.1.0",
     "filename": "pjsk_jp_2.1.0.apk",
     "lastUpdate": 1655396417931
+  },
+  {
+    "server": "tw",
+    "name": "繁体服",
+    "version": "1.9.9",
+    "filename": "pjsk_tw_1.9.9.apk",
+    "lastUpdate": 1655396417931
+  },
+  {
+    "server": "en",
+    "name": "英文服",
+    "version": "1.1.4",
+    "filename": "pjsk_en_1.1.4.apk",
+    "lastUpdate": 1655396417931
+  },
+  {
+    "server": "kr",
+    "name": "韩服",
+    "version": "1.9.10",
+    "filename": "pjsk_kr_1.9.10.apk",
+    "lastUpdate": 1655396417931
   }
 ]
