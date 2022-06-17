@@ -3,6 +3,7 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: Default
     strategy:
       matrix:
         node-version: [18.x]
