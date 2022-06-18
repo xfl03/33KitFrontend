@@ -1,9 +1,14 @@
 import axios from "axios";
 
+export async function downloadFileRecaptchaV3(filename: string, token: string) {
+    const e = await axios.post("/pd", {filename: filename, recaptchaToken: token});
+    console.log(e.data);
+    downloadUrl(e.data.url);
+}
 
-export async function downloadFile(filename: string, token: string) {
+export async function downloadFileHcaptcha(filename: string, token: string) {
     const e = await axios.post("/pd", {filename: filename, token: token});
-    // window.open(e.data.url);
+    console.log(e.data);
     downloadUrl(e.data.url);
 }
 

@@ -1327,7 +1327,7 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
-hoist-non-react-statics@^3.3.1:
+hoist-non-react-statics@^3.3.1, hoist-non-react-statics@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
   integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
@@ -1857,6 +1857,13 @@ react-ga4@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/react-ga4/-/react-ga4-1.4.1.tgz#6ee2a2db115ed235b2f2092bc746b4eeeca9e206"
   integrity sha512-ioBMEIxd4ePw4YtaloTUgqhQGqz5ebDdC4slEpLgy2sLx1LuZBC9iYCwDymTXzcntw6K1dHX183ulP32nNdG7w==
+
+react-google-recaptcha-v3@^1.9.8:
+  version "1.9.8"
+  resolved "https://registry.yarnpkg.com/react-google-recaptcha-v3/-/react-google-recaptcha-v3-1.9.8.tgz#934ad21edcbfeb51fb66a218cf74addfbff48816"
+  integrity sha512-1AuwvNjcGxMQTBMgsu4XI+Tzh/9En8xdVE/OS48l2Z8VsaCtb8eLh2RcMv/bxgt+UbHzPfQ2JynPBxB1+hYkJA==
+  dependencies:
+    hoist-non-react-statics "^3.3.2"
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"

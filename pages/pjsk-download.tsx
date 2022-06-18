@@ -11,6 +11,7 @@ export default function PjskDownload(
         pjskDownloadInfo: Array<PjskDownloadInfo>
     }
 ) {
+    // console.log("PjskDownload")
     return (
         <AppBase subtitle="下载">
             <Grid container spacing={2}>

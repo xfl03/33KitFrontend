@@ -21,6 +21,7 @@ import {useRouter} from 'next/router'
 import Head from 'next/head'
 import ReactGA from "react-ga4";
 import {useEffect} from "react";
+import {GoogleReCaptchaProvider} from "react-google-recaptcha-v3";
 
 const drawerWidth = 240;
 
@@ -112,7 +113,6 @@ const drawItems = [
 ]
 
 export default function AppBase({subtitle, children}: AppBaseProps) {
-    console.log(subtitle);
     const router = useRouter()
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
@@ -131,10 +131,20 @@ export default function AppBase({subtitle, children}: AppBaseProps) {
         ReactGA.send("pageview");
     }, [])
 
+    const recaptchaSiteKey = process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY;
+
+    const fullTitle = `${subtitle} - 33Kit`
+    console.log(fullTitle);
+
     return (
-        <div>
+        <GoogleReCaptchaProvider
+            reCaptchaKey={recaptchaSiteKey}
+            language="zh-CN"
+            useRecaptchaNet={true}
+            scriptProps={{async: true, defer: true}}
+        >
             <Head>
-                <title>{subtitle} - 33 Kit</title>
+                <title>{fullTitle}</title>
             </Head>
             <Box sx={{display: 'flex'}}>
                 <CssBaseline/>
@@ -152,7 +162,7 @@ export default function AppBase({subtitle, children}: AppBaseProps) {
                         >
                             <MenuIcon/>
                         </IconButton>
-                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                        <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                             33 Kit
                         </Typography>
                         <div>
@@ -162,7 +172,7 @@ export default function AppBase({subtitle, children}: AppBaseProps) {
                                 href="https://space.bilibili.com/8919498"
                                 color="inherit"
                             >
-                                <LiveTv />
+                                <LiveTv/>
                             </IconButton>
                             <IconButton
                                 size="large"
@@ -170,7 +180,7 @@ export default function AppBase({subtitle, children}: AppBaseProps) {
                                 href="https://github.com/xfl03"
                                 color="inherit"
                             >
-                                <GitHub />
+                                <GitHub/>
                             </IconButton>
                         </div>
                     </Toolbar>
@@ -213,6 +223,6 @@ export default function AppBase({subtitle, children}: AppBaseProps) {
                     {children}
                 </Box>
             </Box>
-        </div>
+        </GoogleReCaptchaProvider>
     );
 }
