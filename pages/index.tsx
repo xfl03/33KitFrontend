@@ -1,8 +1,10 @@
 import * as React from 'react';
 import AppBase from "../components/AppBase";
 import {loadPjskDownloadInfo, PjskDownloadInfo} from "../utils/pjsk-download";
-import {Alert, AlertTitle,  Grid, Link} from "@mui/material";
+import {Alert, AlertTitle, Grid, Link} from "@mui/material";
 import PjskDownloadButton from "../components/PjskDownloadButton";
+import RecaptchaInfo from "../components/RecaptchaInfo";
+import Divider from "@mui/material/Divider";
 
 export default function Home(
     {
@@ -26,6 +28,10 @@ export default function Home(
                         在寻找其他服务器？
                     </Link>
                 </Grid>
+                <Grid item xs={12}>
+                    <Divider/>
+                </Grid>
+                <RecaptchaInfo/>
             </Grid>
         </AppBase>
     )
