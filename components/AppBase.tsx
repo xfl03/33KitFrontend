@@ -131,7 +131,7 @@ export default function AppBase({subtitle, children}: AppBaseProps) {
         ReactGA.send("pageview");
     }, [])
 
-    const recaptchaSiteKey = process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY;
+    const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
     const fullTitle = `${subtitle} - 33Kit`
     console.log(fullTitle);
