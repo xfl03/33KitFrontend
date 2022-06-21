@@ -1,11 +1,10 @@
-import {PjskDownloadInfo} from "../utils/pjsk-download";
 import {Alert, AlertTitle, Chip, Grid} from "@mui/material";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import Button from "@mui/material/Button";
 import {CloudDone, CloudDownload, Downloading} from "@mui/icons-material";
 import * as React from "react";
 import {useCallback, useRef, useState} from "react";
-import {downloadFileHcaptcha, downloadFileRecaptchaV3} from "../utils/download";
+import {downloadFileHcaptcha, downloadFileRecaptchaV3, PjskDownloadInfo} from "../utils/download-runtime";
 import {GoogleReCaptcha} from "react-google-recaptcha-v3";
 
 type DownloadProps = {

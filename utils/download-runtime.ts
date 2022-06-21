@@ -17,3 +17,16 @@ function downloadUrl(url: string) {
     a.href = url;
     a.click();
 }
+
+export type PjskDownloadInfo = {
+    server: string,
+    name: string,
+    version: string,
+    filename: string,
+    lastUpdate: Date
+}
+
+export async function getPjskDownloadInfo(): Promise<Array<PjskDownloadInfo>> {
+    let res = await axios.get("https://33.dsml.hk/pi");
+    return res.data;
+}

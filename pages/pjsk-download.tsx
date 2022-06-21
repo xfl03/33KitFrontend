@@ -1,8 +1,9 @@
 import * as React from 'react';
 import AppBase from "../components/AppBase";
-import {loadPjskDownloadInfo, PjskDownloadInfo} from "../utils/pjsk-download";
+import {loadPjskDownloadInfo} from "../utils/pjsk-download-build";
 import {Alert, AlertTitle, Grid} from "@mui/material";
 import PjskDownloadButton from "../components/PjskDownloadButton";
+import {getPjskDownloadInfo, PjskDownloadInfo} from "../utils/download-runtime";
 
 export default function PjskDownload(
     {
@@ -27,8 +28,8 @@ export default function PjskDownload(
     )
 }
 
-export async function getStaticProps() {
-    const pjskDownloadInfo = loadPjskDownloadInfo()
+export async function getServerSideProps() {
+    const pjskDownloadInfo = await getPjskDownloadInfo()
 
     return {
         props: {
