@@ -1,10 +1,14 @@
 import {useState, useEffect} from 'react';
-import {getPjskDownloadInfoWithCallback, PjskDownloadInfo} from "./download-runtime";
+import {getPjskDownloadInfo, PjskDownloadInfo} from "./download-runtime";
 
 export function usePjskDownloadInfo() {
     const [info, setInfo] = useState<Array<PjskDownloadInfo>>()
     useEffect(() => {
-        getPjskDownloadInfoWithCallback(setInfo)
-    }, [setInfo]);
+        if (info !== undefined) return;
+        getPjskDownloadInfo()
+            .then(data => {
+                setInfo(data);
+            });
+    }, [setInfo, info]);
     return info;
 }

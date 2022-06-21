@@ -31,10 +31,3 @@ export async function getPjskDownloadInfo(): Promise<Array<PjskDownloadInfo>> {
     console.log(res.data);
     return res.data;
 }
-
-export function getPjskDownloadInfoWithCallback(callback: ((info: Array<PjskDownloadInfo>) => any)) {
-    getPjskDownloadInfo()
-        .then(data => {
-            callback(data);
-        });
-}
