@@ -4,15 +4,10 @@ import {Alert, AlertTitle, Grid, Link} from "@mui/material";
 import PjskDownloadButton from "../components/PjskDownloadButton";
 import RecaptchaInfo from "../components/RecaptchaInfo";
 import Divider from "@mui/material/Divider";
-import {getPjskDownloadInfo, PjskDownloadInfo} from "../utils/download-runtime";
+import {usePjskDownloadInfo} from "../utils/download-hook";
 
-export default function Home(
-    {
-        pjskDownloadInfo
-    }: {
-        pjskDownloadInfo: Array<PjskDownloadInfo>
-    }
-) {
+export default function Home() {
+    const pjskDownloadInfo = usePjskDownloadInfo()
     return (
         <AppBase subtitle="主页">
             <Grid container spacing={2}>
@@ -22,7 +17,9 @@ export default function Home(
                         33Kit还在<strong>内部测试</strong>中，出现问题请<strong>向33反馈</strong>。
                     </Alert>
                 </Grid>
-                <PjskDownloadButton info={pjskDownloadInfo[0]}/>
+                {pjskDownloadInfo &&
+                    <PjskDownloadButton info={pjskDownloadInfo[0]}/>
+                }
                 <Grid item xs={8}>
                     <Link href="/pjsk-download" underline="none">
                         在寻找其他服务器？
@@ -36,14 +33,3 @@ export default function Home(
         </AppBase>
     )
 }
-
-export async function getServerSideProps() {
-    const pjskDownloadInfo = await getPjskDownloadInfo()
-
-    return {
-        props: {
-            pjskDownloadInfo
-        }
-    }
-}
-

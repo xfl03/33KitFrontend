@@ -27,6 +27,14 @@ export type PjskDownloadInfo = {
 }
 
 export async function getPjskDownloadInfo(): Promise<Array<PjskDownloadInfo>> {
-    let res = await axios.get("https://33.dsml.hk/pi");
+    let res = await axios.get("/pi");
+    console.log(res.data);
     return res.data;
+}
+
+export function getPjskDownloadInfoWithCallback(callback: ((info: Array<PjskDownloadInfo>) => any)) {
+    getPjskDownloadInfo()
+        .then(data => {
+            callback(data);
+        });
 }
