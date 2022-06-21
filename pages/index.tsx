@@ -1,6 +1,5 @@
 import * as React from 'react';
 import AppBase from "../components/AppBase";
-import {loadPjskDownloadInfo} from "../utils/pjsk-download-build";
 import {Alert, AlertTitle, Grid, Link} from "@mui/material";
 import PjskDownloadButton from "../components/PjskDownloadButton";
 import RecaptchaInfo from "../components/RecaptchaInfo";
