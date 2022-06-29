@@ -28,7 +28,7 @@ export default function Home() {
                 {pjskPredict && ranks &&
                     <PjskPredictTable pjskPredict={pjskPredict} ranks={ranks}/>
                 }
-                <Grid item xs={8}>
+                <Grid item xs={12}>
                     <Link href="/pjsk-predict" underline="none">
                         在寻找更多预测？
                     </Link>
@@ -36,7 +36,7 @@ export default function Home() {
                 {pjskDownloadInfo &&
                     <PjskDownloadButton info={pjskDownloadInfo[0]}/>
                 }
-                <Grid item xs={8}>
+                <Grid item xs={12}>
                     <Link href="/pjsk-download" underline="none">
                         在寻找其他服务器？
                     </Link>

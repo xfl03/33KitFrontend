@@ -16,7 +16,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import {Download, GitHub, Home, Insights, LiveTv} from "@mui/icons-material";
+import {Analytics, Download, GitHub, Home, Insights, LiveTv} from "@mui/icons-material";
 import {useRouter} from 'next/router'
 import Head from 'next/head'
 import ReactGA from "react-ga4";
@@ -106,14 +106,19 @@ const drawItems = [
         "path": "/",
     },
     {
-        "name": "下载",
+        "name": "游戏下载",
         "icon": <Download/>,
         "path": "/pjsk-download",
     },
     {
-        "name": "预测",
-        "icon": <Insights/>,
+        "name": "活动预测",
+        "icon": <Analytics/>,
         "path": "/pjsk-predict",
+    },
+    {
+        "name": "活动最终数据",
+        "icon": <Insights/>,
+        "path": "/pjsk-final",
     },
 ]
 
