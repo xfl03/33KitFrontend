@@ -25,8 +25,12 @@ export default function Page() {
             setOption({
                 tooltip: {
                     trigger: 'axis',
+                    formatter: function (params: Array<any>) {
+                        console.log(params)
+                        return `排名: ${params[0].data[0]}<br>PT: ${params[0].data[1]}`
+                    },
                     position: function (pt: any) {
-                        return [pt[0], '100%'];
+                        return [pt[0], pt[1]];
                     }
                 },
                 toolbox: {
@@ -117,7 +121,7 @@ export default function Page() {
                 </Grid>
                 {option &&
                     <Grid item xs={12}>
-                        <EChartsReact style={{height: '700px', maxHeight: '90%', width: '100%'}} option={option}/>
+                        <EChartsReact style={{height: '700px', maxHeight: '75%', width: '100%'}} option={option}/>
                     </Grid>
                 }
             </Grid>
