@@ -67,7 +67,7 @@ export default function Page() {
         setEventId(event.target.value as string);
     };
     return (
-        <AppBase subtitle="活动最终数据">
+        <AppBase subtitle="个人实时数据">
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Alert severity="info">
