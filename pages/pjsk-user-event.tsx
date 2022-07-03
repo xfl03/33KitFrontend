@@ -15,19 +15,33 @@ import {useRouter} from "next/router";
 
 export default function Page() {
     const [eventId, setEventId] = useState<string>("63");
+    const [userId, setUserId] = useState<string>("");
     const [option, setOption] = useState<any>();
     const router = useRouter()
     useEffect(() => {
-        const {userId} = router.query
-        if (userId === undefined) return;
+        let userId0 = router.query.userId
+        if(Array.isArray(userId0)){
+            userId0 = userId0[0];
+        }
+        if (userId0 === undefined) {
+            let tmp = localStorage.getItem("userId");
+            if(tmp === null) {
+                return;
+            }
+            userId0 = tmp;
+        }
+        setUserId(userId0);
 
-        axios.get(`/user/${userId}/${eventId}`).then(res => {
+        axios.get(`/user/${userId0}/${eventId}`).then(res => {
+            if (typeof userId0 === "string") {
+                localStorage.setItem("userId", userId0);
+            }
             setOption({
                 tooltip: {
                     trigger: 'axis',
                 },
                 xAxis: {
-                    type: 'time',
+                    type: eventId == "0" ? 'category' : 'time',
                     boundaryGap: false,
                     // data: res.data.map((it: any) => it.t)
                 },
@@ -67,7 +81,7 @@ export default function Page() {
         setEventId(event.target.value as string);
     };
     return (
-        <AppBase subtitle="个人实时数据">
+        <AppBase subtitle="个人活动数据">
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Alert severity="info">
@@ -77,14 +91,16 @@ export default function Page() {
                 </Grid>
                 <Grid item xs={12}>
                     <FormControl>
-                        <InputLabel id="event-select-label">活动</InputLabel>
+                        <InputLabel id="event-select-label">{userId}的活动</InputLabel>
                         <Select
                             labelId="event-select-label"
                             id="event-select"
                             value={eventId}
                             label="活动"
                             onChange={handleChange}
+                            style={{minWidth:"200px"}}
                         >
+                            <MenuItem value={0}>历史活动</MenuItem>
                             <MenuItem value={63}>63</MenuItem>
                         </Select>
                     </FormControl>

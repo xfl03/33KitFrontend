@@ -16,11 +16,11 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import {Analytics, Download, GitHub, Home, Insights, LiveTv} from "@mui/icons-material";
+import {Analytics, Download, GitHub, Home, Insights, LiveTv, Person} from "@mui/icons-material";
 import {useRouter} from 'next/router'
 import Head from 'next/head'
 import ReactGA from "react-ga4";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {GoogleReCaptchaProvider} from "react-google-recaptcha-v3";
 
 const drawerWidth = 240;
@@ -122,10 +122,17 @@ const drawItems = [
     },
 ]
 
+const userDataDrawItem = {
+    "name": "个人活动数据",
+    "icon": <Person/>,
+    "path": "/pjsk-user-event",
+}
+
 export default function AppBase({subtitle, children}: AppBaseProps) {
     const router = useRouter()
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [displayItems, setDisplayItems] = useState<Array<any>>([])
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -140,6 +147,14 @@ export default function AppBase({subtitle, children}: AppBaseProps) {
         ReactGA.initialize(process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS);
         ReactGA.send("pageview");
     }, [])
+
+    useEffect(()=>{
+        let items = drawItems.slice();
+        if (localStorage.getItem("userId") !== null) {
+            items.push(userDataDrawItem);
+        }
+        setDisplayItems(items);
+    },[setDisplayItems])
 
     const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
@@ -203,7 +218,7 @@ export default function AppBase({subtitle, children}: AppBaseProps) {
                     </DrawerHeader>
                     <Divider/>
                     <List>
-                        {drawItems.map((item) => (
+                        {displayItems.map((item) => (
                             <ListItem key={item.path} disablePadding sx={{display: 'block'}}>
                                 <ListItemButton
                                     sx={{
