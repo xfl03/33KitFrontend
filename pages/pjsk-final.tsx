@@ -15,66 +15,84 @@ import EChartsReact from "echarts-for-react";
 import axios from "axios";
 
 export default function Page() {
-    const [eventId, setEventId] = useState<string>("62");
+    const [eventInfo, setEventInfo] = useState<any>();
+    const [events, setEvents] = useState<Array<any>>();
     const [finalScores, setFinalScores] = useState<Array<any>>();
     const [option, setOption] = useState<any>();
     const [checked, setChecked] = React.useState([true, true]);
     useEffect(() => {
-        axios.get(`/final/${eventId}`).then(res => {
-            setFinalScores(res.data);
-            setOption({
-                tooltip: {
-                    trigger: 'axis',
-                    formatter: function (params: Array<any>) {
-                        console.log(params)
-                        return `排名: ${params[0].data[0]}<br>PT: ${params[0].data[1]}`
-                    },
-                    position: function (pt: any) {
-                        return [pt[0], pt[1]];
-                    }
-                },
-                toolbox: {
-                    feature: {
-                        dataZoom: {
-                            yAxisIndex: 'none'
-                        },
-                        restore: {}
-                    }
-                },
-                xAxis: {
-                    type: checked[0] ? 'log' : 'value',
-                    boundaryGap: false,
-                    logBase: 10,
-                },
-                yAxis: {
-                    type: checked[1] ? 'log' : 'value',
-                    boundaryGap: false,
-                    logBase: 10,
-                },
-                dataZoom: [
-                    {
-                        type: 'inside',
-                        start: 0,
-                        end: 20
-                    },
-                    {
-                        start: 0,
-                        end: 20
-                    }
-                ],
-                series: [
-                    {
-                        name: 'PT',
-                        type: 'line',
-                        smooth: false,
-                        symbol: 'none',
-                        areaStyle: {},
-                        data: res.data
-                    }
-                ]
-            })
+        axios.get(`/final`).then(res => {
+            let data = res.data;
+            setEvents(data);
+            setEventInfo(data[data.length - 1]);
         })
-    }, [eventId, setFinalScores, setOption, checked])
+    }, [setEvents, setEventInfo])
+
+    useEffect(() => {
+        if (eventInfo === undefined) {
+            return;
+        }
+        axios.get(`/final/${eventInfo.id}`).then(res => {
+            setFinalScores(res.data);
+        })
+    }, [eventInfo, setFinalScores])
+
+    useEffect(() => {
+        if (finalScores === undefined) {
+            return;
+        }
+        setOption({
+            tooltip: {
+                trigger: 'axis',
+                formatter: function (params: Array<any>) {
+                    console.log(params)
+                    return `排名: ${params[0].data[0]}<br>PT: ${params[0].data[1]}`
+                },
+                position: function (pt: any) {
+                    return [pt[0], pt[1]];
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: 'none'
+                    },
+                    restore: {}
+                }
+            },
+            xAxis: {
+                type: checked[0] ? 'log' : 'value',
+                boundaryGap: false,
+                logBase: 10,
+            },
+            yAxis: {
+                type: checked[1] ? 'log' : 'value',
+                boundaryGap: false,
+                logBase: 10,
+            },
+            dataZoom: [
+                {
+                    type: 'inside',
+                    start: 0,
+                    end: 20
+                },
+                {
+                    start: 0,
+                    end: 20
+                }
+            ],
+            series: [
+                {
+                    name: 'PT',
+                    type: 'line',
+                    smooth: false,
+                    symbol: 'none',
+                    areaStyle: {},
+                    data: finalScores
+                }
+            ]
+        })
+    }, [checked, finalScores])
 
     const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChecked([event.target.checked, checked[1]]);
@@ -85,31 +103,38 @@ export default function Page() {
     };
 
     const handleChange = (event: SelectChangeEvent) => {
-        setEventId(event.target.value as string);
+        let eventId = parseInt(event.target.value as string);
+        setEventInfo(events?.find(it => it.id === eventId));
     };
     return (
         <AppBase subtitle="活动最终数据">
             <Grid container spacing={2}>
-                {finalScores &&
+                {eventInfo &&
                     <Grid item xs={12}>
                         <Alert severity="info">
                             <AlertTitle>关于活动最终数据</AlertTitle>
-                            下图是活动<strong>{eventId}</strong>的数据，为了优化性能，从11万数据中采样了<strong>{finalScores.length}</strong>个数据点。
+                            为了优化性能，从11万数据中采样了<strong>{eventInfo.count}</strong>个数据点。
+                            估算的冲榜难度为<strong>{Math.round((-eventInfo.line.m)*200)}%</strong>。
                         </Alert>
                     </Grid>}
                 <Grid item xs={12}>
-                    <FormControl>
-                        <InputLabel id="event-select-label">活动</InputLabel>
-                        <Select
-                            labelId="event-select-label"
-                            id="event-select"
-                            value={eventId}
-                            label="活动"
-                            onChange={handleChange}
-                        >
-                            <MenuItem value={62}>絶体絶命！？アイランドパニック！</MenuItem>
-                        </Select>
-                    </FormControl>
+                    {events && eventInfo &&
+                        <FormControl>
+                            <InputLabel id="event-select-label">活动</InputLabel>
+                            <Select
+                                labelId="event-select-label"
+                                id="event-select"
+                                value={eventInfo.id}
+                                label="活动"
+                                onChange={handleChange}
+                                style={{minWidth: "300px"}}
+                            >
+                                {events.map(it => (
+                                    <MenuItem key={it.id} value={it.id}>{it.id} - {it.name}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    }
                     <FormControlLabel
                         label="X轴对数"
                         control={<Checkbox checked={checked[0]} onChange={handleChange1}/>}
