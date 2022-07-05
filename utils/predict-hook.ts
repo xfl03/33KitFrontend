@@ -11,3 +11,14 @@ export function usePjskPredict() {
     }, [setInfo, info]);
     return info;
 }
+
+export function usePjskCheerfulPredict() {
+    const [info, setInfo] = useState<any>()
+    useEffect(() => {
+        if (info) return;
+        axios.get("/cheer-pred").then(res => {
+            setInfo(res.data)
+        })
+    }, [setInfo, info]);
+    return info;
+}

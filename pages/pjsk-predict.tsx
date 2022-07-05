@@ -16,7 +16,7 @@ export default function PjskDownload() {
         setRanks([100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000, 10000, 20000, 30000, 40000, 50000, 100000]);
     }, [setRanks]);
     return (
-        <AppBase subtitle="预测">
+        <AppBase subtitle="活动预测">
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Alert severity="warning">

@@ -16,7 +16,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import {Analytics, Download, GitHub, Home, Insights, LiveTv, Person} from "@mui/icons-material";
+import {Analytics, Download, GitHub, Groups, Home, Insights, LiveTv, Person} from "@mui/icons-material";
 import {useRouter} from 'next/router'
 import Head from 'next/head'
 import ReactGA from "react-ga4";
@@ -114,6 +114,11 @@ const drawItems = [
         "name": "活动预测",
         "icon": <Analytics/>,
         "path": "/pjsk-predict",
+    },
+    {
+        "name": "对战预测",
+        "icon": <Groups/>,
+        "path": "/pjsk-cheerful-predict",
     },
     {
         "name": "活动最终数据",

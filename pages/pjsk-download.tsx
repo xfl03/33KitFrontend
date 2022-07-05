@@ -8,7 +8,7 @@ export default function PjskDownload() {
     // console.log("PjskDownload")
     const pjskDownloadInfo = usePjskDownloadInfo()
     return (
-        <AppBase subtitle="下载">
+        <AppBase subtitle="游戏下载">
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Alert severity="info">

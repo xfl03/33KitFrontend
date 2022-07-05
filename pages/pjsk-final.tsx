@@ -16,6 +16,7 @@ import axios from "axios";
 
 export default function Page() {
     const [eventInfo, setEventInfo] = useState<any>();
+    const [eventHot, setEventHot] = useState<number>();
     const [events, setEvents] = useState<Array<any>>();
     const [finalScores, setFinalScores] = useState<Array<any>>();
     const [option, setOption] = useState<any>();
@@ -32,10 +33,13 @@ export default function Page() {
         if (eventInfo === undefined) {
             return;
         }
+        // let x = eventInfo.line.b / -eventInfo.line.m;
+        let hot = Math.round(-eventInfo.line.m * 200);
+        setEventHot(hot);
         axios.get(`/final/${eventInfo.id}`).then(res => {
             setFinalScores(res.data);
         })
-    }, [eventInfo, setFinalScores])
+    }, [eventInfo, setFinalScores, setEventHot])
 
     useEffect(() => {
         if (finalScores === undefined) {
@@ -109,12 +113,12 @@ export default function Page() {
     return (
         <AppBase subtitle="活动最终数据">
             <Grid container spacing={2}>
-                {eventInfo &&
+                {eventInfo && eventHot &&
                     <Grid item xs={12}>
                         <Alert severity="info">
                             <AlertTitle>关于活动最终数据</AlertTitle>
                             为了优化性能，从11万数据中采样了<strong>{eventInfo.count}</strong>个数据点。
-                            估算的冲榜难度为<strong>{Math.round((-eventInfo.line.m)*200)}%</strong>。
+                            估算的活动冲榜难度为<strong>{eventHot}%</strong>。
                         </Alert>
                     </Grid>}
                 <Grid item xs={12}>
