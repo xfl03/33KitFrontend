@@ -47,7 +47,7 @@ export default function PjskDownload() {
                                         [
                                             <TableRow key={index + 10}>
                                                 <TableCell style={{textAlign: "center"}} colSpan={3}>
-                                                    <strong>第{index + 1}次中间发表</strong>
+                                                    <strong>{index <= 1 ? `第${index + 1}次中间发表` : `最终结果`}</strong>
                                                 </TableCell>
                                             </TableRow>,
                                             <TableRow key={index + 20}>
