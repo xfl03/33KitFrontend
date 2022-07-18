@@ -22,7 +22,9 @@ export default function Home() {
                 <Grid item xs={12}>
                     <Alert severity="info">
                         <AlertTitle>内测中！</AlertTitle>
-                        33Kit还在<strong>内部测试</strong>中，出现问题请<strong>向33反馈</strong>。
+                        33 Kit还在<strong>内部测试</strong>中，出现问题请<strong>向33反馈</strong>。
+                        <br/>
+                        为了提供更好的访问速度与服务质量，33 Kit需要您的支持，<Link href="https://afdian.net/@xfl03">捐助请点这里</Link>。
                     </Alert>
                 </Grid>
                 {pjskPredict && ranks &&
