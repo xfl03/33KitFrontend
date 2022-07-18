@@ -14,28 +14,40 @@ import axios from "axios";
 import {useRouter} from "next/router";
 
 export default function Page() {
-    const [eventId, setEventId] = useState<string>("63");
+    const [eventId, setEventId] = useState<string>("");
     const [userId, setUserId] = useState<string>("");
     const [option, setOption] = useState<any>();
+    const [events, setEvents] = useState<Array<any>>([]);
     const router = useRouter()
     useEffect(() => {
         let userId0 = router.query.userId
-        if(Array.isArray(userId0)){
+        if (Array.isArray(userId0)) {
             userId0 = userId0[0];
         }
+        console.log(`userId in param: ${userId0}`);
         if (userId0 === undefined) {
             let tmp = localStorage.getItem("userId");
-            if(tmp === null) {
+            if (tmp === null) {
                 return;
             }
             userId0 = tmp;
         }
         setUserId(userId0);
+    }, [router.query.userId, setUserId])
 
-        axios.get(`/user/${userId0}/${eventId}`).then(res => {
-            if (typeof userId0 === "string") {
-                localStorage.setItem("userId", userId0);
-            }
+    useEffect(() => {
+        if (userId === "") return;
+        axios.get(`/user/${userId}`).then(res => {
+            localStorage.setItem("userId", userId);
+            let data = res.data;
+            setEvents(data);
+            setEventId(data[data.length - 1].id.toString());
+        })
+    }, [userId, setEvents])
+
+    useEffect(() => {
+        if (userId === "" || eventId === "") return;
+        axios.get(`/user/${userId}/${eventId}`).then(res => {
             setOption({
                 tooltip: {
                     trigger: 'axis',
@@ -75,7 +87,7 @@ export default function Page() {
                 ]
             })
         })
-    }, [eventId, setOption, router])
+    }, [userId, eventId, setOption])
 
     const handleChange = (event: SelectChangeEvent) => {
         setEventId(event.target.value as string);
@@ -98,10 +110,12 @@ export default function Page() {
                             value={eventId}
                             label="活动"
                             onChange={handleChange}
-                            style={{minWidth:"200px"}}
+                            style={{minWidth: "400px"}}
                         >
                             <MenuItem value={0}>历史活动</MenuItem>
-                            <MenuItem value={63}>63</MenuItem>
+                            {events.map(it =>
+                                <MenuItem key={it.id} value={it.id}>{it.id} - {it.name}</MenuItem>
+                            )}
                         </Select>
                     </FormControl>
                 </Grid>
