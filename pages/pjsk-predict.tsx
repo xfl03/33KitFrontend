@@ -8,6 +8,7 @@ import * as React from "react";
 import {usePjskPredict} from "../utils/predict-hook";
 import {useEffect, useState} from "react";
 import PjskPredictTable from "../components/PjskPredictTable";
+import {formatDatetimeShort} from "../utils/date-format";
 
 export default function PjskDownload() {
     const pjskPredict = usePjskPredict();
@@ -28,7 +29,10 @@ export default function PjskDownload() {
                     <Grid item xs={12}>
                         <Alert severity="info">
                             <AlertTitle>关于预测</AlertTitle>
-                            预测生成时间为<strong>{(new Date(pjskPredict.data.ts)).toLocaleString()}</strong>，预测的活动为「<strong>{pjskPredict.data.eventName}</strong>」。
+                            预测生成时间为<strong>{formatDatetimeShort(pjskPredict.data.ts)}</strong>，
+                            预测的活动为「<strong>{pjskPredict.data.eventName}</strong>」
+                            （{formatDatetimeShort(pjskPredict.data.eventStartAt)}～
+                            <strong>{formatDatetimeShort(pjskPredict.data.eventAggregateAt)}</strong>）。
                         </Alert>
                     </Grid>
                 }

@@ -6,6 +6,7 @@ import {
 } from "@mui/material";
 import * as React from "react";
 import {usePjskCheerfulPredict} from "../utils/predict-hook";
+import {formatDatetimeShort} from "../utils/date-format";
 
 function formatPercent(num: number) {
     return `${(num * 100).toFixed(1)}%`;
@@ -26,7 +27,7 @@ export default function PjskDownload() {
                     <Grid item xs={12}>
                         <Alert severity="info">
                             <AlertTitle>关于预测</AlertTitle>
-                            预测生成时间为<strong>{(new Date(pjskCheerfulPredict.timestamp)).toLocaleString()}</strong>，预测的活动为「<strong>{pjskCheerfulPredict.eventName}</strong>」。
+                            预测生成时间为<strong>{formatDatetimeShort(pjskCheerfulPredict.timestamp)}</strong>，预测的活动为「<strong>{pjskCheerfulPredict.eventName}</strong>」。
                         </Alert>
                     </Grid>
                 }
