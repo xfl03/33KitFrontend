@@ -149,6 +149,18 @@ const drawItems = [
             },
         ]
     },
+    {
+        "category": "Minecraft",
+        "categoryShort": "MC",
+        "items": [
+            {
+                "name": "CustomSkinLoader",
+                "icon": <Download/>,
+                "path": "/csl-download",
+                "display": true,
+            },
+        ]
+    },
 ]
 
 export default function AppBase({subtitle, children}: AppBaseProps) {

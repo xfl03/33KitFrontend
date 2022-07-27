@@ -12,7 +12,7 @@ export async function downloadFileHcaptcha(filename: string, token: string) {
     downloadUrl(e.data.url);
 }
 
-function downloadUrl(url: string) {
+export function downloadUrl(url: string) {
     const a = document.createElement('a');
     a.href = url;
     a.click();
