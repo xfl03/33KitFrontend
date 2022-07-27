@@ -4,7 +4,7 @@ import {
     Alert,
     AlertTitle,
     FormControl,
-    Grid,
+    Grid, IconButton,
     InputLabel, MenuItem,
     Select, SelectChangeEvent
 } from "@mui/material";
@@ -12,12 +12,14 @@ import {useEffect, useState} from "react";
 import EChartsReact from "echarts-for-react";
 import axios from "axios";
 import {useRouter} from "next/router";
+import {Refresh} from "@mui/icons-material";
 
 export default function Page() {
     const [eventId, setEventId] = useState<string>("");
     const [userId, setUserId] = useState<string>("");
     const [option, setOption] = useState<any>();
     const [events, setEvents] = useState<Array<any>>([]);
+    const [refreshFlag, setRefreshFlag] = useState<boolean>(false);
     const router = useRouter()
     useEffect(() => {
         let userId0 = router.query.userId
@@ -87,7 +89,7 @@ export default function Page() {
                 ]
             })
         })
-    }, [userId, eventId, setOption])
+    }, [userId, eventId, setOption, refreshFlag])
 
     const handleChange = (event: SelectChangeEvent) => {
         setEventId(event.target.value as string);
@@ -110,7 +112,7 @@ export default function Page() {
                             value={eventId}
                             label="活动"
                             onChange={handleChange}
-                            style={{minWidth: "400px"}}
+                            style={{minWidth: "340px"}}
                         >
                             <MenuItem value={0}>历史活动</MenuItem>
                             {events.map(it =>
@@ -118,6 +120,9 @@ export default function Page() {
                             )}
                         </Select>
                     </FormControl>
+                    <IconButton onClick={_ => setRefreshFlag(!refreshFlag)} style={{marginTop:"2px"}}>
+                        <Refresh fontSize="large"/>
+                    </IconButton>
                 </Grid>
                 {option &&
                     <Grid item xs={12}>

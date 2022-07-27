@@ -22,6 +22,7 @@ import Head from 'next/head'
 import ReactGA from "react-ga4";
 import {useEffect, useState} from "react";
 import {GoogleReCaptchaProvider} from "react-google-recaptcha-v3";
+import {ListSubheader} from "@mui/material";
 
 const drawerWidth = 240;
 
@@ -101,37 +102,54 @@ type AppBaseProps = {
 
 const drawItems = [
     {
-        "name": "首页",
-        "icon": <Home/>,
-        "path": "/",
+        "category": "33 Kit",
+        "categoryShort": "33 Kit",
+        "items": [
+            {
+                "name": "首页",
+                "icon": <Home/>,
+                "path": "/",
+                "display": true,
+            },
+        ]
     },
     {
-        "name": "游戏下载",
-        "icon": <Download/>,
-        "path": "/pjsk-download",
-    },
-    {
-        "name": "活动预测",
-        "icon": <Analytics/>,
-        "path": "/pjsk-predict",
-    },
-    {
-        "name": "对战预测",
-        "icon": <Groups/>,
-        "path": "/pjsk-cheerful-predict",
-    },
-    {
-        "name": "活动最终数据",
-        "icon": <Insights/>,
-        "path": "/pjsk-final",
+        "category": "Project SEKAI",
+        "categoryShort": "PJSK",
+        "items": [
+            {
+                "name": "游戏下载",
+                "icon": <Download/>,
+                "path": "/pjsk-download",
+                "display": true,
+            },
+            {
+                "name": "活动预测",
+                "icon": <Analytics/>,
+                "path": "/pjsk-predict",
+                "display": true,
+            },
+            {
+                "name": "对战预测",
+                "icon": <Groups/>,
+                "path": "/pjsk-cheerful-predict",
+                "display": true,
+            },
+            {
+                "name": "活动最终数据",
+                "icon": <Insights/>,
+                "path": "/pjsk-final",
+                "display": true,
+            },
+            {
+                "name": "个人活动数据",
+                "icon": <Person/>,
+                "path": "/pjsk-user-event",
+                "display": false,
+            },
+        ]
     },
 ]
-
-const userDataDrawItem = {
-    "name": "个人活动数据",
-    "icon": <Person/>,
-    "path": "/pjsk-user-event",
-}
 
 export default function AppBase({subtitle, children}: AppBaseProps) {
     const router = useRouter()
@@ -153,13 +171,16 @@ export default function AppBase({subtitle, children}: AppBaseProps) {
         ReactGA.send("pageview");
     }, [])
 
-    useEffect(()=>{
-        let items = drawItems.slice();
-        if (localStorage.getItem("userId") !== null) {
-            items.push(userDataDrawItem);
+    useEffect(() => {
+        let category = drawItems.find((it) => it.category === "Project SEKAI");
+        if (category && localStorage.getItem("userId") !== null) {
+            let userData = category.items.find((it) => it.path === "/pjsk-user-event");
+            if (userData) {
+                userData.display = true;
+            }
         }
-        setDisplayItems(items);
-    },[setDisplayItems])
+        setDisplayItems(drawItems);
+    }, [setDisplayItems])
 
     const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
@@ -221,32 +242,41 @@ export default function AppBase({subtitle, children}: AppBaseProps) {
                             {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
                         </IconButton>
                     </DrawerHeader>
-                    <Divider/>
-                    <List>
-                        {displayItems.map((item) => (
-                            <ListItem key={item.path} disablePadding sx={{display: 'block'}}>
-                                <ListItemButton
-                                    sx={{
-                                        minHeight: 48,
-                                        justifyContent: open ? 'initial' : 'center',
-                                        px: 2.5,
-                                    }}
-                                    onClick={() => router.push(item.path)}
-                                >
-                                    <ListItemIcon
+                    {displayItems.map((category) => [
+                        <Divider key={category.category + 0}/>,
+                        <List
+                            key={category.category + 1}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                            subheader={
+                                <ListSubheader component="div" id="nested-list-subheader">
+                                    {open ? category.category : category.categoryShort}
+                                </ListSubheader>
+                            }>
+                            {category.items.filter((it: any) => it.display).map((item: any) =>
+                                <ListItem key={item.path} disablePadding sx={{display: 'block'}}>
+                                    <ListItemButton
                                         sx={{
-                                            minWidth: 0,
-                                            mr: open ? 3 : 'auto',
-                                            justifyContent: 'center',
+                                            minHeight: 48,
+                                            justifyContent: open ? 'initial' : 'center',
+                                            px: 2.5,
                                         }}
+                                        onClick={() => router.push(item.path)}
                                     >
-                                        {item.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={item.name} sx={{opacity: open ? 1 : 0}}/>
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                    </List>
+                                        <ListItemIcon
+                                            sx={{
+                                                minWidth: 0,
+                                                mr: open ? 3 : 'auto',
+                                                justifyContent: 'center',
+                                            }}
+                                        >
+                                            {item.icon}
+                                        </ListItemIcon>
+                                        <ListItemText primary={item.name} sx={{opacity: open ? 1 : 0}}/>
+                                    </ListItemButton>
+                                </ListItem>)}
+                        </List>,
+                    ])}
                 </Drawer>
                 <Box component="main" sx={{flexGrow: 1, p: 3}}>
                     <DrawerHeader/>
