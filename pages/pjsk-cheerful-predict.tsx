@@ -27,7 +27,10 @@ export default function PjskDownload() {
                     <Grid item xs={12}>
                         <Alert severity="info">
                             <AlertTitle>关于预测</AlertTitle>
-                            预测生成时间为<strong>{formatDatetimeShort(pjskCheerfulPredict.timestamp)}</strong>，预测的活动为「<strong>{pjskCheerfulPredict.eventName}</strong>」。
+                            预测生成时间为<strong>{formatDatetimeShort(pjskCheerfulPredict.timestamp)}</strong>，
+                            预测的活动为「<strong>{pjskCheerfulPredict.eventName}</strong>」
+                            （{formatDatetimeShort(pjskCheerfulPredict.eventStartAt)}～
+                            <strong>{formatDatetimeShort(pjskCheerfulPredict.eventAggregateAt)}</strong>）。
                         </Alert>
                     </Grid>
                 }
@@ -44,26 +47,37 @@ export default function PjskDownload() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {pjskCheerfulPredict.announces.map((announce: any, index: number) =>
-                                        [
-                                            <TableRow key={index + 10}>
-                                                <TableCell style={{textAlign: "center"}} colSpan={3}>
-                                                    <strong>{index <= 1 ? `第${index + 1}次中间发表` : `最终结果`}</strong>
-                                                </TableCell>
-                                            </TableRow>,
-                                            <TableRow key={index + 20}>
-                                                <TableCell>分数</TableCell>
-                                                {pjskCheerfulPredict.teams.map((it: any) =>
-                                                    <TableCell key={it}>{announce.points[it]}</TableCell>
-                                                )}
-                                            </TableRow>,
-                                            <TableRow key={index + 30}>
-                                                <TableCell>估计胜率</TableCell>
-                                                {pjskCheerfulPredict.teams.map((it: any) =>
-                                                    <TableCell key={it}>{formatPercent(announce.rates[it])}</TableCell>
-                                                )}
-                                            </TableRow>
-                                        ]
+                                    {pjskCheerfulPredict.announces.map((announce: any, index: number) => {
+                                            let ret = [
+                                                <TableRow key={index + 10}>
+                                                    <TableCell style={{textAlign: "center"}} colSpan={3}>
+                                                        <strong>{index <= 1 ? `第${index + 1}次中间发表` : `最终结果`}</strong>
+                                                        <br/>
+                                                        {formatDatetimeShort(announce.timestamp)}
+                                                    </TableCell>
+                                                </TableRow>,
+                                            ];
+                                            if (announce.points.length > 0) {
+                                                ret.push(
+                                                    <TableRow key={index + 20}>
+                                                        <TableCell>分数</TableCell>
+                                                        {pjskCheerfulPredict.teams.map((it: any) =>
+                                                            <TableCell key={it}>{announce.points[it]}</TableCell>
+                                                        )}
+                                                    </TableRow>
+                                                );
+                                                ret.push(
+                                                    <TableRow key={index + 30}>
+                                                        <TableCell>估计胜率</TableCell>
+                                                        {pjskCheerfulPredict.teams.map((it: any) =>
+                                                            <TableCell
+                                                                key={it}>{formatPercent(announce.rates[it])}</TableCell>
+                                                        )}
+                                                    </TableRow>
+                                                );
+                                            }
+                                            return ret;
+                                        }
                                     )}
                                     <TableRow>
                                         <TableCell style={{textAlign: "center"}} colSpan={3}>
