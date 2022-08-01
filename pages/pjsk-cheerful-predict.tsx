@@ -47,6 +47,25 @@ export default function PjskDownload() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
+                                    <TableRow>
+                                        <TableCell style={{textAlign: "center"}} colSpan={3}>
+                                            <strong>实时数据</strong>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>当前人数</TableCell>
+                                        {pjskCheerfulPredict.teams.map((it: any) =>
+                                            <TableCell key={it}>{pjskCheerfulPredict.members[it]}</TableCell>
+                                        )}
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>预测胜率</TableCell>
+                                        {pjskCheerfulPredict.teams.map((it: any) =>
+                                            <TableCell key={it}>
+                                                {formatPercent(pjskCheerfulPredict.predictRates[it])}
+                                            </TableCell>
+                                        )}
+                                    </TableRow>
                                     {pjskCheerfulPredict.announces.map((announce: any, index: number) => {
                                             let ret = [
                                                 <TableRow key={index + 10}>
@@ -79,25 +98,6 @@ export default function PjskDownload() {
                                             return ret;
                                         }
                                     )}
-                                    <TableRow>
-                                        <TableCell style={{textAlign: "center"}} colSpan={3}>
-                                            <strong>实时数据</strong>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>当前人数</TableCell>
-                                        {pjskCheerfulPredict.teams.map((it: any) =>
-                                            <TableCell key={it}>{pjskCheerfulPredict.members[it]}</TableCell>
-                                        )}
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>预测胜率</TableCell>
-                                        {pjskCheerfulPredict.teams.map((it: any) =>
-                                            <TableCell key={it}>
-                                                {formatPercent(pjskCheerfulPredict.predictRates[it])}
-                                            </TableCell>
-                                        )}
-                                    </TableRow>
                                 </TableBody>
                             </Table>
                         </TableContainer>
