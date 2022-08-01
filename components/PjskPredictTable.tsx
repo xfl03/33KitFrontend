@@ -27,8 +27,8 @@ export default function PjskPredictTable({pjskPredict, ranks}: PjskPredictTableA
                 <Table size="small" aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>活动排名</TableCell>
-                            <TableCell align="right">活动PT预测</TableCell>
+                            <TableCell style={{textAlign: "center"}}>活动排名</TableCell>
+                            <TableCell style={{textAlign: "center"}} align="right">活动PT预测</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -37,10 +37,10 @@ export default function PjskPredictTable({pjskPredict, ranks}: PjskPredictTableA
                                 key={row.rank}
                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
                             >
-                                <TableCell component="th" scope="row">
+                                <TableCell style={{textAlign: "center"}} component="th" scope="row">
                                     {row.rank}
                                 </TableCell>
-                                <TableCell align="right">{row.score}</TableCell>
+                                <TableCell style={{textAlign: "center"}} align="right">{row.score}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

@@ -40,23 +40,25 @@ export default function PjskDownload() {
                             <Table aria-label="spanning table">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>队伍</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>队伍</TableCell>
                                         {pjskCheerfulPredict.teams.map((it: any) =>
-                                            <TableCell key={it}>{pjskCheerfulPredict.names[it]}</TableCell>
+                                            <TableCell style={{textAlign: "center"}}
+                                                       key={it}>{pjskCheerfulPredict.names[it]}</TableCell>
                                         )}
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     <TableRow>
-                                        <TableCell>当前人数</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>当前人数</TableCell>
                                         {pjskCheerfulPredict.teams.map((it: any) =>
-                                            <TableCell key={it}>{pjskCheerfulPredict.members[it]}</TableCell>
+                                            <TableCell style={{textAlign: "center"}}
+                                                       key={it}>{pjskCheerfulPredict.members[it]}</TableCell>
                                         )}
                                     </TableRow>
                                     <TableRow>
-                                        <TableCell>预测胜率</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>预测胜率</TableCell>
                                         {pjskCheerfulPredict.teams.map((it: any) =>
-                                            <TableCell key={it}>
+                                            <TableCell style={{textAlign: "center"}} key={it}>
                                                 {formatPercent(pjskCheerfulPredict.predictRates[it])}
                                             </TableCell>
                                         )}
@@ -74,18 +76,19 @@ export default function PjskDownload() {
                                             if (announce.points.length > 0) {
                                                 ret.push(
                                                     <TableRow key={index + 20}>
-                                                        <TableCell>分数</TableCell>
+                                                        <TableCell style={{textAlign: "center"}}>分数</TableCell>
                                                         {pjskCheerfulPredict.teams.map((it: any) =>
-                                                            <TableCell key={it}>{announce.points[it]}</TableCell>
+                                                            <TableCell style={{textAlign: "center"}}
+                                                                       key={it}>{announce.points[it]}</TableCell>
                                                         )}
                                                     </TableRow>
                                                 );
                                                 ret.push(
                                                     <TableRow key={index + 30}>
-                                                        <TableCell>估计胜率</TableCell>
+                                                        <TableCell style={{textAlign: "center"}}>估计胜率</TableCell>
                                                         {pjskCheerfulPredict.teams.map((it: any) =>
-                                                            <TableCell
-                                                                key={it}>{formatPercent(announce.rates[it])}</TableCell>
+                                                            <TableCell style={{textAlign: "center"}}
+                                                                       key={it}>{formatPercent(announce.rates[it])}</TableCell>
                                                         )}
                                                     </TableRow>
                                                 );
