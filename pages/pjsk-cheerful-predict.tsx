@@ -48,11 +48,6 @@ export default function PjskDownload() {
                                 </TableHead>
                                 <TableBody>
                                     <TableRow>
-                                        <TableCell style={{textAlign: "center"}} colSpan={3}>
-                                            <strong>实时数据</strong>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
                                         <TableCell>当前人数</TableCell>
                                         {pjskCheerfulPredict.teams.map((it: any) =>
                                             <TableCell key={it}>{pjskCheerfulPredict.members[it]}</TableCell>
