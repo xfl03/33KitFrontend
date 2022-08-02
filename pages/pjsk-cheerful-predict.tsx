@@ -73,7 +73,7 @@ export default function PjskDownload() {
                                                     </TableCell>
                                                 </TableRow>,
                                             ];
-                                            if (announce.points.length > 0) {
+                                            if (announce.points[pjskCheerfulPredict.teams[0]]) {
                                                 ret.push(
                                                     <TableRow key={index + 20}>
                                                         <TableCell style={{textAlign: "center"}}>分数</TableCell>
