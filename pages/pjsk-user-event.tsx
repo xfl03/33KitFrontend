@@ -19,6 +19,7 @@ export default function Page() {
     const [userId, setUserId] = useState<string>("");
     const [option, setOption] = useState<any>();
     const [events, setEvents] = useState<Array<any>>([]);
+    const [eventData, setEventData] = useState<Array<any>>([]);
     const [refreshFlag, setRefreshFlag] = useState<boolean>(false);
     const router = useRouter()
     useEffect(() => {
@@ -50,6 +51,7 @@ export default function Page() {
     useEffect(() => {
         if (userId === "" || eventId === "") return;
         axios.get(`/user/${userId}/${eventId}`).then(res => {
+            setEventData(res.data);
             setOption({
                 tooltip: {
                     trigger: 'axis',
@@ -120,9 +122,13 @@ export default function Page() {
                             )}
                         </Select>
                     </FormControl>
-                    <IconButton onClick={_ => setRefreshFlag(!refreshFlag)} style={{marginTop:"2px"}}>
+                    <IconButton onClick={_ => setRefreshFlag(!refreshFlag)} style={{marginTop: "2px"}}>
                         <Refresh fontSize="large"/>
                     </IconButton>
+                    {eventData.length > 0 && <div style={{display:"inline-block",fontSize:"20px"}}>
+                        分数<b>{eventData[eventData.length - 1].s}</b>&nbsp;
+                        排名<b>{eventData[eventData.length - 1].r}</b>
+                    </div>}
                 </Grid>
                 {option &&
                     <Grid item xs={12}>
