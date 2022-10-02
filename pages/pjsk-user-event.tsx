@@ -56,6 +56,25 @@ export default function Page() {
                 tooltip: {
                     trigger: 'axis',
                 },
+                toolbox: {
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        restore: {}
+                    }
+                },
+                dataZoom: [
+                    {
+                        type: 'inside',
+                        start: 0,
+                        end: 100
+                    },
+                    {
+                        start: 0,
+                        end: 100
+                    }
+                ],
                 xAxis: {
                     type: eventId == "0" ? 'category' : 'time',
                     boundaryGap: false,
