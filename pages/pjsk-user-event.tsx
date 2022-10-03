@@ -21,6 +21,7 @@ export default function Page() {
     const [events, setEvents] = useState<Array<any>>([]);
     const [eventData, setEventData] = useState<Array<any>>([]);
     const [refreshFlag, setRefreshFlag] = useState<boolean>(false);
+    // const [echartRef, setEchartRef] = useState<EChartsReact>();
     const router = useRouter()
     useEffect(() => {
         let userId0 = router.query.userId
@@ -44,14 +45,8 @@ export default function Page() {
             localStorage.setItem("userId", userId);
             let data = res.data;
             setEvents(data);
-            setEventId(data[data.length - 1].id.toString());
-        })
-    }, [userId, setEvents])
-
-    useEffect(() => {
-        if (userId === "" || eventId === "") return;
-        axios.get(`/user/${userId}/${eventId}`).then(res => {
-            setEventData(res.data);
+            let eventId = data[data.length - 1].id.toString();
+            setEventId(eventId);
             setOption({
                 tooltip: {
                     trigger: 'axis',
@@ -89,7 +84,16 @@ export default function Page() {
                     type: 'value',
                     boundaryGap: false,
                     inverse: true,
-                }],
+                }]
+            })
+        })
+    }, [userId, setEvents, setOption])
+
+    useEffect(() => {
+        if (userId === "" || eventId === "") return;
+        axios.get(`/user/${userId}/${eventId}`).then(res => {
+            setEventData(res.data);
+            setOption({
                 series: [
                     {
                         name: 'PT',
@@ -144,14 +148,22 @@ export default function Page() {
                     <IconButton onClick={_ => setRefreshFlag(!refreshFlag)} style={{marginTop: "2px"}}>
                         <Refresh fontSize="large"/>
                     </IconButton>
-                    {eventData.length > 0 && <div style={{display:"inline-block",fontSize:"20px"}}>
+                    {eventData.length > 0 && <div style={{display: "inline-block", fontSize: "20px"}}>
                         分数<b>{eventData[eventData.length - 1].s}</b>&nbsp;
                         排名<b>{eventData[eventData.length - 1].r}</b>
                     </div>}
                 </Grid>
                 {option &&
                     <Grid item xs={12}>
-                        <EChartsReact style={{height: '700px', maxHeight: '75%', width: '100%'}} option={option}/>
+                        <EChartsReact
+                            // ref={(e) => {
+                            //     if (e && !echartRef) {
+                            //         setEchartRef(e);
+                            //     }
+                            // }}
+                            style={{height: '700px', maxHeight: '75%', width: '100%'}}
+                            option={option}
+                        />
                     </Grid>
                 }
             </Grid>
