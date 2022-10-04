@@ -209,12 +209,15 @@ export default function Page() {
                         排名<b>{eventData[eventData.length - 1].r}</b>&nbsp;
                     </div>}
                     {latestScore && <div style={{display: "inline-block", fontSize: "20px"}}>
-                        最近<b>{latestScore}</b>&nbsp;
+                        最近1次<b>{latestScore}</b>&nbsp;<br/>
                     </div>}
-                    {detailMessages.map(it=>(<div key={it.text} style={{display: "inline-block", fontSize: "20px"}}>
-                        最近{it.text}<b>{it.count}</b>次<b>{it.score}</b>
-                        (平均<b>{(it.score/it.count).toFixed(0)}</b>)&nbsp;
-                    </div>))}
+                    {detailMessages.length > 0 && <div>
+                        {detailMessages.map(it => (
+                            <div key={it.text} style={{display: "inline-block", fontSize: "20px"}}>
+                                最近{it.text}<b>{it.count}</b>次<b>{it.score}</b>
+                                (平均<b>{(it.score / it.count).toFixed(0)}</b>)&nbsp;
+                            </div>))}
+                    </div>}
                 </Grid>
                 {option &&
                     <Grid item xs={12}>
