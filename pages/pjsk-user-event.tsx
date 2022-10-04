@@ -13,6 +13,7 @@ import EChartsReact from "echarts-for-react";
 import axios from "axios";
 import {useRouter} from "next/router";
 import {Refresh} from "@mui/icons-material";
+import {getChangedData} from "../utils/user-event-data";
 
 export default function Page() {
     const [eventId, setEventId] = useState<string>("");
@@ -20,9 +21,12 @@ export default function Page() {
     const [option, setOption] = useState<any>();
     const [events, setEvents] = useState<Array<any>>([]);
     const [eventData, setEventData] = useState<Array<any>>([]);
+    const [latestScore, setLatestScore] = useState<number>(0);
+    const [detailMessages, setDetailMessages] = useState<Array<any>>([]);
     const [refreshFlag, setRefreshFlag] = useState<boolean>(false);
     // const [echartRef, setEchartRef] = useState<EChartsReact>();
     const router = useRouter()
+
     useEffect(() => {
         let userId0 = router.query.userId
         if (Array.isArray(userId0)) {
@@ -93,6 +97,58 @@ export default function Page() {
         if (userId === "" || eventId === "") return;
         axios.get(`/user/${userId}/${eventId}`).then(res => {
             setEventData(res.data);
+            const data = res.data;
+
+            //Calculate speed and times for advanced user
+            if (data.length >= 2) {
+                const maxGapTime = 11 * 60 * 1000;//Gap is less than 11 min
+                const latestGap = data[data.length - 1].t - data[data.length - 2].t;
+                //Only if time gap is shorter than max, which can get detailed data
+                if (latestGap <= maxGapTime) {
+                    let changedData = getChangedData(data);
+                    let latestData = data[data.length - 1];
+                    setLatestScore(latestData.s - changedData[changedData.length - 2].s);
+
+                    //Used in detailed message
+                    //It must be written in time order
+                    const displayDetails = [
+                        {
+                            time: 60 * 60 * 1000,
+                            text: "1小时"
+                        },
+                        {
+                            time: 24 * 60 * 60 * 1000,
+                            text: "24小时"
+                        },
+                    ];
+                    //The detailedDisplay select
+                    let detailPtr = 0;
+                    let detail = displayDetails[0];
+                    let detailMessage = [] as any[];
+                    //Reverse for in changedData
+                    for (let i = changedData.length - 1; i >= 0; --i) {
+                        let current = changedData[i];
+                        //Judge if detail is fulfilled
+                        if (latestData.t - current.t > detail.time) {
+                            // console.log(current);
+                            detailMessage.push({
+                                text: detail.text,
+                                count: changedData.length - 1 - i,
+                                score: latestData.s - current.s
+                            });
+                            detailPtr++;
+                            //Check displayDetails is all fulfilled
+                            if (detailPtr >= displayDetails.length) {
+                                break;
+                            }
+                            detail = displayDetails[detailPtr];
+                        }
+                    }
+                    setDetailMessages(detailMessage);
+                    // console.log(detailMessages);
+                }
+            }
+
             setOption({
                 series: [
                     {
@@ -100,7 +156,7 @@ export default function Page() {
                         type: 'line',
                         smooth: false,
                         symbol: 'none',
-                        data: res.data.map((it: any) => [it.t, it.s]),
+                        data: data.map((it: any) => [it.t, it.s]),
                         yAxisIndex: 0
                     },
                     {
@@ -108,7 +164,7 @@ export default function Page() {
                         type: 'line',
                         smooth: false,
                         symbol: 'none',
-                        data: res.data.map((it: any) => [it.t, it.r]),
+                        data: data.map((it: any) => [it.t, it.r]),
                         yAxisIndex: 1
                     }
                 ]
@@ -150,8 +206,15 @@ export default function Page() {
                     </IconButton>
                     {eventData.length > 0 && <div style={{display: "inline-block", fontSize: "20px"}}>
                         分数<b>{eventData[eventData.length - 1].s}</b>&nbsp;
-                        排名<b>{eventData[eventData.length - 1].r}</b>
+                        排名<b>{eventData[eventData.length - 1].r}</b>&nbsp;
                     </div>}
+                    {latestScore && <div style={{display: "inline-block", fontSize: "20px"}}>
+                        最近<b>{latestScore}</b>&nbsp;
+                    </div>}
+                    {detailMessages.map(it=>(<div key={it.text} style={{display: "inline-block", fontSize: "20px"}}>
+                        最近{it.text}<b>{it.count}</b>次<b>{it.score}</b>
+                        (平均<b>{(it.score/it.count).toFixed(0)}</b>)&nbsp;
+                    </div>))}
                 </Grid>
                 {option &&
                     <Grid item xs={12}>
