@@ -2,30 +2,58 @@ import * as React from 'react';
 import AppBase from "../components/AppBase";
 import {
     Alert,
-    AlertTitle,
+    AlertTitle, Box, Chip,
     FormControl,
     Grid, IconButton,
-    InputLabel, MenuItem,
-    Select, SelectChangeEvent
+    InputLabel, MenuItem, OutlinedInput,
+    Select, SelectChangeEvent, Theme, useTheme
 } from "@mui/material";
 import {useEffect, useState} from "react";
 import EChartsReact from "echarts-for-react";
 import axios from "axios";
 import {useRouter} from "next/router";
 import {Refresh} from "@mui/icons-material";
-import {getChangedData} from "../utils/user-event-data";
+import {
+    eventRanks,
+    getEventRanks,
+    processDetailMessages,
+    UserDetailMessage,
+    UserEventData
+} from "../utils/user-event-data";
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+
+function getStyles(name: string, personName: readonly string[], theme: Theme) {
+    return {
+        fontWeight:
+            personName.indexOf(name) === -1
+                ? theme.typography.fontWeightRegular
+                : theme.typography.fontWeightMedium,
+    };
+}
 
 export default function Page() {
     const [eventId, setEventId] = useState<string>("");
+    const [ranks, setRanks] = useState<Array<string>>([]);
     const [userId, setUserId] = useState<string>("");
     const [option, setOption] = useState<any>();
     const [events, setEvents] = useState<Array<any>>([]);
-    const [eventData, setEventData] = useState<Array<any>>([]);
+    const [eventData, setEventData] = useState<Array<UserEventData>>([]);
     const [latestScore, setLatestScore] = useState<number>(0);
-    const [detailMessages, setDetailMessages] = useState<Array<any>>([]);
+    const [detailMessages, setDetailMessages] = useState<Array<UserDetailMessage>>([]);
     const [refreshFlag, setRefreshFlag] = useState<boolean>(false);
     // const [echartRef, setEchartRef] = useState<EChartsReact>();
     const router = useRouter()
+    const theme = useTheme();
 
     useEffect(() => {
         let userId0 = router.query.userId
@@ -95,85 +123,63 @@ export default function Page() {
 
     useEffect(() => {
         if (userId === "" || eventId === "") return;
-        axios.get(`/user/${userId}/${eventId}`).then(res => {
-            setEventData(res.data);
-            const data = res.data;
 
-            //Calculate speed and times for advanced user
-            if (data.length >= 2) {
-                const maxGapTime = 11 * 60 * 1000;//Gap is less than 11 min
-                const latestGap = data[data.length - 1].t - data[data.length - 2].t;
-                //Only if time gap is shorter than max, which can get detailed data
-                if (latestGap <= maxGapTime) {
-                    let changedData = getChangedData(data);
-                    let latestData = data[data.length - 1];
-                    setLatestScore(latestData.s - changedData[changedData.length - 2].s);
-
-                    //Used in detailed message
-                    //It must be written in time order
-                    const displayDetails = [
-                        {
-                            time: 60 * 60 * 1000,
-                            text: "1小时"
-                        },
-                        {
-                            time: 24 * 60 * 60 * 1000,
-                            text: "24小时"
-                        },
-                    ];
-                    //The detailedDisplay select
-                    let detailPtr = 0;
-                    let detail = displayDetails[0];
-                    let detailMessage = [] as any[];
-                    //Reverse for in changedData
-                    for (let i = changedData.length - 1; i >= 0; --i) {
-                        let current = changedData[i];
-                        //Judge if detail is fulfilled
-                        if (latestData.t - current.t > detail.time) {
-                            // console.log(current);
-                            detailMessage.push({
-                                text: detail.text,
-                                count: changedData.length - 1 - i,
-                                score: latestData.s - current.s
-                            });
-                            detailPtr++;
-                            //Check displayDetails is all fulfilled
-                            if (detailPtr >= displayDetails.length) {
-                                break;
-                            }
-                            detail = displayDetails[detailPtr];
-                        }
-                    }
-                    setDetailMessages(detailMessage);
-                    // console.log(detailMessages);
-                }
-            }
-
-            setOption({
-                series: [
-                    {
-                        name: 'PT',
+        const series: any[] = [];
+        getEventRanks(eventId, ranks)
+            .then(it => {
+                //Add compare rank data
+                it.forEach(rank => {
+                    series.push({
+                        name: rank.rank,
                         type: 'line',
                         smooth: false,
                         symbol: 'none',
-                        data: data.map((it: any) => [it.t, it.s]),
+                        data: rank.data.map(it => [it.timestamp, it.score]),
                         yAxisIndex: 0
-                    },
-                    {
-                        name: '排名',
-                        type: 'line',
-                        smooth: false,
-                        symbol: 'none',
-                        data: data.map((it: any) => [it.t, it.r]),
-                        yAxisIndex: 1
-                    }
-                ]
+                    })
+                })
             })
-        })
-    }, [userId, eventId, setOption, refreshFlag])
+            .then(_ => axios.get(`/user/${userId}/${eventId}`))
+            .then(res => {
+                setEventData(res.data);
+                const data: Array<{ t: number, r: number, s: number }> = res.data;
+
+                processDetailMessages(eventId, data, setLatestScore, setDetailMessages);
+
+                series.push({
+                    name: 'PT',
+                    type: 'line',
+                    smooth: false,
+                    symbol: 'none',
+                    data: data.map(it => [it.t, it.s]),
+                    yAxisIndex: 0
+                });
+                series.push({
+                    name: '排名',
+                    type: 'line',
+                    smooth: false,
+                    symbol: 'none',
+                    data: data.map(it => [it.t, it.r]),
+                    yAxisIndex: 1
+                });
+
+                console.log(`series.length=${series.length}`)
+                setOption({
+                    series: series
+                })
+            })
+    }, [userId, eventId, setOption, refreshFlag, ranks])
 
     const handleChange = (event: SelectChangeEvent) => {
         setEventId(event.target.value as string);
+    };
+    const handleChange1 = (event: SelectChangeEvent<typeof ranks>) => {
+        const {
+            target: {value},
+        } = event;
+        setRanks(
+            typeof value === 'string' ? value.split(',') : value,
+        );
     };
     return (
         <AppBase subtitle="个人活动数据">
@@ -201,21 +207,56 @@ export default function Page() {
                             )}
                         </Select>
                     </FormControl>
+                    <FormControl>
+                        <InputLabel id="demo-multiple-chip-label">比较档线</InputLabel>
+                        <Select
+                            labelId="demo-multiple-chip-label"
+                            id="demo-multiple-chip"
+                            multiple
+                            value={ranks}
+                            onChange={handleChange1}
+                            input={<OutlinedInput id="select-multiple-chip" label="Chip"/>}
+                            renderValue={(selected) => (
+                                <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
+                                    {selected.map((value) => (
+                                        <Chip key={value} label={value}/>
+                                    ))}
+                                </Box>
+                            )}
+                            MenuProps={MenuProps}
+                            style={{minWidth: "280px"}}
+                        >
+                            {eventRanks.map((name) => (
+                                <MenuItem
+                                    key={name}
+                                    value={name}
+                                    style={getStyles(name, ranks, theme)}
+                                >
+                                    {name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <IconButton onClick={_ => setRefreshFlag(!refreshFlag)} style={{marginTop: "2px"}}>
                         <Refresh fontSize="large"/>
                     </IconButton>
+                </Grid>
+                <Grid xs={12}>
                     {eventData.length > 0 && <div style={{display: "inline-block", fontSize: "20px"}}>
                         分数<b>{eventData[eventData.length - 1].s}</b>&nbsp;
                         排名<b>{eventData[eventData.length - 1].r}</b>&nbsp;
                     </div>}
                     {latestScore && <div style={{display: "inline-block", fontSize: "20px"}}>
-                        最近1次<b>{latestScore}</b>&nbsp;<br/>
+                        最近1次<b>{latestScore}</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </div>}
-                    {detailMessages.length > 0 && <div>
+                    {detailMessages.length > 0 && <div style={{display: "inline-block"}}>
                         {detailMessages.map(it => (
                             <div key={it.text} style={{display: "inline-block", fontSize: "20px"}}>
-                                最近{it.text}<b>{it.count}</b>次<b>{it.score}</b>
-                                (平均<b>{(it.score / it.count).toFixed(0)}</b>)&nbsp;
+                                最近{it.text}<b>{it.count}</b>次
+                                {it.count > 0 &&
+                                    <div style={{display: "inline-block"}}><b>{it.score}</b>
+                                        (平均<b>{(it.score / it.count).toFixed(0)}</b>)
+                                    </div>}&nbsp;
                             </div>))}
                     </div>}
                 </Grid>
