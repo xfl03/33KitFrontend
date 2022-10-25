@@ -27,8 +27,12 @@ export function getChangedData(data: Array<UserEventData>) {
         //Score changed
         if (latestRet.s < currentData.s) {
             ret.push(currentData);
+        } else if (latestRet.s > currentData.s) {
+            //Remove shaking data
+            ret.pop();
         }
     }
+    // console.log(ret);
     return ret;
 }
 
@@ -45,7 +49,9 @@ export function processDetailMessages(
         if (latestGap <= maxGapTime) {
             let changedData = getChangedData(data);
             let latestData = data[data.length - 1];
-            setLatestScore(latestData.s - changedData[changedData.length - 2].s);
+            if (changedData.length >= 2) {
+                setLatestScore(changedData[changedData.length - 1].s - changedData[changedData.length - 2].s);
+            }
 
             //Used in detailed message
             //It must be written in time order

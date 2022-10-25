@@ -246,7 +246,7 @@ export default function Page() {
                         分数<b>{eventData[eventData.length - 1].s}</b>&nbsp;
                         排名<b>{eventData[eventData.length - 1].r}</b>&nbsp;
                     </div>}
-                    {latestScore && <div style={{display: "inline-block", fontSize: "20px"}}>
+                    {latestScore !== 0 && <div style={{display: "inline-block", fontSize: "20px"}}>
                         最近1次<b>{latestScore}</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </div>}
                     {detailMessages.length > 0 && <div style={{display: "inline-block"}}>
