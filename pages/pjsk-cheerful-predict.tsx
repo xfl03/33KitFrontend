@@ -25,20 +25,21 @@ export default function PjskDownload() {
                 </Grid>
                 {pjskCheerfulPredict &&
                     <Grid item xs={12}>
-                        <Alert severity="info">
-                            <AlertTitle>关于预测</AlertTitle>
-                            预测生成时间为<strong>{formatDatetimeShort(pjskCheerfulPredict.timestamp)}</strong>，
-                            预测的活动为「<strong>{pjskCheerfulPredict.eventName}</strong>」
-                            （{formatDatetimeShort(pjskCheerfulPredict.eventStartAt)}～
-                            <strong>{formatDatetimeShort(pjskCheerfulPredict.eventAggregateAt)}</strong>）。
-                        </Alert>
-                    </Grid>
-                }
-                {pjskCheerfulPredict &&
-                    <Grid item xs={12}>
                         <TableContainer sx={{maxWidth: 500}} component={Paper}>
                             <Table aria-label="spanning table">
                                 <TableHead>
+                                    <TableRow>
+                                        <TableCell style={{textAlign: "center"}} colSpan={3}>
+                                            <strong style={{fontSize:"1.5em"}}>{pjskCheerfulPredict.eventName}</strong>
+                                            <br/>
+                                            {formatDatetimeShort(pjskCheerfulPredict.eventStartAt)}～
+                                            {formatDatetimeShort(pjskCheerfulPredict.eventAggregateAt)}
+                                            <br/>
+                                            预测于<strong>{formatDatetimeShort(pjskCheerfulPredict.timestamp)}</strong>
+                                            <br/>
+                                            <strong>{pjskCheerfulPredict.theme}</strong>
+                                        </TableCell>
+                                    </TableRow>
                                     <TableRow>
                                         <TableCell style={{textAlign: "center"}}>队伍</TableCell>
                                         {pjskCheerfulPredict.teams.map((it: any) =>
