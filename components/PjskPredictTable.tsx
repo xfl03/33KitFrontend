@@ -1,6 +1,7 @@
 import {Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import {useEffect, useState} from "react";
 import * as React from "react";
+import {formatDatetimeShort} from "../utils/date-format";
 
 type PjskPredictTableArg = {
     pjskPredict: any,
@@ -26,6 +27,16 @@ export default function PjskPredictTable({pjskPredict, ranks}: PjskPredictTableA
             <TableContainer sx={{maxWidth: 500}} component={Paper}>
                 <Table size="small" aria-label="simple table">
                     <TableHead>
+                        <TableRow>
+                            <TableCell style={{textAlign: "center"}} colSpan={3}>
+                                <strong style={{fontSize:"1.5em"}}>{pjskPredict.data.eventName}</strong>
+                                <br/>
+                                {formatDatetimeShort(pjskPredict.data.eventStartAt)}～
+                                <strong>{formatDatetimeShort(pjskPredict.data.eventAggregateAt)}</strong>
+                                <br/>
+                                预测于<strong>{formatDatetimeShort(pjskPredict.data.ts)}</strong>
+                            </TableCell>
+                        </TableRow>
                         <TableRow>
                             <TableCell style={{textAlign: "center"}}>活动排名</TableCell>
                             <TableCell style={{textAlign: "center"}} align="right">活动PT预测</TableCell>
