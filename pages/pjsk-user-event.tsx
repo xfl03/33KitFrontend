@@ -73,7 +73,7 @@ export default function Page() {
 
     useEffect(() => {
         if (userId === "") return;
-        axios.get(`/user/${userId}`).then(res => {
+        axios.get(`${process.env.NEXT_PUBLIC_USER_EVENT_BASE}/user-data/${userId}.json`).then(res => {
             localStorage.setItem("userId", userId);
             let data = res.data;
             setEvents(data);
@@ -139,7 +139,7 @@ export default function Page() {
                     })
                 })
             })
-            .then(_ => axios.get(`/user/${userId}/${eventId}`))
+            .then(_ => axios.get(`${process.env.NEXT_PUBLIC_USER_EVENT_BASE}/user-data/${userId}/${eventId}.json`))
             .then(res => {
                 setEventData(res.data);
                 const data: Array<{ t: number, r: number, s: number }> = res.data;
