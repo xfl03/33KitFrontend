@@ -5,8 +5,8 @@ import {
     AlertTitle,
     FormControl,
     Grid,
-    InputLabel, MenuItem,
-    Select, SelectChangeEvent
+    InputLabel, MenuItem, Paper,
+    Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 } from "@mui/material";
 import {useEffect, useState} from "react";
 import EChartsReact from "echarts-for-react";
@@ -17,6 +17,7 @@ export default function Page() {
     const [events, setEvents] = useState<Array<any>>();
     const [finalScores, setFinalScores] = useState<any>();
     const [option, setOption] = useState<any>();
+    const [teamScores, setTeamScores] = useState<Array<any>>()
     useEffect(() => {
         axios.get(`/cheerful`).then(res => {
             let data = res.data;
@@ -40,6 +41,7 @@ export default function Page() {
         }
         console.log(finalScores.teams);
         let series = [];
+        let teamScores0 = [];
         for (let key in finalScores.teams) {
             series.push({
                 name: finalScores.teams[key],
@@ -49,9 +51,14 @@ export default function Page() {
                 data: finalScores.memberCounts[key].map((it: any, i: number) => [finalScores.memberCounts.t[i], it]),
                 yAxisIndex: 0
             });
+            teamScores0.push({
+                name: finalScores.teams[key],
+                member: finalScores.memberCounts[key][finalScores.memberCounts[key].length - 1],
+                data: finalScores.teamPoints[key],
+            })
         }
-
-        console.log(series)
+        setTeamScores(teamScores0);
+        console.log(teamScores0)
 
         setOption({
             tooltip: {
@@ -95,13 +102,13 @@ export default function Page() {
         setEventInfo(events?.find(it => it.id === eventId));
     };
     return (
-        <AppBase subtitle="活动最终数据">
+        <AppBase subtitle="欢乐嘉年华活动数据">
             <Grid container spacing={2}>
                 {eventInfo &&
                     <Grid item xs={12}>
                         <Alert severity="info">
-                            <AlertTitle>关于活动最终数据</AlertTitle>
-                            为了优化性能，从11万数据中采样了<strong>{eventInfo.count}</strong>个数据点。
+                            <AlertTitle>关于欢乐嘉年华活动数据</AlertTitle>
+                            项目开始时间较晚，可能部分数据有缺失。
                         </Alert>
                     </Grid>}
                 <Grid item xs={12}>
@@ -123,6 +130,32 @@ export default function Page() {
                         </FormControl>
                     }
                 </Grid>
+                {teamScores &&
+                    <Grid item xs={12}>
+                        <TableContainer sx={{maxWidth: 700}} component={Paper}>
+                            <Table size="small" aria-label="a dense table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell style={{textAlign: "center"}}>队伍</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>第1次中间发表</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>第2次中间发表</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>最终结果</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>最终人数</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {teamScores.map((it: any) => (<TableRow key={it.name}>
+                                        <TableCell style={{textAlign: "center"}}>{it.name}</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>{it.data[0]}</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>{it.data[1]}</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>{it.data[2]}</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>{it.member}</TableCell>
+                                    </TableRow>))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Grid>
+                }
                 {option &&
                     <Grid item xs={12}>
                         <EChartsReact style={{height: '700px', maxHeight: '75%', width: '100%'}} option={option}/>
