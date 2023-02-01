@@ -101,6 +101,8 @@ export default function Page() {
         let eventId = parseInt(event.target.value as string);
         setEventInfo(events?.find(it => it.id === eventId));
     };
+
+    const safeGet = (arr: Array<any>, index: number) => arr === undefined || arr.length <= index ? "?" : arr[index];
     return (
         <AppBase subtitle="欢乐嘉年华活动数据">
             <Grid container spacing={2}>
@@ -146,10 +148,11 @@ export default function Page() {
                                 <TableBody>
                                     {teamScores.map((it: any) => (<TableRow key={it.name}>
                                         <TableCell style={{textAlign: "center"}}>{it.name}</TableCell>
-                                        <TableCell style={{textAlign: "center"}}>{it.data[0]}</TableCell>
-                                        <TableCell style={{textAlign: "center"}}>{it.data[1]}</TableCell>
-                                        <TableCell style={{textAlign: "center"}}>{it.data[2]}</TableCell>
-                                        <TableCell style={{textAlign: "center"}}>{it.member}</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>{safeGet(it.data, 0)}</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>{safeGet(it.data, 1)}</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>{safeGet(it.data, 2)}</TableCell>
+                                        <TableCell
+                                            style={{textAlign: "center"}}>{it.data !== undefined && it.data.length == 3 ? it.member : "?"}</TableCell>
                                     </TableRow>))}
                                 </TableBody>
                             </Table>
