@@ -5,7 +5,7 @@ import {formatDatetimeShort} from "../utils/date-format";
 
 type PjskPredictTableArg = {
     pjskPredict: any,
-    ranks: Array<number>
+    ranks?: Array<number>
 }
 export default function PjskPredictTable({pjskPredict, ranks}: PjskPredictTableArg) {
     // const pjskPredict = usePjskPredict();
@@ -14,7 +14,16 @@ export default function PjskPredictTable({pjskPredict, ranks}: PjskPredictTableA
         // if (pjskPredict === undefined) return;
         // const ranks = [100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000, 10000, 20000, 30000, 40000, 50000, 100000];
         let pre = [];
-        for (let rank of ranks) {
+        let finalRanks = ranks === undefined ? [] : ranks;
+        if (ranks === undefined) {
+            for (let key in pjskPredict.data) {
+                let ki = parseInt(key);
+                if(!isNaN(ki)){
+                    finalRanks.push(ki);
+                }
+            }
+        }
+        for (let rank of finalRanks) {
             pre.push({
                 rank: rank,
                 score: pjskPredict.data[rank],
@@ -29,7 +38,7 @@ export default function PjskPredictTable({pjskPredict, ranks}: PjskPredictTableA
                     <TableHead>
                         <TableRow>
                             <TableCell style={{textAlign: "center"}} colSpan={3}>
-                                <strong style={{fontSize:"1.5em"}}>{pjskPredict.data.eventName}</strong>
+                                <strong style={{fontSize: "1.5em"}}>{pjskPredict.data.eventName}</strong>
                                 <br/>
                                 {formatDatetimeShort(pjskPredict.data.eventStartAt)}～
                                 <strong>{formatDatetimeShort(pjskPredict.data.eventAggregateAt)}</strong>
