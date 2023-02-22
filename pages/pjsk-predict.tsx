@@ -13,7 +13,7 @@ export default function PjskDownload() {
     const pjskPredict = usePjskPredict();
     const [ranks, setRanks] = useState<Array<number>>();
     useEffect(() => {
-        setRanks([100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000, 10000, 20000, 30000, 40000, 50000, 100000]);
+        setRanks([50, 100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000, 10000, 20000, 30000, 40000, 50000, 100000]);
     }, [setRanks]);
     return (
         <AppBase subtitle="活动预测">
