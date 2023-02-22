@@ -113,11 +113,11 @@ export default function Page() {
     return (
         <AppBase subtitle="活动最终数据">
             <Grid container spacing={2}>
-                {eventInfo && eventHot &&
+                {eventInfo &&
                     <Grid item xs={12}>
                         <Alert severity="info">
                             <AlertTitle>关于活动最终数据</AlertTitle>
-                            为了优化性能，从11万数据中采样了<strong>{eventInfo.count}</strong>个数据点。
+                            为了优化性能，从{eventInfo.origin}数据中采样了<strong>{eventInfo.count}</strong>个数据点。
                             {/*估算的活动冲榜难度为<strong>{eventHot}%</strong>。*/}
                         </Alert>
                     </Grid>}
