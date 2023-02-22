@@ -14,7 +14,7 @@ export default function Home() {
     const pjskPredict = usePjskPredict();
     const [ranks, setRanks] = useState<Array<number>>();
     useEffect(() => {
-        setRanks([100, 500, 1000, 5000, 10000, 50000, 100000]);
+        setRanks([50, 100, 500, 1000, 5000, 10000, 50000, 100000]);
     }, [setRanks]);
     return (
         <AppBase subtitle="主页">
