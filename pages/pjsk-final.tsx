@@ -117,7 +117,11 @@ export default function Page() {
                     <Grid item xs={12}>
                         <Alert severity="info">
                             <AlertTitle>关于活动最终数据</AlertTitle>
-                            为了优化性能，从{eventInfo.origin}数据中采样了<strong>{eventInfo.count}</strong>个数据点。
+                            {eventInfo.origin === eventInfo.count &&
+                                <div>共<strong>{eventInfo.count}</strong>个数据点。</div>}
+                            {eventInfo.origin !== eventInfo.count &&
+                                <div>为了优化性能，从{eventInfo.origin}数据中采样了<strong>{eventInfo.count}</strong>个数据点。
+                                </div>}
                             {/*估算的活动冲榜难度为<strong>{eventHot}%</strong>。*/}
                         </Alert>
                     </Grid>}
