@@ -18,16 +18,18 @@ export default function PjskPredictTable({pjskPredict, ranks}: PjskPredictTableA
         if (ranks === undefined) {
             for (let key in pjskPredict.data) {
                 let ki = parseInt(key);
-                if(!isNaN(ki)){
+                if (!isNaN(ki)) {
                     finalRanks.push(ki);
                 }
             }
         }
         for (let rank of finalRanks) {
-            pre.push({
-                rank: rank,
-                score: pjskPredict.data[rank],
-            });
+            if (pjskPredict.data[rank]) {
+                pre.push({
+                    rank: rank,
+                    score: pjskPredict.data[rank],
+                });
+            }
         }
         setPredict(pre)
     }, [pjskPredict, ranks, setPredict])
