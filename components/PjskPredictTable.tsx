@@ -27,6 +27,7 @@ export default function PjskPredictTable({pjskPredict, ranks}: PjskPredictTableA
             if (pjskPredict.data[rank]) {
                 pre.push({
                     rank: rank,
+                    current:pjskPredict.rank[rank],
                     score: pjskPredict.data[rank],
                 });
             }
@@ -45,12 +46,17 @@ export default function PjskPredictTable({pjskPredict, ranks}: PjskPredictTableA
                                 {formatDatetimeShort(pjskPredict.event.startAt)}～
                                 <strong>{formatDatetimeShort(pjskPredict.event.aggregateAt)}</strong>
                                 <br/>
-                                预测于<strong>{formatDatetimeShort(pjskPredict.data.ts)}</strong>
+                                活动数据更新于<strong>{formatDatetimeShort(pjskPredict.rank.ts)}</strong>
+                                <br/>
+                                活动预测生成于<strong>{formatDatetimeShort(pjskPredict.data.ts)}</strong>
+                                <br/>
+                                <b>由于服务器限制，预测误差极大，请谨慎参考！</b>
                             </TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell style={{textAlign: "center"}}>活动排名</TableCell>
-                            <TableCell style={{textAlign: "center"}} align="right">活动PT预测</TableCell>
+                            <TableCell style={{textAlign: "center"}}>排名</TableCell>
+                            <TableCell style={{textAlign: "center"}} align="right">推测<b>当前</b>PT</TableCell>
+                            <TableCell style={{textAlign: "center"}} align="right">预测<b>最终</b>PT</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -62,6 +68,7 @@ export default function PjskPredictTable({pjskPredict, ranks}: PjskPredictTableA
                                 <TableCell style={{textAlign: "center"}} component="th" scope="row">
                                     {row.rank}
                                 </TableCell>
+                                <TableCell style={{textAlign: "center"}} align="right">{row.current}</TableCell>
                                 <TableCell style={{textAlign: "center"}} align="right">{row.score}</TableCell>
                             </TableRow>
                         ))}
