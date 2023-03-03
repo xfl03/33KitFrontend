@@ -40,10 +40,10 @@ export default function PjskPredictTable({pjskPredict, ranks}: PjskPredictTableA
                     <TableHead>
                         <TableRow>
                             <TableCell style={{textAlign: "center"}} colSpan={3}>
-                                <strong style={{fontSize: "1.5em"}}>{pjskPredict.data.eventName}</strong>
+                                <strong style={{fontSize: "1.5em"}}>{pjskPredict.event.name}</strong>
                                 <br/>
-                                {formatDatetimeShort(pjskPredict.data.eventStartAt)}～
-                                <strong>{formatDatetimeShort(pjskPredict.data.eventAggregateAt)}</strong>
+                                {formatDatetimeShort(pjskPredict.event.startAt)}～
+                                <strong>{formatDatetimeShort(pjskPredict.event.aggregateAt)}</strong>
                                 <br/>
                                 预测于<strong>{formatDatetimeShort(pjskPredict.data.ts)}</strong>
                             </TableCell>
