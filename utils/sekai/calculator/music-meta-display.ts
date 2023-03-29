@@ -13,14 +13,38 @@ export interface MusicMetaDisplay {
     skillRate: number
 }
 
-function toMusicMetaDisplay(musics: any[], musicDifficulties: any[], musicMeta: any, isMulti: boolean, id: number): MusicMetaDisplay {
+function getBaseScore(musicMeta: any, liveType: string): number {
+    switch (liveType) {
+        case "solo":
+        default:
+            return musicMeta.base_score
+        case "auto":
+            return musicMeta.base_score_auto
+        case "multi":
+            return musicMeta.base_score + musicMeta.fever_score
+    }
+}
+
+function getSkillScore(musicMeta: any, liveType: string): number[] {
+    switch (liveType) {
+        case "solo":
+        default:
+            return musicMeta.skill_score_solo
+        case "auto":
+            return musicMeta.skill_score_auto
+        case "multi":
+            return musicMeta.skill_score_multi
+    }
+}
+
+function toMusicMetaDisplay(musics: any[], musicDifficulties: any[], musicMeta: any, liveType: string, id: number): MusicMetaDisplay {
     const music = musics.find(it => it.id === musicMeta.music_id)
     const musicDifficulty = musicDifficulties.find(it =>
         it.musicId === musicMeta.music_id && it.musicDifficulty === musicMeta.difficulty)
-    const skillScore: number[] = isMulti ? musicMeta.skill_score_multi : musicMeta.skill_score_solo
+    const skillScore = getSkillScore(musicMeta, liveType)
     // 技能按100%效果计算、多人按180%计算
-    const skillSum = skillScore.reduce((v, it) => v + it, 0) * (isMulti ? 1.8 : 1)
-    const scoreSum = musicMeta.base_score + skillSum + (isMulti ? musicMeta.fever_score : 0)
+    const skillSum = skillScore.reduce((v, it) => v + it, 0) * (liveType === "multi" ? 1.8 : 1)
+    const scoreSum = skillSum + getBaseScore(musicMeta, liveType)
     return {
         id,
         title: music.title,
@@ -35,15 +59,15 @@ function toMusicMetaDisplay(musics: any[], musicDifficulties: any[], musicMeta: 
     }
 }
 
-function toMusicMetaDisplays(musics: any[], musicDifficulties: any[], musicMetas: any[], isMulti: boolean) {
+function toMusicMetaDisplays(musics: any[], musicDifficulties: any[], musicMetas: any[], liveType: string) {
     let id = 0
-    return musicMetas.map(it => toMusicMetaDisplay(musics, musicDifficulties, it, isMulti, ++id))
+    return musicMetas.map(it => toMusicMetaDisplay(musics, musicDifficulties, it, liveType, ++id))
 }
 
-export async function getMusicMetaDisplays(isMulti: boolean) {
+export async function getMusicMetaDisplays(liveType: string) {
     const dataProvider = new KitDataProvider("1145141919810")
     const musics = await dataProvider.getMasterData("musics")
     const musicDifficulties = await dataProvider.getMasterData("musicDifficulties")
     const musicMetas = await dataProvider.getMusicMeta()
-    return toMusicMetaDisplays(musics, musicDifficulties, musicMetas, isMulti)
+    return toMusicMetaDisplays(musics, musicDifficulties, musicMetas, liveType)
 }
