@@ -10,6 +10,7 @@ export interface MusicMetaDisplay {
     tapPerSecond: number
     eventRate: number
     scoreRate: number
+    skillRate: number
 }
 
 function toMusicMetaDisplay(musics: any[], musicDifficulties: any[], musicMeta: any, isMulti: boolean, id: number): MusicMetaDisplay {
@@ -30,6 +31,7 @@ function toMusicMetaDisplay(musics: any[], musicDifficulties: any[], musicMeta: 
         tapPerSecond: musicMeta.tap_count / musicMeta.music_time,
         eventRate: musicMeta.event_rate,
         scoreRate: scoreSum,
+        skillRate: skillSum / scoreSum,
     }
 }
 
