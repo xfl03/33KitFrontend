@@ -21,7 +21,7 @@ function getBaseScore(musicMeta: any, liveType: string): number {
         case "auto":
             return musicMeta.base_score_auto
         case "multi":
-            return musicMeta.base_score + musicMeta.fever_score
+            return musicMeta.base_score + musicMeta.fever_score + 5 * 0.015 / 4 // 算上Fever加成和活跃加分
     }
 }
 
