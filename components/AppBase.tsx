@@ -16,7 +16,18 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import {Analytics, Download, EmojiEvents, GitHub, Groups, Home, Insights, LiveTv, Person} from "@mui/icons-material";
+import {
+    Analytics,
+    Download,
+    EmojiEvents,
+    GitHub,
+    Groups,
+    Home,
+    Insights,
+    LiveTv,
+    MusicNote,
+    Person
+} from "@mui/icons-material";
 import {useRouter} from 'next/router'
 import Head from 'next/head'
 import ReactGA from "react-ga4";
@@ -115,7 +126,7 @@ const drawItems = [
     },
     {
         "category": "Project SEKAI",
-        "categoryShort": "PJSK",
+        "categoryShort": "SEKAI",
         "items": [
             {
                 "name": "游戏下载",
@@ -145,6 +156,12 @@ const drawItems = [
                 "name": "对战数据",
                 "icon": <EmojiEvents/>,
                 "path": "/pjsk-cheerful",
+                "display": true,
+            },
+            {
+                "name": "歌曲Meta",
+                "icon": <MusicNote/>,
+                "path": "/sekai/music-meta",
                 "display": true,
             },
             {

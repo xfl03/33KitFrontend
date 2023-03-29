@@ -18,3 +18,33 @@ a {
 .grecaptcha-badge {
   display: none;
 }
+
+.music-easy {
+  background: #86DA45;
+  border-radius: 25px;
+  color: white;
+}
+
+.music-normal {
+  background: #5FB8E6;
+  border-radius: 25px;
+  color: white;
+}
+
+.music-hard {
+  background: #F3AE3C;
+  border-radius: 25px;
+  color: white;
+}
+
+.music-expert {
+  background: #DC5268;
+  border-radius: 25px;
+  color: white;
+}
+
+.music-master {
+  background: #AC3EE6;
+  border-radius: 25px;
+  color: white;
+}
