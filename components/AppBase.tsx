@@ -217,7 +217,7 @@ export default function AppBase({subtitle, children}: AppBaseProps) {
         setDisplayItems(drawItems);
     }, [setDisplayItems])
 
-    const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+    const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!;
 
     const fullTitle = `${subtitle} - 33 Kit`
     console.log(fullTitle);
