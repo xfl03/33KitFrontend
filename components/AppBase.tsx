@@ -17,7 +17,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import {
-    Analytics,
+    Analytics, AutoAwesome,
     Download,
     EmojiEvents,
     GitHub,
@@ -162,6 +162,12 @@ const drawItems = [
                 "name": "歌曲Meta",
                 "icon": <MusicNote/>,
                 "path": "/sekai/music-meta",
+                "display": true,
+            },
+            {
+                "name": "最佳卡组",
+                "icon": <AutoAwesome/>,
+                "path": "/sekai/top-deck",
                 "display": true,
             },
             {

@@ -2,7 +2,8 @@ import {Card} from "sekai-calculator";
 import useCard from "../../utils/sekai/master/card-hook";
 
 type CardThumbnailProps = {
-    cardId: number
+    cardId: number,
+    size?: number
 }
 
 function getIsNormal(card: Card) {
@@ -32,12 +33,12 @@ function getRarity(card: Card) {
     }
 }
 
-export default function CardThumbnail({cardId}: CardThumbnailProps) {
+export default function CardThumbnail({cardId, size = 156}: CardThumbnailProps) {
     const card = useCard(cardId)
     if (card === undefined) return (<div>卡牌{cardId}</div>)
     const normal = getIsNormal(card)
     const rarity = getRarity(card)
-    return (<div style={{maxHeight: "156px", maxWidth: "156px"}}>
+    return (<div style={{height: `${size}px`, width: `${size}px`}}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 156">
             <image
                 href={`${process.env.NEXT_PUBLIC_ASSET_BASE}startapp/thumbnail/chara/${card.assetbundleName}_${normal ? "normal" : "after_training"}.png`}

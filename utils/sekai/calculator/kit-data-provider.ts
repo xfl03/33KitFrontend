@@ -2,7 +2,7 @@ import {DataProvider} from "sekai-calculator";
 import axios from "axios";
 
 export class KitDataProvider implements DataProvider {
-    constructor(private userId: string) {
+    constructor(private userId?: string) {
     }
 
     private static CACHE = new Map<string, any>();
@@ -23,6 +23,7 @@ export class KitDataProvider implements DataProvider {
     }
 
     async getUserData(key: string): Promise<any> {
+        if (this.userId === undefined) throw new Error("User not specialized.")
         const key0 = "userData"
         if (KitDataProvider.CACHE.has(key0)) return KitDataProvider.CACHE.get(key0)[key]
         const data = (await axios.get(`${process.env.NEXT_PUBLIC_USER_DATA_BASE}/${this.userId}/profile`)).data
