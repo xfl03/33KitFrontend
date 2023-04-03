@@ -2,13 +2,15 @@ import {useTopDeck} from "../../utils/sekai/calculator/top-deck-recommend";
 import AppBase from "../../components/AppBase";
 import {Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import DeckThumbnail from "../../components/sekai/deck-thumbnail";
+import useCards from "../../utils/sekai/master/card-hook";
 
 export default function Page() {
     const topDeck = useTopDeck()
+    const cards = useCards()
     return (<AppBase subtitle="最佳卡组">
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                {topDeck &&
+                {topDeck && cards &&
                     <TableContainer component={Paper} style={{maxWidth: "900px"}}>
                         <Table size="small">
                             <TableHead>
@@ -26,12 +28,15 @@ export default function Page() {
                                             textAlign: "center",
                                             fontSize: "1rem"
                                         }}><strong>{it.character}</strong></TableCell>
-                                        <TableCell
-                                            style={{textAlign: "center", fontSize: "1rem"}}>{it.score}</TableCell>
-                                        <TableCell style={{paddingTop: "5px", paddingBottom: "5px"}}><DeckThumbnail
-                                            cardIds={it.cards} size={80}/></TableCell>
-                                        <TableCell
-                                            style={{textAlign: "center", fontSize: "1rem"}}>{it.power}</TableCell>
+                                        <TableCell style={{textAlign: "center", fontSize: "1rem"}}>
+                                            {it.score}
+                                        </TableCell>
+                                        <TableCell style={{paddingTop: "5px", paddingBottom: "5px"}}>
+                                            <DeckThumbnail cards={cards} cardIds={it.cards} size={80}/>
+                                        </TableCell>
+                                        <TableCell style={{textAlign: "center", fontSize: "1rem"}}>
+                                            {it.power}
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
