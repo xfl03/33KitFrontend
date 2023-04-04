@@ -11,7 +11,7 @@ interface TopDeck {
         cards: number[]
     }>,
     event: Array<{
-        score: number,
+        point: number,
         power: number,
         eventBonus: number,
         cards: number[]
@@ -26,7 +26,7 @@ interface TopDeckResponse {
         cards: number[]
     }>,
     event: Array<{
-        score: number,
+        point: number,
         power: number,
         eventBonus: number,
         cards: number[]
