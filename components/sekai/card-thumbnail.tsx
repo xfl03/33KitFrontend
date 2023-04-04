@@ -1,5 +1,6 @@
 import {Card} from "sekai-calculator";
 import {getById} from "../../utils/sekai/master/common";
+import {shortSkills} from "../../utils/sekai/master/skill";
 
 type CardThumbnailProps = {
     cards: Card[],
@@ -41,6 +42,7 @@ export default function CardThumbnail({cards, cardId, size = 156}: CardThumbnail
     const rarity = getRarity(card)
     return (<div style={{height: `${size}px`, width: `${size}px`}}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 156">
+            <title>{shortSkills[card.skillId]}</title>
             <image
                 href={`${process.env.NEXT_PUBLIC_ASSET_BASE}startapp/thumbnail/chara/${card.assetbundleName}_${normal ? "normal" : "after_training"}.png`}
                 x="8"
