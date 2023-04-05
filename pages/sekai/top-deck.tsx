@@ -2,7 +2,6 @@ import {useTopDeck} from "../../utils/sekai/calculator/top-deck-recommend";
 import AppBase from "../../components/AppBase";
 import {Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import DeckThumbnail from "../../components/sekai/deck-thumbnail";
-import useCards from "../../utils/sekai/master/card-hook";
 import React from "react";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -11,7 +10,6 @@ import {TabPanel} from "@mui/lab";
 
 export default function Page() {
     const topDeck = useTopDeck()
-    const cards = useCards()
     const [value, setValue] = React.useState('1');
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -29,7 +27,7 @@ export default function Page() {
                             </TabList>
                         </Box>
                         <TabPanel value="1">
-                            {topDeck && cards &&
+                            {topDeck &&
                                 <TableContainer component={Paper} style={{maxWidth: "900px"}}>
                                     <Table size="small">
                                         <TableHead>
@@ -50,7 +48,7 @@ export default function Page() {
                                                         {it.score}
                                                     </TableCell>
                                                     <TableCell style={{paddingTop: "5px", paddingBottom: "5px"}}>
-                                                        <DeckThumbnail cards={cards} cardIds={it.cards} size={80}/>
+                                                        <DeckThumbnail cardIds={it.cards} size={80}/>
                                                     </TableCell>
                                                     <TableCell style={{textAlign: "center", fontSize: "1rem"}}>
                                                         {it.power}
@@ -63,7 +61,7 @@ export default function Page() {
                             }
                         </TabPanel>
                         <TabPanel value="2">
-                            {topDeck && cards &&
+                            {topDeck &&
                                 <TableContainer component={Paper} style={{maxWidth: "900px"}}>
                                     <Table size="small">
                                         <TableHead>
@@ -85,7 +83,7 @@ export default function Page() {
                                                         {it.point * 35}
                                                     </TableCell>
                                                     <TableCell style={{paddingTop: "5px", paddingBottom: "5px"}}>
-                                                        <DeckThumbnail cards={cards} cardIds={it.cards} size={80}/>
+                                                        <DeckThumbnail cardIds={it.cards} size={80}/>
                                                     </TableCell>
                                                     <TableCell style={{textAlign: "center", fontSize: "1rem"}}>
                                                         {it.eventBonus}

@@ -2,13 +2,13 @@ import {useEffect, useState} from "react";
 import {Card} from "sekai-calculator";
 import {KitDataProvider} from "../calculator/kit-data-provider";
 
-const dataProvider = new KitDataProvider("1145141919810");
+const dataProvider = KitDataProvider.DEFAULT_INSTANCE
 
 export default function useCards() {
-    const [cards, setcards] = useState<Card[]>()
+    const [cards, setCards] = useState<Card[]>()
     useEffect(() => {
         dataProvider.getMasterData("cards").then((data: Card[]) => {
-            setcards(data)
+            setCards(data)
         })
     }, [])
     return cards

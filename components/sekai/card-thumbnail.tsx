@@ -1,9 +1,9 @@
 import {Card} from "sekai-calculator";
 import {getById} from "../../utils/sekai/master/common";
 import {shortSkills} from "../../utils/sekai/master/skill";
+import useCards from "../../utils/sekai/master/card-hook";
 
 type CardThumbnailProps = {
-    cards: Card[],
     cardId: number,
     size?: number
 }
@@ -35,7 +35,9 @@ function getRarity(card: Card) {
     }
 }
 
-export default function CardThumbnail({cards, cardId, size = 156}: CardThumbnailProps) {
+export default function CardThumbnail({cardId, size = 156}: CardThumbnailProps) {
+    const cards = useCards()
+    if(cards===undefined) return (<div>卡牌{cardId}</div>)
     const card = getById(cards, cardId)
     if (card === undefined) return (<div>卡牌{cardId}</div>)
     const normal = getIsNormal(card)

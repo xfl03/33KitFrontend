@@ -2457,10 +2457,10 @@ scheduler@^0.23.0:
   dependencies:
     loose-envify "^1.1.0"
 
-sekai-calculator@^0.4.4:
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/sekai-calculator/-/sekai-calculator-0.4.4.tgz#40af73f6838de284e090be652c1f34b10c2ea366"
-  integrity sha512-TWqs53BE7p37L8FsfG7X5I5zDJGqapYsYXkdAdn4/NyIAKoCRbMHs+vBd+euNBr808YlHnZVwZkLpAQG1EgZSQ==
+sekai-calculator@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/sekai-calculator/-/sekai-calculator-0.5.1.tgz#b5119c21da4e92e3b28666cad18a13ead86a8c3b"
+  integrity sha512-8GiicgoJtTpnA0HFgWkqbZJLrsrEpOwTlEAYgo/LK6wDBFfH2HmjefDWJEIOPSBvU5o2QDaXdTSqZhFyFhiIoA==
 
 semver@^6.3.0:
   version "6.3.0"

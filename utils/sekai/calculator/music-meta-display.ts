@@ -65,7 +65,7 @@ function toMusicMetaDisplays(musics: any[], musicDifficulties: any[], musicMetas
 }
 
 export async function getMusicMetaDisplays(liveType: string) {
-    const dataProvider = new KitDataProvider("1145141919810")
+    const dataProvider = KitDataProvider.DEFAULT_INSTANCE
     const musics = await dataProvider.getMasterData("musics")
     const musicDifficulties = await dataProvider.getMasterData("musicDifficulties")
     const musicMetas = await dataProvider.getMusicMeta()
