@@ -1,16 +1,8 @@
-import {useEffect, useState} from "react";
 import {GameCharacter} from "sekai-calculator";
-import {KitDataProvider} from "../calculator/kit-data-provider";
+import useMasterData from "./common";
 
-const dataProvider = KitDataProvider.DEFAULT_INSTANCE
-export default function useCharacters() {
-    const [characters, setCharacters] = useState<GameCharacter[]>()
-    useEffect(() => {
-        dataProvider.getMasterData("gameCharacters").then((data: GameCharacter[]) => {
-            setCharacters(data)
-        })
-    }, [])
-    return characters
+export default function useGameCharacters() {
+    return useMasterData<GameCharacter>("gameCharacters")
 }
 
 export function getCharacterName(character: GameCharacter) {

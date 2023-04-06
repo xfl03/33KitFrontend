@@ -25,6 +25,6 @@ export class KitDataProvider implements DataProvider {
 
     async getUserDataAll(): Promise<any> {
         if (this.userId === undefined) throw new Error("User not specialized.")
-        return (await axios.get(`${process.env.NEXT_PUBLIC_USER_DATA_BASE}/${this.userId}/profile`)).data;
+        return (await axios.get(`${process.env.NEXT_PUBLIC_USER_DATA_BASE}user/${this.userId}/profile`)).data;
     }
 }

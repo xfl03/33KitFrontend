@@ -1,4 +1,5 @@
 import {KitDataProvider} from "./kit-data-provider";
+import {Music, MusicDifficulty, MusicMeta} from "sekai-calculator";
 
 export interface MusicMetaDisplay {
     id: number// DataGrid需要id
@@ -37,10 +38,10 @@ function getSkillScore(musicMeta: any, liveType: string): number[] {
     }
 }
 
-function toMusicMetaDisplay(musics: any[], musicDifficulties: any[], musicMeta: any, liveType: string, id: number): MusicMetaDisplay {
-    const music = musics.find(it => it.id === musicMeta.music_id)
+function toMusicMetaDisplay(musics: Music[], musicDifficulties: MusicDifficulty[], musicMeta: MusicMeta, liveType: string, id: number): MusicMetaDisplay {
+    const music = musics.find(it => it.id === musicMeta.music_id)!
     const musicDifficulty = musicDifficulties.find(it =>
-        it.musicId === musicMeta.music_id && it.musicDifficulty === musicMeta.difficulty)
+        it.musicId === musicMeta.music_id && it.musicDifficulty === musicMeta.difficulty)!
     const skillScore = getSkillScore(musicMeta, liveType)
     // 技能按100%效果计算、多人按180%计算
     const skillSum = skillScore.reduce((v, it) => v + it, 0) * (liveType === "multi" ? 1.8 : 1)
@@ -59,15 +60,15 @@ function toMusicMetaDisplay(musics: any[], musicDifficulties: any[], musicMeta: 
     }
 }
 
-function toMusicMetaDisplays(musics: any[], musicDifficulties: any[], musicMetas: any[], liveType: string) {
+function toMusicMetaDisplays(musics: Music[], musicDifficulties: MusicDifficulty[], musicMetas: MusicMeta[], liveType: string) {
     let id = 0
     return musicMetas.map(it => toMusicMetaDisplay(musics, musicDifficulties, it, liveType, ++id))
 }
 
 export async function getMusicMetaDisplays(liveType: string) {
     const dataProvider = KitDataProvider.DEFAULT_INSTANCE
-    const musics = await dataProvider.getMasterData("musics")
-    const musicDifficulties = await dataProvider.getMasterData("musicDifficulties")
-    const musicMetas = await dataProvider.getMusicMeta()
+    const musics = await dataProvider.getMasterData("musics") as Music[]
+    const musicDifficulties = await dataProvider.getMasterData("musicDifficulties") as MusicDifficulty[]
+    const musicMetas = await dataProvider.getMusicMeta() as MusicMeta[]
     return toMusicMetaDisplays(musics, musicDifficulties, musicMetas, liveType)
 }

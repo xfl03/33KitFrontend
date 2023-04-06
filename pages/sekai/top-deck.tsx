@@ -1,15 +1,14 @@
 import {useTopDeck} from "../../utils/sekai/calculator/top-deck-recommend";
 import AppBase from "../../components/AppBase";
-import {Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
-import DeckThumbnail from "../../components/sekai/deck-thumbnail";
 import React from "react";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import Tab from "@mui/material/Tab";
-import {TabPanel} from "@mui/lab";
+import {TabContext, TabList, TabPanel} from "@mui/lab";
+import {Box, Grid, Tab} from "@mui/material";
+import useGameCharacters, {getCharacterName} from "../../utils/sekai/master/character-hook";
+import DeckRecommendTable from "../../components/sekai/deck-recommend-table";
 
 export default function Page() {
     const topDeck = useTopDeck()
+    const characters = useGameCharacters()
     const [value, setValue] = React.useState('1');
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -27,75 +26,19 @@ export default function Page() {
                             </TabList>
                         </Box>
                         <TabPanel value="1">
-                            {topDeck &&
-                                <TableContainer component={Paper} style={{maxWidth: "900px"}}>
-                                    <Table size="small">
-                                        <TableHead>
-                                            <TableRow style={{textAlign: "center"}}>
-                                                <TableCell style={{textAlign: "center"}}>角色</TableCell>
-                                                <TableCell style={{textAlign: "center"}}>最高分数</TableCell>
-                                                <TableCell style={{textAlign: "center"}}>对应卡组</TableCell>
-                                                <TableCell style={{textAlign: "center"}}>对应综合力</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {topDeck.challenge.map(it => (
-                                                <TableRow key={it.character}>
-                                                    <TableCell style={{textAlign: "center", fontSize: "1rem"}}>
-                                                        <strong>{it.character}</strong>
-                                                    </TableCell>
-                                                    <TableCell style={{textAlign: "center", fontSize: "1rem"}}>
-                                                        {it.score}
-                                                    </TableCell>
-                                                    <TableCell style={{paddingTop: "5px", paddingBottom: "5px"}}>
-                                                        <DeckThumbnail cardIds={it.cards} size={80}/>
-                                                    </TableCell>
-                                                    <TableCell style={{textAlign: "center", fontSize: "1rem"}}>
-                                                        {it.power}
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                            {topDeck && characters &&
+                                <DeckRecommendTable firstTitle="角色"
+                                                    first={(_, i) => getCharacterName(characters.find(it => it.id === i + 1)!)}
+                                                    scoreTitle="最高分数" score={(it) => it.score}
+                                                    recommend={topDeck.challenge}/>
                             }
                         </TabPanel>
                         <TabPanel value="2">
                             {topDeck &&
-                                <TableContainer component={Paper} style={{maxWidth: "900px"}}>
-                                    <Table size="small">
-                                        <TableHead>
-                                            <TableRow style={{textAlign: "center"}}>
-                                                <TableCell style={{textAlign: "center"}}>排名</TableCell>
-                                                <TableCell style={{textAlign: "center"}}>10火孜然PT</TableCell>
-                                                <TableCell style={{textAlign: "center"}}>对应卡组</TableCell>
-                                                <TableCell style={{textAlign: "center"}}>对应加成</TableCell>
-                                                <TableCell style={{textAlign: "center"}}>对应综合力</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {topDeck.event.map((it, i) => (
-                                                <TableRow key={i}>
-                                                    <TableCell style={{textAlign: "center", fontSize: "1rem"}}>
-                                                        <strong>{i + 1}</strong>
-                                                    </TableCell>
-                                                    <TableCell style={{textAlign: "center", fontSize: "1rem"}}>
-                                                        {it.point * 35}
-                                                    </TableCell>
-                                                    <TableCell style={{paddingTop: "5px", paddingBottom: "5px"}}>
-                                                        <DeckThumbnail cardIds={it.cards} size={80}/>
-                                                    </TableCell>
-                                                    <TableCell style={{textAlign: "center", fontSize: "1rem"}}>
-                                                        {it.eventBonus}
-                                                    </TableCell>
-                                                    <TableCell style={{textAlign: "center", fontSize: "1rem"}}>
-                                                        {it.power}
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                <DeckRecommendTable firstTitle="排名"
+                                                    first={(_, i) => i + 1}
+                                                    scoreTitle="10火孜然PT" score={(it) => it.score * 35}
+                                                    recommend={topDeck.challenge}/>
                             }
                         </TabPanel>
                     </TabContext>

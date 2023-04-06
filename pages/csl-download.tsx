@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {MouseEvent, useEffect, useState} from "react";
 import AppBase from "../components/AppBase";
 import {
     Alert,
@@ -9,26 +9,22 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    SelectChangeEvent
+    SelectChangeEvent, ToggleButton, ToggleButtonGroup
 } from "@mui/material";
 import * as React from "react";
 import axios from "axios";
 import {formatDateShort} from "../utils/date-format";
 import {downloadUrl} from "../utils/download-runtime";
 import {CloudDownload} from "@mui/icons-material";
-import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
 
 export default function CslDownload() {
     const [editions, setEditions] = useState<Array<{ name: string, url: string, detail: any }>>();
     const [downloadDetail, setDownloadDetail] = useState<any>();
-    const [mcVersion, setMcVersion] = useState<string>();
+    const [mcVersion, setMcVersion] = useState<string>('');
     const [downloadItems, setDownloadItems] = useState<Array<any>>();
     const [value, setValue] = React.useState('0');
 
-    const handlePanelChange = (event: React.SyntheticEvent, newValue: string) => {
+    const handlePanelChange = (event: MouseEvent<HTMLElement>, newValue: any) => {
         setDownloadDetail(editions?.[parseInt(newValue)].detail)
         setValue(newValue);
     };
@@ -42,21 +38,15 @@ export default function CslDownload() {
             const res = await axios.get(edition.url);
             edition.detail = res.data;
         }
-        setEditions(editions0);
-        setDownloadDetail(editions0[0].detail)
+        return editions0
     }
 
     useEffect(() => {
-        init()
-    }, [setEditions]);
-
-    // useEffect(() => {
-    //     if (downloadDetail !== undefined) return;
-    //     axios.get("https://csl.littleservice.cn/detail.json")
-    //         .then(res => {
-    //             setDownloadDetail(res.data);
-    //         })
-    // }, [downloadDetail, setDownloadDetail])
+        init().then(editions0=>{
+            setEditions(editions0);
+            setDownloadDetail(editions0[0].detail)
+        })
+    }, []);
 
     const handleSelectChange = (event: SelectChangeEvent) => {
         setMcVersion(event.target.value as string);
@@ -88,18 +78,20 @@ export default function CslDownload() {
                         </div>))}
                     </Alert>
                 </Grid>
+                <Grid item xs={12} style={{marginTop: "15px"}}>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={value}
+                        exclusive
+                        onChange={handlePanelChange}
+                        aria-label="Platform"
+                    >
+                        {editions && editions.map((it, i) => (
+                            <ToggleButton key={it.name} value={i.toString()}>{it.name}</ToggleButton>
+                        ))}
+                    </ToggleButtonGroup>
+                </Grid>
                 <Grid item xs={12}>
-                    <Box sx={{ width: '100%', typography: 'body1' }}>
-                        <TabContext value={value}>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                <TabList onChange={handlePanelChange} aria-label="editions">
-                                    {editions && editions.map((it,i) =>(
-                                        <Tab key={it.name} label={it.name} value={i.toString()} />
-                                    ))}
-                                </TabList>
-                            </Box>
-                        </TabContext>
-                    </Box>
                     <FormControl style={{marginTop: "10px", marginBottom: "10px"}}>
                         <InputLabel id="event-select-label">Minecraft版本</InputLabel>
                         <Select
