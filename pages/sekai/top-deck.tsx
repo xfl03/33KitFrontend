@@ -38,7 +38,7 @@ export default function Page() {
                                 <DeckRecommendTable firstTitle="排名"
                                                     first={(_, i) => i + 1}
                                                     scoreTitle="10火孜然PT" score={(it) => it.score * 35}
-                                                    recommend={topDeck.challenge}/>
+                                                    recommend={topDeck.event}/>
                             }
                         </TabPanel>
                     </TabContext>
