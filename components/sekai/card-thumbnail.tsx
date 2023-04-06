@@ -1,10 +1,11 @@
-import {Card} from "sekai-calculator";
+import {Card, DeckCardDetail} from "sekai-calculator";
 import {getById} from "../../utils/sekai/master/common";
 import {shortSkills} from "../../utils/sekai/master/skill";
 import useCards from "../../utils/sekai/master/card-hook";
 
 type CardThumbnailProps = {
     cardId: number,
+    deckCard?: DeckCardDetail,
     size?: number
 }
 
@@ -35,16 +36,23 @@ function getRarity(card: Card) {
     }
 }
 
-export default function CardThumbnail({cardId, size = 156}: CardThumbnailProps) {
+export default function CardThumbnail({cardId, deckCard, size = 156}: CardThumbnailProps) {
     const cards = useCards()
-    if(cards===undefined) return (<div>卡牌{cardId}</div>)
+    if (cards === undefined) return (<div>卡牌{cardId}</div>)
     const card = getById(cards, cardId)
     if (card === undefined) return (<div>卡牌{cardId}</div>)
     const normal = getIsNormal(card)
     const rarity = getRarity(card)
     return (<div style={{height: `${size}px`, width: `${size}px`}}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 156">
-            <title>{shortSkills[card.skillId]}</title>
+            <title>
+                {`ID${cardId}`}
+                <br/>
+                {deckCard ?
+                    `综合${deckCard.power} 加分${deckCard.scoreUp}${deckCard.eventBonus ? ` 活动${deckCard.eventBonus}` : ""}` :
+                    shortSkills[card.skillId]
+                }
+            </title>
             <image
                 href={`${process.env.NEXT_PUBLIC_ASSET_BASE}startapp/thumbnail/chara/${card.assetbundleName}_${normal ? "normal" : "after_training"}.png`}
                 x="8"

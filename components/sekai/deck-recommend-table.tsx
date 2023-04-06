@@ -36,7 +36,8 @@ export default function DeckRecommendTable({firstTitle, first, scoreTitle, score
                             {score(it, i)}
                         </TableCell>
                         <TableCell style={{paddingTop: "5px", paddingBottom: "5px"}}>
-                            <DeckThumbnail cardIds={it.deckCards.map(it => it.cardId)} size={80}/>
+                            <DeckThumbnail cardIds={it.deckCards.map(it => it.cardId)}
+                                           deckCards={it.deckCards} size={80}/>
                         </TableCell>
                         {it.eventBonus !== undefined &&
                             <TableCell style={{textAlign: "center", fontSize: "1rem"}}>

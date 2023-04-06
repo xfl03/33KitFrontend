@@ -11,6 +11,8 @@ export class KitDataProvider implements DataProvider {
 
     public static DEFAULT_INSTANCE = KitDataProvider.getCachedInstance()
 
+    private static profileCache = new Map<string, any>()
+
     async getMasterData(key: string): Promise<any> {
         return (await axios.get(`${process.env.NEXT_PUBLIC_MASTER_DATA_BASE}/${key}.json`)).data
     }
@@ -25,6 +27,9 @@ export class KitDataProvider implements DataProvider {
 
     async getUserDataAll(): Promise<any> {
         if (this.userId === undefined) throw new Error("User not specialized.")
-        return (await axios.get(`${process.env.NEXT_PUBLIC_USER_DATA_BASE}user/${this.userId}/profile`)).data;
+        if (KitDataProvider.profileCache.has(this.userId)) return KitDataProvider.profileCache.get(this.userId)
+        const data = (await axios.get(`${process.env.NEXT_PUBLIC_USER_DATA_BASE}user/${this.userId}/profile`)).data;
+        KitDataProvider.profileCache.set(this.userId, data)
+        return data
     }
 }

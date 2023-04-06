@@ -26,7 +26,7 @@ import {
     Insights,
     LiveTv,
     MusicNote,
-    Person
+    Person, PersonAddAlt1
 } from "@mui/icons-material";
 import {useRouter} from 'next/router'
 import Head from 'next/head'
@@ -171,6 +171,12 @@ const drawItems = [
                 "display": true,
             },
             {
+                "name": "自动组队",
+                "icon": <PersonAddAlt1/>,
+                "path": "/sekai/deck-recommend",
+                "display": true,
+            },
+            {
                 "name": "个人活动数据",
                 "icon": <Person/>,
                 "path": "/pjsk-user-event",
@@ -213,15 +219,15 @@ export default function AppBase({subtitle, children}: AppBaseProps) {
     }, [])
 
     useEffect(() => {
-        let category = drawItems.find((it) => it.category === "Project SEKAI");
-        if (category && localStorage.getItem("userId") !== null) {
-            let userData = category.items.find((it) => it.path === "/pjsk-user-event");
-            if (userData) {
-                userData.display = true;
-            }
-        }
+        // let category = drawItems.find((it) => it.category === "Project SEKAI");
+        // if (category && localStorage.getItem("userId") !== null) {
+        //     let userData = category.items.find((it) => it.path === "/pjsk-user-event");
+        //     if (userData) {
+        //         userData.display = true;
+        //     }
+        // }
         setDisplayItems(drawItems);
-    }, [setDisplayItems])
+    }, [])
 
     const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!;
 
