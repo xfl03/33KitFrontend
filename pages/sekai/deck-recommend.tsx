@@ -115,7 +115,14 @@ export default function Page() {
             setCalculating(false)
         }).catch(e => {
             console.warn(e)
-            setError(e.toString())
+            let errorStr = e.toString()
+            if (errorStr.includes("404")) {
+                setError("玩家数据未上传到指定地点")
+            }else if (errorStr.includes("403")) {
+                setError("玩家数据上传时未选择「公开API读取」")
+            }else {
+                setError(errorStr)
+            }
             setRecommend([])
             setCalculating(false)
         })
@@ -221,14 +228,14 @@ export default function Page() {
                 </FormGroup>
                 <Button variant="outlined" onClick={() => handleButton()} disabled={calculating}
                         style={{width: "457px", marginBottom: "10px", height: "56px"}}>
-                    {calculating ? "计算中..." : "自动组卡！"}
+                    {calculating ? "计算中...可能要等30秒" : "自动组卡！"}
                 </Button>
                 {error !== "" &&
                     <Alert severity="error">
                         <AlertTitle>无法推荐卡组</AlertTitle>
                         如果你确信是33 Kit的问题，可以将本页面截图和拥有的卡牌发给33。
                         <br/>
-                        {error}
+                        错误信息：<strong>{error}</strong>
                     </Alert>
                 }
             </Grid>
