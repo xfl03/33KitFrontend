@@ -39,15 +39,14 @@ export default function Page() {
     const [mode, setMode] = useState<string>("1")
     const gameCharacters = useGameCharacters()
     const [gameCharacter, setGameCharacter] = useState<GameCharacter | null>(null)
-    const [member, setMember] = useState<number>(5)
     const events = useEvents()
     const [event0, setEvent0] = useState<Event | null>(null)
     const musics = useMusics()
     const [music, setMusic] = useState<Music | null>(null)
     const [difficulty, setDifficulty] = useState<string | null>("master")
     const [cardConfig, setCardConfig] = useState<CardConfig>({
-        rankMax: false,
-        episodeRead: false,
+        rankMax: true,
+        episodeRead: true,
         skillMax: false,
         masterMax: false
     })
@@ -93,7 +92,7 @@ export default function Page() {
             return await new ChallengeLiveDeckRecommend(dataProvider).recommendChallengeLiveDeck(gameCharacter.id, {
                 musicMeta,
                 limit: 10,
-                member,
+                member: 5,
                 cardConfig
             })
         }
@@ -118,9 +117,9 @@ export default function Page() {
             let errorStr = e.toString()
             if (errorStr.includes("404")) {
                 setError("玩家数据未上传到指定地点")
-            }else if (errorStr.includes("403")) {
+            } else if (errorStr.includes("403")) {
                 setError("玩家数据上传时未选择「公开API读取」")
-            }else {
+            } else {
                 setError(errorStr)
             }
             setRecommend([])
