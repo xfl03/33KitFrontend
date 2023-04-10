@@ -66,7 +66,7 @@ export default function Page() {
 
     useEffect(() => {
         if (musics === undefined) return
-        setMusic(musics.find(it => it.id === 62)!)
+        setMusic(musics.find(it => it.id === 74)!)
     }, [musics])
 
     useEffect(() => {
