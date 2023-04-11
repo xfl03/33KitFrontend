@@ -36,20 +36,48 @@ import useEvents from "../../utils/sekai/master/event-hook";
 const difficulties = ["easy", "normal", "hard", "expert", "master"]
 export default function Page() {
     const [userId, setUserId] = useState<string>("")
-    const [mode, setMode] = useState<string>("1")
+    const [mode, setMode] = useState<string>("2")
     const gameCharacters = useGameCharacters()
     const [gameCharacter, setGameCharacter] = useState<GameCharacter | null>(null)
     const events = useEvents()
     const [event0, setEvent0] = useState<Event | null>(null)
+    const [liveType, setLiveType] = useState<LiveType>(LiveType.MULTI)
     const musics = useMusics()
     const [music, setMusic] = useState<Music | null>(null)
     const [difficulty, setDifficulty] = useState<string | null>("master")
-    const [cardConfig, setCardConfig] = useState<CardConfig>({
-        rankMax: true,
-        episodeRead: true,
-        skillMax: false,
-        masterMax: false
-    })
+    const [cardConfig, setCardConfig] =
+        useState<Record<string, CardConfig>>({
+            rarity_1: {
+                rankMax: true,
+                masterMax: true,
+                episodeRead: true,
+                skillMax: true
+            },
+            rarity_2: {
+                rankMax: true,
+                masterMax: true,
+                episodeRead: true,
+                skillMax: true
+            },
+            rarity_3: {
+                rankMax: true,
+                masterMax: true,
+                episodeRead: true,
+                skillMax: true
+            },
+            rarity_birthday: {
+                rankMax: true,
+                masterMax: false,
+                episodeRead: true,
+                skillMax: false
+            },
+            rarity_4: {
+                rankMax: true,
+                masterMax: false,
+                episodeRead: true,
+                skillMax: false
+            }
+        })
     const [recommend, setRecommend] = useState<RecommendDeck[]>([])
     const [calculating, setCalculating] = useState<boolean>(false)
     const [error, setError] = useState<string>("")
@@ -71,12 +99,14 @@ export default function Page() {
 
     useEffect(() => {
         if (events === undefined) return
-        setEvent0(events[events.length - 1])
+        const event = events[events.length - 1]
+        setEvent0(event)
     }, [events])
 
-    function handleCardConfig(key: "rankMax" | "episodeRead" | "skillMax" | "masterMax") {
+    function handleCardConfig(rarity: string, key: "rankMax" | "episodeRead" | "skillMax" | "masterMax") {
         return (event: React.ChangeEvent<HTMLInputElement>) => {
-            cardConfig[key] = event.target.checked
+            cardConfig[rarity][key] = event.target.checked
+            console.log(cardConfig)
             setCardConfig(cardConfig);
         };
     }
@@ -98,7 +128,9 @@ export default function Page() {
         }
 
         if (!event0) throw new Error("请选择活动")
-        return await new EventDeckRecommend(dataProvider).recommendEventDeck(event0.id, LiveType.CHEERFUL, {
+        const newLiveType =
+            (event0.eventType !== "marathon" && liveType === LiveType.MULTI) ? LiveType.CHEERFUL : liveType
+        return await new EventDeckRecommend(dataProvider).recommendEventDeck(event0.id, newLiveType, {
             musicMeta,
             limit: 10,
             cardConfig
@@ -156,8 +188,8 @@ export default function Page() {
                         }}
                         aria-label="Platform"
                     >
-                        <ToggleButton value="1">挑战</ToggleButton>
                         <ToggleButton value="2">活动</ToggleButton>
+                        <ToggleButton value="1">挑战</ToggleButton>
                     </ToggleButtonGroup>
                     {gameCharacters && mode === "1" &&
                         <Autocomplete
@@ -185,6 +217,22 @@ export default function Page() {
                             renderInput={(params) => <TextField {...params} label="活动"/>}
                         />}
                 </Stack>
+                {mode === "2" &&
+                    <ToggleButtonGroup
+                        style={{margin:"15px 0 5px 100px"}}
+                        color="primary"
+                        value={liveType}
+                        exclusive
+                        onChange={(event: MouseEvent<HTMLElement>, value: LiveType) => {
+                            setLiveType(value);
+                        }}
+                        aria-label="Platform"
+                    >
+                        <ToggleButton value={LiveType.MULTI}>多人Live</ToggleButton>
+                        <ToggleButton value={LiveType.SOLO}>单人Live</ToggleButton>
+                        <ToggleButton value={LiveType.AUTO}>自动Live</ToggleButton>
+                    </ToggleButtonGroup>
+                }
                 <Stack direction="row" spacing={1} style={{marginTop: "10px"}}>
                     {musics &&
                         <Autocomplete
@@ -208,22 +256,45 @@ export default function Page() {
                         sx={{width: 150}}
                         renderInput={(params) => <TextField {...params} label="难度"/>}/>
                 </Stack>
+                <div style={{width: "457px", textAlign: "center", marginTop: "15px", fontSize: "1.3rem"}}>
+                    <strong>自动按以下条件计算</strong></div>
                 <FormGroup>
-                    <Stack direction="row" spacing={3} style={{margin: "15px"}}>
-                        <FormControlLabel
-                            control={<Checkbox value={cardConfig.rankMax} onChange={handleCardConfig("rankMax")}/>}
-                            label="满级"/>
-                        <FormControlLabel
-                            control={<Checkbox value={cardConfig.episodeRead}
-                                               onChange={handleCardConfig("episodeRead")}/>}
-                            label="前后篇"/>
-                        <FormControlLabel
-                            control={<Checkbox value={cardConfig.masterMax} onChange={handleCardConfig("masterMax")}/>}
-                            label="满突破"/>
-                        <FormControlLabel
-                            control={<Checkbox value={cardConfig.skillMax} onChange={handleCardConfig("skillMax")}/>}
-                            label="满技能"/>
-                    </Stack>
+                    {cardConfig && [{
+                        type: "rarity_4",
+                        name: "四星"
+                    }, {
+                        type: "rarity_birthday",
+                        name: "生日"
+                    }, {
+                        type: "rarity_3",
+                        name: "三星"
+                    }, {
+                        type: "rarity_2",
+                        name: "二星"
+                    }, {
+                        type: "rarity_1",
+                        name: "一星"
+                    }].map(rarity =>
+                        <Stack key={rarity.type} direction="row" spacing={2} style={{marginLeft: "6px"}}>
+                            <p><strong>{rarity.name}</strong></p>
+                            <FormControlLabel
+                                control={<Checkbox checked={true}
+                                                   onChange={handleCardConfig(rarity.type, "rankMax")}/>}
+                                label="满级"/>
+                            <FormControlLabel
+                                control={<Checkbox checked={cardConfig[rarity.type].episodeRead}
+                                                   onChange={handleCardConfig(rarity.type, "episodeRead")}/>}
+                                label="前后篇"/>
+                            <FormControlLabel
+                                control={<Checkbox checked={cardConfig[rarity.type].masterMax}
+                                                   onChange={handleCardConfig(rarity.type, "masterMax")}/>}
+                                label="满突破"/>
+                            <FormControlLabel
+                                control={<Checkbox checked={cardConfig[rarity.type].skillMax}
+                                                   onChange={handleCardConfig(rarity.type, "skillMax")}/>}
+                                label="满技能"/>
+                        </Stack>
+                    )}
                 </FormGroup>
                 <Button variant="outlined" onClick={() => handleButton()} disabled={calculating}
                         style={{width: "457px", marginBottom: "10px", height: "56px"}}>
