@@ -105,9 +105,9 @@ export default function Page() {
 
     function handleCardConfig(rarity: string, key: "rankMax" | "episodeRead" | "skillMax" | "masterMax") {
         return (event: React.ChangeEvent<HTMLInputElement>) => {
-            cardConfig[rarity][key] = event.target.checked
-            console.log(cardConfig)
-            setCardConfig(cardConfig);
+            const newCardConfig = JSON.parse(JSON.stringify(cardConfig));
+            newCardConfig[rarity][key] = event.target.checked
+            setCardConfig(newCardConfig);
         };
     }
 
