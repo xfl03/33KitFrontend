@@ -49,7 +49,7 @@ export default function CardThumbnail({cardId, deckCard, size = 156}: CardThumbn
                 {`ID${cardId}`}
                 <br/>
                 {deckCard ?
-                    `综合${deckCard.power} ${deckCard.skill ? `加分${deckCard.skill.scoreUp}` : ""}${deckCard.eventBonus ? ` 活动${deckCard.eventBonus}` : ""}` :
+                    `综合${deckCard.power}${deckCard.skill ? ` 加分${deckCard.skill.scoreUp}` : ""}${deckCard.eventBonus ? ` 活动${deckCard.eventBonus}` : ""}` :
                     shortSkills[card.skillId]
                 }
             </title>
@@ -62,7 +62,7 @@ export default function CardThumbnail({cardId, deckCard, size = 156}: CardThumbn
             <image href={`/assets/icon_attribute_${card.attr}.png`} x="0" y="0" height="35"
                    width="35"/>
             {rarity === "bd" ?
-                <image key="114514" href={`/assets/rarity_birthday.png`}
+                <image href="/assets/rarity_birthday.png"
                        x="8"
                        y="125" width="22"
                        height="22"/> :
@@ -71,7 +71,14 @@ export default function CardThumbnail({cardId, deckCard, size = 156}: CardThumbn
                            x={8 + i * 22}
                            y="125" width="22"
                            height="22"/>
-                ))}
+                ))
+            }
+            {deckCard && deckCard.masterRank > 0 &&
+                <image href={`/assets/common/master_rank/masterRank_S_${deckCard.masterRank}.png`}
+                       x="97"
+                       y="97" width="56"
+                       height="56"/>
+            }
         </svg>
     </div>)
 }
