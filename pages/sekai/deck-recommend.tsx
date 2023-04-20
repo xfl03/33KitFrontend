@@ -81,6 +81,7 @@ export default function Page() {
     const [recommend, setRecommend] = useState<RecommendDeck[]>([])
     const [calculating, setCalculating] = useState<boolean>(false)
     const [error, setError] = useState<string>("")
+    const [challengeHighScore, setChallengeHighScore] = useState<number>(0)
 
     useEffect(() => {
         const uid = localStorage.getItem("userId")
@@ -112,6 +113,7 @@ export default function Page() {
     }
 
     async function doCalculate() {
+        setChallengeHighScore(0)
         if (!userId) throw new Error("请填写用户ID")
         localStorage.setItem("userId", userId);
         if (!music || !difficulty) throw new Error("请选择歌曲")
@@ -119,6 +121,9 @@ export default function Page() {
         const musicMeta = await new LiveCalculator(dataProvider).getMusicMeta(music.id, difficulty)
         if (mode === "1") {
             if (!gameCharacter) throw new Error("请选择角色")
+            const userChallengeLiveSoloResults = await dataProvider.getUserData("userChallengeLiveSoloResults") as any[]
+            const userChallengeLiveSoloResult = userChallengeLiveSoloResults.find(it => it.characterId === gameCharacter.id)
+            setChallengeHighScore(userChallengeLiveSoloResult.highScore)
             return await new ChallengeLiveDeckRecommend(dataProvider).recommendChallengeLiveDeck(gameCharacter.id, {
                 musicMeta,
                 limit: 10,
@@ -219,7 +224,7 @@ export default function Page() {
                 </Stack>
                 {mode === "2" &&
                     <ToggleButtonGroup
-                        style={{margin:"15px 0 5px 100px"}}
+                        style={{margin: "15px 0 5px 100px"}}
                         color="primary"
                         value={liveType}
                         exclusive
@@ -308,8 +313,14 @@ export default function Page() {
                         错误信息：<strong>{error}</strong>
                     </Alert>
                 }
+                {mode === "1" && gameCharacter && challengeHighScore > 0 &&
+                    <Alert severity="info">
+                        <AlertTitle>{getCharacterName(gameCharacter)}</AlertTitle>
+                        当前最高分：<strong>{challengeHighScore}</strong>
+                    </Alert>
+                }
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} style={{marginTop: "5px"}}>
                 {recommend &&
                     <DeckRecommendTable firstTitle="排名"
                                         first={(_, i) => i + 1}
