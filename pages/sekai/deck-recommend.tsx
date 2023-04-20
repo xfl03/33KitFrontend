@@ -262,7 +262,7 @@ export default function Page() {
                         renderInput={(params) => <TextField {...params} label="难度"/>}/>
                 </Stack>
                 <div style={{width: "457px", textAlign: "center", marginTop: "15px", fontSize: "1.3rem"}}>
-                    <strong>自动按以下条件计算</strong></div>
+                    <strong>强制覆盖卡牌当前练度</strong></div>
                 <FormGroup>
                     {cardConfig && [{
                         type: "rarity_4",
