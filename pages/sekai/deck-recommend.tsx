@@ -118,6 +118,15 @@ export default function Page() {
         localStorage.setItem("userId", userId);
         if (!music || !difficulty) throw new Error("请选择歌曲")
         const dataProvider = new CachedDataProvider(new KitDataProvider(userId))
+        // 并行预加载所有数据，加快速度
+        await Promise.all([
+            dataProvider.getUserDataAll(),
+            dataProvider.getMusicMeta(),
+            dataProvider.preloadMasterData([
+                "areaItemLevels", "cards", "cardRarities", "skills", "cardEpisodes", "masterLessons", "characterRanks",
+                "eventCards", "eventRarityBonusRates", "eventDeckBonuses", "gameCharacterUnits", "honors"
+            ])
+        ])
         const musicMeta = await new LiveCalculator(dataProvider).getMusicMeta(music.id, difficulty)
         if (mode === "1") {
             if (!gameCharacter) throw new Error("请选择角色")

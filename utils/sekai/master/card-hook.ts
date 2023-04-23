@@ -12,7 +12,7 @@ export default function useCards() {
 export function useCard(cardId: number) {
     const [card, setCard] = useState<Card>()
     useEffect(() => {
-        dataProvider.getMasterData("cards").then((cards: Card[]) => {
+        dataProvider.getMasterData<Card>("cards").then(cards => {
             setCard(cards.find(it => it.id === cardId))
         })
     }, [cardId])

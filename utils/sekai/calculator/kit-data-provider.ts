@@ -1,4 +1,4 @@
-import {CachedDataProvider, DataProvider} from "sekai-calculator";
+import {CachedDataProvider, DataProvider, MusicMeta} from "sekai-calculator";
 import axios from "axios";
 
 export class KitDataProvider implements DataProvider {
@@ -13,19 +13,19 @@ export class KitDataProvider implements DataProvider {
 
     private static profileCache = new Map<string, any>()
 
-    async getMasterData(key: string): Promise<any> {
+    async getMasterData<T>(key: string): Promise<T> {
         return (await axios.get(`${process.env.NEXT_PUBLIC_MASTER_DATA_BASE}/${key}.json`)).data
     }
 
-    async getMusicMeta(): Promise<any> {
+    async getMusicMeta(): Promise<MusicMeta[]> {
         return (await axios.get(process.env.NEXT_PUBLIC_MUSIC_META_URL!)).data
     }
 
-    async getUserData(key: string): Promise<any> {
+    async getUserData<T>(key: string): Promise<T> {
         return (await this.getUserDataAll())[key];
     }
 
-    async getUserDataAll(): Promise<any> {
+    async getUserDataAll(): Promise<Record<string, any>> {
         if (this.userId === undefined) throw new Error("User not specialized.")
         if (KitDataProvider.profileCache.has(this.userId)) return KitDataProvider.profileCache.get(this.userId)
         const data = (await axios.get(`${process.env.NEXT_PUBLIC_USER_DATA_BASE}user/${this.userId}/profile`)).data;
