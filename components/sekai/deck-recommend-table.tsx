@@ -44,8 +44,10 @@ export default function DeckRecommendTable({firstTitle, first, scoreTitle, score
                                 {it.eventBonus}
                             </TableCell>
                         }
-                        <TableCell style={{textAlign: "center", fontSize: "1rem"}}>
-                            {it.power}
+                        <TableCell style={{textAlign: "center", fontSize: "1rem"}}
+                                   title={`${it.power.base}+${it.power.areaItemBonus}+${it.power.characterBonus}+${it.power.honorBonus}`}
+                        >
+                            {it.power.total}
                         </TableCell>
                     </TableRow>
                 ))}
