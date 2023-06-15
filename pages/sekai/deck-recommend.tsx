@@ -132,7 +132,9 @@ export default function Page() {
             if (!gameCharacter) throw new Error("请选择角色")
             const userChallengeLiveSoloResults = await dataProvider.getUserData("userChallengeLiveSoloResults") as any[]
             const userChallengeLiveSoloResult = userChallengeLiveSoloResults.find(it => it.characterId === gameCharacter.id)
-            setChallengeHighScore(userChallengeLiveSoloResult.highScore)
+            if (userChallengeLiveSoloResult !== undefined) {
+                setChallengeHighScore(userChallengeLiveSoloResult.highScore)
+            }
             return await new ChallengeLiveDeckRecommend(dataProvider).recommendChallengeLiveDeck(gameCharacter.id, {
                 musicMeta,
                 limit: 10,
