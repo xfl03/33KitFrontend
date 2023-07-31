@@ -12,6 +12,11 @@ function formatPercent(num: number) {
     return `${(num * 100).toFixed(1)}%`;
 }
 
+const statusMap: Record<string, string> = {
+    'none': '非急募',
+    'recruite': '急募'
+}
+
 export default function PjskDownload() {
     const pjskCheerfulPredict = usePjskCheerfulPredict();
     return (
@@ -30,7 +35,7 @@ export default function PjskDownload() {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell style={{textAlign: "center"}} colSpan={3}>
-                                            <strong style={{fontSize:"1.5em"}}>{pjskCheerfulPredict.eventName}</strong>
+                                            <strong style={{fontSize: "1.5em"}}>{pjskCheerfulPredict.eventName}</strong>
                                             <br/>
                                             {formatDatetimeShort(pjskCheerfulPredict.eventStartAt)}～
                                             {formatDatetimeShort(pjskCheerfulPredict.eventAggregateAt)}
@@ -50,10 +55,10 @@ export default function PjskDownload() {
                                 </TableHead>
                                 <TableBody>
                                     <TableRow>
-                                        <TableCell style={{textAlign: "center"}}>当前人数</TableCell>
+                                        <TableCell style={{textAlign: "center"}}>急募状态</TableCell>
                                         {pjskCheerfulPredict.teams.map((it: any) =>
                                             <TableCell style={{textAlign: "center"}}
-                                                       key={it}>{pjskCheerfulPredict.members[it]}</TableCell>
+                                                       key={it}>{statusMap[pjskCheerfulPredict.status[it]]}</TableCell>
                                         )}
                                     </TableRow>
                                     <TableRow>
