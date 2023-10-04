@@ -1,4 +1,4 @@
-import {useMusics} from "../../utils/sekai/master/music-hook";
+import {useMusicDifficulties, useMusics} from "../../utils/sekai/master/music-hook";
 import * as React from "react";
 import {MouseEvent, useEffect, useState} from "react";
 import AppBase from "../../components/AppBase";
@@ -33,7 +33,7 @@ import Button from "@mui/material/Button";
 import DeckRecommendTable from "../../components/sekai/deck-recommend-table";
 import useEvents from "../../utils/sekai/master/event-hook";
 
-const difficulties = ["easy", "normal", "hard", "expert", "master"]
+// const difficulties = ["easy", "normal", "hard", "expert", "master"]
 export default function Page() {
     const [userId, setUserId] = useState<string>("")
     const [mode, setMode] = useState<string>("2")
@@ -44,6 +44,8 @@ export default function Page() {
     const [liveType, setLiveType] = useState<LiveType>(LiveType.MULTI)
     const musics = useMusics()
     const [music, setMusic] = useState<Music | null>(null)
+    const musicDifficulties = useMusicDifficulties();
+    const [difficulties, setDifficulties] = useState<Array<string>>([])
     const [difficulty, setDifficulty] = useState<string | null>("master")
     const [cardConfig, setCardConfig] =
         useState<Record<string, CardConfig>>({
@@ -103,6 +105,11 @@ export default function Page() {
         const event = events[events.length - 1]
         setEvent0(event)
     }, [events])
+
+    useEffect(() => {
+        if (music === undefined || music === null || musicDifficulties === undefined) return
+        setDifficulties(musicDifficulties.filter(it => it.musicId === music.id).map(it => it.musicDifficulty))
+    }, [music, musicDifficulties])
 
     function handleCardConfig(rarity: string, key: "rankMax" | "episodeRead" | "skillMax" | "masterMax") {
         return (event: React.ChangeEvent<HTMLInputElement>) => {
