@@ -151,7 +151,10 @@ export default function Page() {
                 musicMeta,
                 limit: 10,
                 member: 5,
-                cardConfig
+                cardConfig,
+                debugLog: (str: string) => {
+                    console.log(str)
+                },
             })
         }
 
@@ -161,7 +164,10 @@ export default function Page() {
         return await new EventDeckRecommend(dataProvider).recommendEventDeck(event0.id, newLiveType, {
             musicMeta,
             limit: 10,
-            cardConfig
+            cardConfig,
+            debugLog: (str: string) => {
+                console.log(str)
+            },
         })
     }
 
