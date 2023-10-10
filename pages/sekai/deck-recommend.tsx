@@ -50,30 +50,35 @@ export default function Page() {
     const [cardConfig, setCardConfig] =
         useState<Record<string, CardConfig>>({
             rarity_1: {
+                disable: true,
                 rankMax: true,
                 masterMax: true,
                 episodeRead: true,
                 skillMax: true
             },
             rarity_2: {
+                disable: true,
                 rankMax: true,
                 masterMax: true,
                 episodeRead: true,
                 skillMax: true
             },
             rarity_3: {
+                disable: false,
                 rankMax: true,
                 masterMax: true,
                 episodeRead: true,
                 skillMax: true
             },
             rarity_birthday: {
+                disable: false,
                 rankMax: true,
                 masterMax: false,
                 episodeRead: true,
                 skillMax: false
             },
             rarity_4: {
+                disable: false,
                 rankMax: true,
                 masterMax: false,
                 episodeRead: true,
@@ -111,7 +116,7 @@ export default function Page() {
         setDifficulties(musicDifficulties.filter(it => it.musicId === music.id).map(it => it.musicDifficulty))
     }, [music, musicDifficulties])
 
-    function handleCardConfig(rarity: string, key: "rankMax" | "episodeRead" | "skillMax" | "masterMax") {
+    function handleCardConfig(rarity: string, key: "rankMax" | "episodeRead" | "skillMax" | "masterMax" | "disable") {
         return (event: React.ChangeEvent<HTMLInputElement>) => {
             const newCardConfig = JSON.parse(JSON.stringify(cardConfig));
             newCardConfig[rarity][key] = event.target.checked
@@ -280,9 +285,9 @@ export default function Page() {
                         renderInput={(params) => <TextField {...params} label="难度"/>}/>
                 </Stack>
                 <div style={{width: "457px", textAlign: "center", marginTop: "15px", fontSize: "1.3rem"}}>
-                    <strong>强制覆盖卡牌当前练度</strong>
+                    <strong>可以覆盖卡牌当前养成情况用于计算</strong>
                     <br/>
-                    <strong>如不选则为卡牌当前练度</strong>
+                    <strong>适当关闭一些稀有度有利于加速计算</strong>
                 </div>
                 <FormGroup>
                     {cardConfig && [{
@@ -304,7 +309,11 @@ export default function Page() {
                         <Stack key={rarity.type} direction="row" spacing={2} style={{marginLeft: "6px"}}>
                             <p><strong>{rarity.name}</strong></p>
                             <FormControlLabel
-                                control={<Checkbox checked={true}
+                                control={<Checkbox checked={cardConfig[rarity.type].disable}
+                                                   onChange={handleCardConfig(rarity.type, "disable")}/>}
+                                label="禁用"/>
+                            <FormControlLabel
+                                control={<Checkbox checked={cardConfig[rarity.type].rankMax}
                                                    onChange={handleCardConfig(rarity.type, "rankMax")}/>}
                                 label="满级"/>
                             <FormControlLabel
