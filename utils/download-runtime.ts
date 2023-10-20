@@ -27,7 +27,7 @@ export type PjskDownloadInfo = {
 }
 
 export async function getPjskDownloadInfo(): Promise<Array<PjskDownloadInfo>> {
-    let res = await axios.get("/pi");
+    let res = await axios.get(`${process.env.NEXT_PUBLIC_SEKAIDL_BASE}pjsk-download.json`);
     console.log(res.data);
     return res.data;
 }

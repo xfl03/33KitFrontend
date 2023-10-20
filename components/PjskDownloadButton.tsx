@@ -4,13 +4,14 @@ import Button from "@mui/material/Button";
 import {CloudDone, CloudDownload, Downloading} from "@mui/icons-material";
 import * as React from "react";
 import {useCallback, useRef, useState} from "react";
-import {downloadFileHcaptcha, downloadFileRecaptchaV3, PjskDownloadInfo} from "../utils/download-runtime";
+import {downloadFileHcaptcha, downloadFileRecaptchaV3, downloadUrl, PjskDownloadInfo} from "../utils/download-runtime";
 import {GoogleReCaptcha} from "react-google-recaptcha-v3";
 
 type DownloadProps = {
     info: PjskDownloadInfo
+    captcha?: boolean
 }
-export default function PjskDownloadButton({info}: DownloadProps) {
+export default function PjskDownloadButton({info, captcha=false}: DownloadProps) {
     // console.log("PjskDownloadButton");
     const [alert, setAlert] = useState<string>("");
     const [captchaVisible, setCaptchaVisible] = useState<boolean>(false);
@@ -35,6 +36,10 @@ export default function PjskDownloadButton({info}: DownloadProps) {
     }, [info.filename, onRecaptchaFailed])
 
     const onDownloadButtonClicked = useCallback(async () => {
+        if (!captcha) {
+            downloadUrl(`${process.env.NEXT_PUBLIC_SEKAIDL_BASE}${info.filename}`)
+            return
+        }
         setLoading(1);
         console.log(token);
         if (token === undefined) {
@@ -42,7 +47,7 @@ export default function PjskDownloadButton({info}: DownloadProps) {
             return;
         }
         await downloadByRecaptcha(token)
-    }, [downloadByRecaptcha, token, setLoading]);
+    }, [captcha, token, downloadByRecaptcha, info.filename]);
 
     const onRecaptchaVerify = useCallback(async (token0: string) => {
         setToken(token0);
@@ -81,20 +86,22 @@ export default function PjskDownloadButton({info}: DownloadProps) {
                                 disabled={true}>正在获取下载地址</Button>
                     }
                 </Grid>
-                <Grid item xs={10}>
-                    <GoogleReCaptcha
-                        action={info.server}
-                        onVerify={onRecaptchaVerify}
-                    />
-                    {captchaVisible &&
-                        <HCaptcha
-                            sitekey={hcaptchaSiteKey}
-                            ref={captchaRef}
-                            onVerify={onHcaptchaVerify}
-                            size="normal"
+                {captcha &&
+                    <Grid item xs={10}>
+                        <GoogleReCaptcha
+                            action={info.server}
+                            onVerify={onRecaptchaVerify}
                         />
-                    }
-                </Grid>
+                        {captchaVisible &&
+                            <HCaptcha
+                                sitekey={hcaptchaSiteKey}
+                                ref={captchaRef}
+                                onVerify={onHcaptchaVerify}
+                                size="normal"
+                            />
+                        }
+                    </Grid>
+                }
                 {
                     alert !== "" &&
                     <Grid item xs={10}>
