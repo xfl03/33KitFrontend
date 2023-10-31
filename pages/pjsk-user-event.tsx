@@ -187,7 +187,7 @@ export default function Page() {
                 <Grid item xs={12}>
                     <Alert severity="info">
                         <AlertTitle>关于此功能</AlertTitle>
-                        暂时仅限部分特定用户使用。
+                        因为游戏服务器限制，此功能已废弃。
                     </Alert>
                 </Grid>
                 <Grid item xs={12}>

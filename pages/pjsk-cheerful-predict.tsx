@@ -14,7 +14,7 @@ function formatPercent(num: number) {
 
 const statusMap: Record<string, string> = {
     'none': '非急募',
-    'recruite': '急募'
+    'recruite': '<b>急募</b>'
 }
 
 export default function PjskDownload() {
