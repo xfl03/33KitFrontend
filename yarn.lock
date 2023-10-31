@@ -9,13 +9,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "33kit@workspace:."
   dependencies:
-    "@emotion/react": "npm:^11.10.6"
-    "@emotion/styled": "npm:^11.10.6"
+    "@emotion/react": "npm:^11.11.1"
+    "@emotion/styled": "npm:^11.11.0"
     "@hcaptcha/react-hcaptcha": "npm:^1.4.4"
     "@hcaptcha/types": "npm:^1.0.3"
     "@mui/icons-material": "npm:^5.11.11"
     "@mui/lab": "npm:^5.0.0-alpha.124"
-    "@mui/material": "npm:^5.11.14"
+    "@mui/material": "npm:^5.14.15"
     "@mui/system": "npm:^5.11.15"
     "@mui/x-data-grid": "npm:^6.0.3"
     "@types/dateformat": "npm:^5.0.0"
@@ -165,7 +165,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/react@npm:^11.10.6":
+"@emotion/react@npm:^11.11.1":
   version: 11.11.1
   resolution: "@emotion/react@npm:11.11.1"
   dependencies:
@@ -206,7 +206,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/styled@npm:^11.10.6":
+"@emotion/styled@npm:^11.11.0":
   version: 11.11.0
   resolution: "@emotion/styled@npm:11.11.0"
   dependencies:
@@ -455,7 +455,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/material@npm:^5.11.14":
+"@mui/material@npm:^5.14.15":
   version: 5.14.15
   resolution: "@mui/material@npm:5.14.15"
   dependencies:

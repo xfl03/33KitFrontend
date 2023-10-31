@@ -4,17 +4,20 @@ import {Alert, AlertTitle, Grid, Link} from "@mui/material";
 import PjskDownloadButton from "../components/PjskDownloadButton";
 import RecaptchaInfo from "../components/RecaptchaInfo";
 import Divider from "@mui/material/Divider";
-import { getPjskPredict} from "../utils/predict-hook";
+import {getPjskPredict, usePjskPredict} from "../utils/predict-hook";
 import {useEffect, useState} from "react";
 import PjskPredictTable from "../components/PjskPredictTable";
 import {getPjskDownloadInfo, PjskDownloadInfo} from "../utils/download-runtime";
+import {usePjskDownloadInfo} from "../utils/download-hook";
 
-export default function Home({pjskPredict, pjskDownloadInfo}: {
-    pjskPredict: any,
-    pjskDownloadInfo: PjskDownloadInfo[]
-}) {
-    // const pjskDownloadInfo = usePjskDownloadInfo();
-    // const pjskPredict = usePjskPredict();
+export default function Home(
+//     {pjskPredict, pjskDownloadInfo}: {
+//     pjskPredict: any,
+//     pjskDownloadInfo: PjskDownloadInfo[]
+// }
+) {
+    const pjskDownloadInfo = usePjskDownloadInfo();
+    const pjskPredict = usePjskPredict();
     const [ranks, setRanks] = useState<Array<number>>();
     useEffect(() => {
         setRanks([50, 100, 500, 1000, 5000, 10000, 50000, 100000]);
@@ -58,11 +61,11 @@ export default function Home({pjskPredict, pjskDownloadInfo}: {
     )
 }
 
-export async function getServerSideProps() {
-    // Fetch data from external API
-    const pjskPredict = await getPjskPredict();
-    const pjskDownloadInfo = await getPjskDownloadInfo();
-
-    // Pass data to the page via props
-    return {props: {pjskPredict, pjskDownloadInfo}}
-}
+// export async function getServerSideProps() {
+//     // Fetch data from external API
+//     const pjskPredict = await getPjskPredict();
+//     const pjskDownloadInfo = await getPjskDownloadInfo();
+//
+//     // Pass data to the page via props
+//     return {props: {pjskPredict, pjskDownloadInfo}}
+// }

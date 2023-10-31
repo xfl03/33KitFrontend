@@ -9,12 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@hcaptcha/react-hcaptcha": "^1.4.4",
     "@mui/icons-material": "^5.11.11",
     "@mui/lab": "^5.0.0-alpha.124",
-    "@mui/material": "^5.11.14",
+    "@mui/material": "^5.14.15",
     "@mui/system": "^5.11.15",
     "@mui/x-data-grid": "^6.0.3",
     "@types/dateformat": "^5.0.0",
