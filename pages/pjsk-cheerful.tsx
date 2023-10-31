@@ -1,3 +1,4 @@
+'use client'
 import * as React from 'react';
 import AppBase from "../components/AppBase";
 import {

@@ -150,13 +150,13 @@ const drawItems = [
                 "name": "活动最终数据",
                 "icon": <Insights/>,
                 "path": "/pjsk-final",
-                "display": true,
+                "display": false,
             },
             {
                 "name": "对战数据",
                 "icon": <EmojiEvents/>,
                 "path": "/pjsk-cheerful",
-                "display": true,
+                "display": false,
             },
             {
                 "name": "歌曲Meta",

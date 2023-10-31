@@ -4,14 +4,17 @@ import {Alert, AlertTitle, Grid, Link} from "@mui/material";
 import PjskDownloadButton from "../components/PjskDownloadButton";
 import RecaptchaInfo from "../components/RecaptchaInfo";
 import Divider from "@mui/material/Divider";
-import {usePjskDownloadInfo} from "../utils/download-hook";
-import {usePjskPredict} from "../utils/predict-hook";
+import { getPjskPredict} from "../utils/predict-hook";
 import {useEffect, useState} from "react";
 import PjskPredictTable from "../components/PjskPredictTable";
+import {getPjskDownloadInfo, PjskDownloadInfo} from "../utils/download-runtime";
 
-export default function Home() {
-    const pjskDownloadInfo = usePjskDownloadInfo();
-    const pjskPredict = usePjskPredict();
+export default function Home({pjskPredict, pjskDownloadInfo}: {
+    pjskPredict: any,
+    pjskDownloadInfo: PjskDownloadInfo[]
+}) {
+    // const pjskDownloadInfo = usePjskDownloadInfo();
+    // const pjskPredict = usePjskPredict();
     const [ranks, setRanks] = useState<Array<number>>();
     useEffect(() => {
         setRanks([50, 100, 500, 1000, 5000, 10000, 50000, 100000]);
@@ -24,7 +27,8 @@ export default function Home() {
                         <AlertTitle>内测中！</AlertTitle>
                         33 Kit还在<strong>内部测试</strong>中，出现问题请<strong>向33反馈</strong>。
                         <br/>
-                        为了提供更好的访问速度与服务质量，33 Kit需要您的支持，<Link href="https://afdian.net/@xfl03">捐助请点这里</Link>。
+                        为了提供更好的访问速度与服务质量，33 Kit需要您的支持，<Link
+                        href="https://afdian.net/@xfl03">捐助请点这里</Link>。
                         <br/>
                         因时间、精力、能力有限，33 Kit主要服务使用<strong>简体中文</strong>的用户，「Project SEKAI」相关内容以<strong>日服</strong>为主。
                     </Alert>
@@ -52,4 +56,13 @@ export default function Home() {
             </Grid>
         </AppBase>
     )
+}
+
+export async function getServerSideProps() {
+    // Fetch data from external API
+    const pjskPredict = await getPjskPredict();
+    const pjskDownloadInfo = await getPjskDownloadInfo();
+
+    // Pass data to the page via props
+    return {props: {pjskPredict, pjskDownloadInfo}}
 }

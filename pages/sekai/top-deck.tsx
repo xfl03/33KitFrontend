@@ -1,4 +1,4 @@
-import {useTopDeck} from "../../utils/sekai/calculator/top-deck-recommend";
+import {getTopDeck, TopDeck} from "../../utils/sekai/calculator/top-deck-recommend";
 import AppBase from "../../components/AppBase";
 import React from "react";
 import {TabContext, TabList, TabPanel} from "@mui/lab";
@@ -6,8 +6,8 @@ import {Box, Grid, Tab} from "@mui/material";
 import useGameCharacters, {getCharacterName} from "../../utils/sekai/master/character-hook";
 import DeckRecommendTable from "../../components/sekai/deck-recommend-table";
 
-export default function Page() {
-    const topDeck = useTopDeck()
+export default function Page({topDeck}: { topDeck: TopDeck }) {
+    // const topDeck = useTopDeck()
     const characters = useGameCharacters()
     const [value, setValue] = React.useState('1');
 
@@ -48,4 +48,7 @@ export default function Page() {
     </AppBase>)
 }
 
-
+export async function getServerSideProps() {
+    const topDeck = await getTopDeck();
+    return {props: {topDeck}}
+}

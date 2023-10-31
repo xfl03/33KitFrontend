@@ -27,7 +27,8 @@ export type PjskDownloadInfo = {
 }
 
 export async function getPjskDownloadInfo(): Promise<Array<PjskDownloadInfo>> {
-    let res = await axios.get(`${process.env.NEXT_PUBLIC_SEKAIDL_BASE}pjsk-download.json`);
-    console.log(res.data);
-    return res.data;
+    let res = await fetch(`${process.env.NEXT_PUBLIC_SEKAIDL_BASE}pjsk-download.json`);
+    let arr = (await res.json()) as Array<PjskDownloadInfo>;
+    console.log(arr);
+    return arr;
 }
