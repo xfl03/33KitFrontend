@@ -4,11 +4,11 @@ import {Alert, AlertTitle, Grid, Link} from "@mui/material";
 import PjskDownloadButton from "../components/PjskDownloadButton";
 import RecaptchaInfo from "../components/RecaptchaInfo";
 import Divider from "@mui/material/Divider";
-import {getPjskPredict, usePjskPredict} from "../utils/predict-hook";
+import {usePjskCheerfulPredict, usePjskPredict} from "../utils/predict-hook";
 import {useEffect, useState} from "react";
 import PjskPredictTable from "../components/PjskPredictTable";
-import {getPjskDownloadInfo, PjskDownloadInfo} from "../utils/download-runtime";
 import {usePjskDownloadInfo} from "../utils/download-hook";
+import SekaiCheerfulPredictTable from "../components/sekai/cheerful-predict-table";
 
 export default function Home(
 //     {pjskPredict, pjskDownloadInfo}: {
@@ -18,6 +18,7 @@ export default function Home(
 ) {
     const pjskDownloadInfo = usePjskDownloadInfo();
     const pjskPredict = usePjskPredict();
+    const pjskCheerfulPredict = usePjskCheerfulPredict();
     const [ranks, setRanks] = useState<Array<number>>();
     useEffect(() => {
         setRanks([50, 100, 500, 1000, 5000, 10000, 50000, 100000]);
@@ -36,14 +37,6 @@ export default function Home(
                         因时间、精力、能力有限，33 Kit主要服务使用<strong>简体中文</strong>的用户，「Project SEKAI」相关内容以<strong>日服</strong>为主。
                     </Alert>
                 </Grid>
-                {pjskPredict && ranks &&
-                    <PjskPredictTable pjskPredict={pjskPredict} ranks={ranks}/>
-                }
-                <Grid item xs={12}>
-                    <Link href="/pjsk-predict" underline="none">
-                        在寻找更多预测？
-                    </Link>
-                </Grid>
                 {pjskDownloadInfo &&
                     <PjskDownloadButton info={pjskDownloadInfo[0]}/>
                 }
@@ -52,6 +45,15 @@ export default function Home(
                         在寻找其他服务器？
                     </Link>
                 </Grid>
+                {pjskPredict && ranks &&
+                    <PjskPredictTable pjskPredict={pjskPredict} ranks={ranks}/>
+                }
+                {/*<Grid item xs={12}>*/}
+                {/*    <Link href="/pjsk-predict" underline="none">*/}
+                {/*        在寻找更多预测？*/}
+                {/*    </Link>*/}
+                {/*</Grid>*/}
+                {pjskCheerfulPredict && <SekaiCheerfulPredictTable pjskCheerfulPredict={pjskCheerfulPredict}/>}
                 <Grid item xs={12}>
                     <Divider/>
                 </Grid>

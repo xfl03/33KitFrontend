@@ -2,7 +2,7 @@ import AppBase from "../components/AppBase";
 import {
     Alert,
     AlertTitle,
-    Grid,
+    Grid, Link,
 } from "@mui/material";
 import * as React from "react";
 import {usePjskPredict} from "../utils/predict-hook";
@@ -16,7 +16,8 @@ export default function PjskDownload() {
                 <Grid item xs={12}>
                     <Alert severity="warning">
                         <AlertTitle>关于预测</AlertTitle>
-                        由于游戏服务器限制，无法获取完整活动排名信息，预测结果可能会出现<strong>非常巨大</strong>的误差，仅供参考。
+                        由于游戏服务器限制，无法获取完整活动排名信息，预测结果可能会出现<strong>一定误差</strong>，仅供参考。<br/>
+                        使用了<Link href="https://space.bilibili.com/5437778">涼风_青叶</Link>的预测模型（<Link href="https://github.com/SubaruAkuru/SekaiBorderPrediction">GitHub</Link>）改善了在小规模数据下的预测精度。
                     </Alert>
                 </Grid>
                 <Grid item xs={12}>

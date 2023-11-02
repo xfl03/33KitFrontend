@@ -1,4 +1,4 @@
-import {Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {Grid, Link, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import {useEffect, useState} from "react";
 import * as React from "react";
 import {formatDatetimeShort} from "../utils/date-format";
@@ -46,11 +46,13 @@ export default function PjskPredictTable({pjskPredict, ranks}: PjskPredictTableA
                                 {formatDatetimeShort(pjskPredict.event.startAt)}～
                                 <strong>{formatDatetimeShort(pjskPredict.event.aggregateAt)}</strong>
                                 <br/>
-                                活动数据更新于<strong>{formatDatetimeShort(pjskPredict.rank.ts)}</strong>
+                                {/*活动数据更新于<strong>{formatDatetimeShort(pjskPredict.rank.ts)}</strong>*/}
+                                {/*<br/>*/}
+                                活动PT预测于<strong>{formatDatetimeShort(pjskPredict.data.ts)}</strong>
                                 <br/>
-                                活动预测生成于<strong>{formatDatetimeShort(pjskPredict.data.ts)}</strong>
+                                预测模型来自<Link href="https://space.bilibili.com/5437778">涼风_青叶</Link>，<b>请谨慎参考预测结果！</b>
                                 <br/>
-                                <b>由于服务器限制，预测误差极大，请谨慎参考！</b>
+
                             </TableCell>
                         </TableRow>
                         <TableRow>
