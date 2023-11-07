@@ -89,6 +89,8 @@ export default function Page() {
     const [calculating, setCalculating] = useState<boolean>(false)
     const [error, setError] = useState<string>("")
     const [challengeHighScore, setChallengeHighScore] = useState<number>(0)
+    const supportCharacters = useGameCharacters() // TODO 要换成活动的可选支援角色
+    const [supportCharacter, setSupportCharacter] = useState<GameCharacter | null>(null)
 
     useEffect(() => {
         const uid = localStorage.getItem("userId")
@@ -136,7 +138,7 @@ export default function Page() {
             dataProvider.getMusicMeta(),
             dataProvider.preloadMasterData([
                 "areaItemLevels", "cards", "cardRarities", "skills", "cardEpisodes", "masterLessons", "characterRanks",
-                "eventCards", "eventRarityBonusRates", "eventDeckBonuses", "gameCharacterUnits", "honors"
+                "events", "eventCards", "eventRarityBonusRates", "eventDeckBonuses", "gameCharacterUnits", "honors"
             ])
         ])
         const musicMeta = await new LiveCalculator(dataProvider).getMusicMeta(music.id, difficulty)
@@ -160,7 +162,7 @@ export default function Page() {
 
         if (!event0) throw new Error("请选择活动")
         const newLiveType =
-            (event0.eventType !== "marathon" && liveType === LiveType.MULTI) ? LiveType.CHEERFUL : liveType
+            (event0.eventType === "cheerful_carnival" && liveType === LiveType.MULTI) ? LiveType.CHEERFUL : liveType
         return await new EventDeckRecommend(dataProvider).recommendEventDeck(event0.id, newLiveType, {
             musicMeta,
             limit: 10,
@@ -168,7 +170,7 @@ export default function Page() {
             debugLog: (str: string) => {
                 console.log(str)
             },
-        })
+        }, supportCharacter?.id)
     }
 
     function handleButton() {
@@ -201,6 +203,8 @@ export default function Page() {
                     33 Kit不会记录任何用户数据，计算过程全部在您的本地浏览器中进行。
                     <br/>
                     自动组卡不能保证100%是最优解，如果还有更好的方案，欢迎向33反馈。
+                    <br/>
+                    「世界连接」活动相关功能还在测试中，还有待完善，不一定能正常用。
                 </Alert>
             </Grid>
             <Grid item xs={12}>
@@ -250,6 +254,18 @@ export default function Page() {
                             getOptionLabel={(option) => `${option.id} - ${option.name}`}
                             renderInput={(params) => <TextField {...params} label="活动"/>}
                         />}
+                    {supportCharacters && mode === "2" && event0 && event0.eventType === "world_bloom" && // TODO 还不确定叫这个名字
+                        <Autocomplete
+                            value={gameCharacter}
+                            onChange={(event: any, newValue: GameCharacter | null) => {
+                                setSupportCharacter(newValue)
+                            }}
+                            id="combo-box-demo"
+                            options={supportCharacters}
+                            sx={{width: 347}}
+                            getOptionLabel={(option) => getCharacterName(option)}
+                            renderInput={(params) => <TextField {...params} label="支援角色"/>}
+                        />}
                 </Stack>
                 {mode === "2" &&
                     <ToggleButtonGroup
@@ -293,7 +309,7 @@ export default function Page() {
                 <div style={{width: "457px", textAlign: "center", marginTop: "15px", fontSize: "1.3rem"}}>
                     <strong>可以覆盖卡牌当前养成情况用于计算</strong>
                     <br/>
-                    <strong>适当关闭一些稀有度有利于加速计算</strong>
+                    <strong>适当禁用一些稀有度有利于加速计算</strong>
                 </div>
                 <FormGroup>
                     {cardConfig && [{

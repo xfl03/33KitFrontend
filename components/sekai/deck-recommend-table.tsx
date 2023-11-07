@@ -13,6 +13,11 @@ type DeckThumbnailProps = {
 
 export default function DeckRecommendTable({firstTitle, first, scoreTitle, score, recommend}: DeckThumbnailProps) {
     if (recommend.length === 0) return (<div></div>)
+    // TODO 兼容一下改名了，之后删
+    recommend.forEach(it => {
+        // @ts-ignore
+        if (it.deckCards) it.cards = it.deckCards
+    })
     return (<TableContainer component={Paper} style={{maxWidth: "900px"}}>
         <Table size="small">
             <TableHead>
@@ -36,12 +41,12 @@ export default function DeckRecommendTable({firstTitle, first, scoreTitle, score
                             {score(it, i)}
                         </TableCell>
                         <TableCell style={{paddingTop: "5px", paddingBottom: "5px"}}>
-                            <DeckThumbnail cardIds={it.deckCards.map(it => it.cardId)}
-                                           deckCards={it.deckCards} size={80}/>
+                            <DeckThumbnail cardIds={it.cards.map(it => it.cardId)}
+                                           deckCards={it.cards} size={80}/>
                         </TableCell>
                         {it.eventBonus !== undefined &&
                             <TableCell style={{textAlign: "center", fontSize: "1rem"}}>
-                                {it.eventBonus}
+                                {it.eventBonus}{it.supportDeckBonus ? `+${it.supportDeckBonus}` : ""}
                             </TableCell>
                         }
                         <TableCell style={{textAlign: "center", fontSize: "1rem"}}
