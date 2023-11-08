@@ -12,9 +12,13 @@ export default function useMasterData<T>(key: string) {
     const [data, setData] = useState<T[]>()
     useEffect(() => {
         if (data !== undefined) return
-        dataProvider.getMasterData<T>(key).then(data0 => {
+        getMasterData<T>(key).then(data0 => {
             setData(data0)
         })
     }, [key, data])
     return data
+}
+
+export async function getMasterData<T>(key: string) {
+    return await dataProvider.getMasterData<T>(key)
 }

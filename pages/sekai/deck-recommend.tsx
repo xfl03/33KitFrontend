@@ -31,7 +31,7 @@ import useGameCharacters, {getCharacterName} from "../../utils/sekai/master/char
 import {KitDataProvider} from "../../utils/sekai/calculator/kit-data-provider";
 import Button from "@mui/material/Button";
 import DeckRecommendTable from "../../components/sekai/deck-recommend-table";
-import useEvents from "../../utils/sekai/master/event-hook";
+import useEvents, {getBloomEventCharacters} from "../../utils/sekai/master/event-hook";
 
 // const difficulties = ["easy", "normal", "hard", "expert", "master"]
 export default function Page() {
@@ -66,9 +66,9 @@ export default function Page() {
             rarity_3: {
                 disable: false,
                 rankMax: true,
-                masterMax: true,
+                masterMax: false,
                 episodeRead: true,
-                skillMax: true
+                skillMax: false
             },
             rarity_birthday: {
                 disable: false,
@@ -89,7 +89,7 @@ export default function Page() {
     const [calculating, setCalculating] = useState<boolean>(false)
     const [error, setError] = useState<string>("")
     const [challengeHighScore, setChallengeHighScore] = useState<number>(0)
-    const supportCharacters = useGameCharacters() // TODO 要换成活动的可选支援角色
+    const [supportCharacters, setSupportCharacters] = useState<GameCharacter[]>([])
     const [supportCharacter, setSupportCharacter] = useState<GameCharacter | null>(null)
 
     useEffect(() => {
@@ -118,6 +118,15 @@ export default function Page() {
         setDifficulties(musicDifficulties.filter(it => it.musicId === music.id).map(it => it.musicDifficulty))
     }, [music, musicDifficulties])
 
+    useEffect(() => {
+        if (event0 === null) return
+        getBloomEventCharacters(event0.id).then(it => {
+            setSupportCharacters(it)
+            if (it.length > 0) setSupportCharacter(it[0])
+        })
+
+    }, [event0])
+
     function handleCardConfig(rarity: string, key: "rankMax" | "episodeRead" | "skillMax" | "masterMax" | "disable") {
         return (event: React.ChangeEvent<HTMLInputElement>) => {
             const newCardConfig = JSON.parse(JSON.stringify(cardConfig));
@@ -138,7 +147,8 @@ export default function Page() {
             dataProvider.getMusicMeta(),
             dataProvider.preloadMasterData([
                 "areaItemLevels", "cards", "cardRarities", "skills", "cardEpisodes", "masterLessons", "characterRanks",
-                "events", "eventCards", "eventRarityBonusRates", "eventDeckBonuses", "gameCharacterUnits", "honors"
+                "events", "eventCards", "eventRarityBonusRates", "eventDeckBonuses", "gameCharacters",
+                "gameCharacterUnits", "honors", "worldBloomDifferentAttributeBonuses", "worldBloomSupportDeckBonuses"
             ])
         ])
         const musicMeta = await new LiveCalculator(dataProvider).getMusicMeta(music.id, difficulty)
@@ -250,23 +260,24 @@ export default function Page() {
                             }}
                             id="combo-box-demo"
                             options={events}
-                            sx={{width: 347}}
+                            sx={{width: 344}}
                             getOptionLabel={(option) => `${option.id} - ${option.name}`}
                             renderInput={(params) => <TextField {...params} label="活动"/>}
                         />}
-                    {supportCharacters && mode === "2" && event0 && event0.eventType === "world_bloom" && // TODO 还不确定叫这个名字
-                        <Autocomplete
-                            value={gameCharacter}
-                            onChange={(event: any, newValue: GameCharacter | null) => {
-                                setSupportCharacter(newValue)
-                            }}
-                            id="combo-box-demo"
-                            options={supportCharacters}
-                            sx={{width: 347}}
-                            getOptionLabel={(option) => getCharacterName(option)}
-                            renderInput={(params) => <TextField {...params} label="支援角色"/>}
-                        />}
+
                 </Stack>
+                {supportCharacters && supportCharacters.length > 0 && mode === "2" && event0 && event0.eventType === "world_bloom" &&
+                    <Stack><Autocomplete
+                        value={supportCharacter}
+                        onChange={(event: any, newValue: GameCharacter | null) => {
+                            setSupportCharacter(newValue)
+                        }}
+                        id="combo-box-demo"
+                        options={supportCharacters}
+                        sx={{width: 457, marginTop: '10px'}}
+                        getOptionLabel={(option) => getCharacterName(option)}
+                        renderInput={(params) => <TextField {...params} label="支援角色"/>}
+                    /></Stack>}
                 {mode === "2" &&
                     <ToggleButtonGroup
                         style={{margin: "15px 0 5px 100px"}}
