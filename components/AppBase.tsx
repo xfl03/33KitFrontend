@@ -147,10 +147,16 @@ const drawItems = [
                 "display": true,
             },
             {
-                "name": "活动最终数据",
+                "name": "活动PT走势数据",
+                "icon": <Person/>,
+                "path": "/pjsk-user-event",
+                "display": true,
+            },
+            {
+                "name": "活动PT最终数据",
                 "icon": <Insights/>,
                 "path": "/pjsk-final",
-                "display": false,
+                "display": true,
             },
             {
                 "name": "对战数据",
@@ -175,12 +181,6 @@ const drawItems = [
                 "icon": <PersonAddAlt1/>,
                 "path": "/sekai/deck-recommend",
                 "display": true,
-            },
-            {
-                "name": "个人活动数据",
-                "icon": <Person/>,
-                "path": "/pjsk-user-event",
-                "display": false,
             },
         ]
     },

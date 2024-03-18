@@ -1,4 +1,3 @@
-'use client'
 import * as React from 'react';
 import AppBase from "../components/AppBase";
 import {
@@ -12,18 +11,18 @@ import {
     Select, SelectChangeEvent
 } from "@mui/material";
 import {useEffect, useState} from "react";
-import EChartsReact from "echarts-for-react";
 import axios from "axios";
+import {DynamicEcharts} from "../components/dynamic-echarts";
 
 export default function Page() {
     const [eventInfo, setEventInfo] = useState<any>();
-    const [eventHot, setEventHot] = useState<number>();
+    // const [eventHot, setEventHot] = useState<number>();
     const [events, setEvents] = useState<Array<any>>();
     const [finalScores, setFinalScores] = useState<Array<any>>();
     const [option, setOption] = useState<any>();
     const [checked, setChecked] = React.useState([true, true]);
     useEffect(() => {
-        axios.get(`/final`).then(res => {
+        axios.get(`${process.env.NEXT_PUBLIC_SEKAI_DATA_BASE}event/final-sample/index.json`).then(res => {
             let data = res.data;
             setEvents(data);
             setEventInfo(data[data.length - 1]);
@@ -35,12 +34,13 @@ export default function Page() {
             return;
         }
         // let x = eventInfo.line.b / -eventInfo.line.m;
-        let hot = Math.round(-eventInfo.line.m * 200);
-        setEventHot(hot);
-        axios.get(`/final/${eventInfo.id}`).then(res => {
+        // let hot = Math.round(-eventInfo.line.m * 200);
+        // setEventHot(hot);
+        axios.get(`${process.env.NEXT_PUBLIC_SEKAI_DATA_BASE}event/final-sample/${eventInfo}.json`).then(res => {
             setFinalScores(res.data);
         })
-    }, [eventInfo, setFinalScores, setEventHot])
+        // }, [eventInfo, setFinalScores, setEventHot])
+    }, [eventInfo, setFinalScores])
 
     useEffect(() => {
         if (finalScores === undefined) {
@@ -79,11 +79,11 @@ export default function Page() {
                 {
                     type: 'inside',
                     start: 0,
-                    end: 20
+                    end: 100
                 },
                 {
                     start: 0,
-                    end: 20
+                    end: 100
                 }
             ],
             series: [
@@ -108,8 +108,9 @@ export default function Page() {
     };
 
     const handleChange = (event: SelectChangeEvent) => {
-        let eventId = parseInt(event.target.value as string);
-        setEventInfo(events?.find(it => it.id === eventId));
+        // let eventId = parseInt(event.target.value as string);
+        // setEventInfo(events?.find(it => it.id === eventId));
+        setEventInfo(event.target.value as string);
     };
     return (
         <AppBase subtitle="活动最终数据">
@@ -118,11 +119,12 @@ export default function Page() {
                     <Grid item xs={12}>
                         <Alert severity="info">
                             <AlertTitle>关于活动最终数据</AlertTitle>
-                            {eventInfo.origin === eventInfo.count &&
-                                <div>共<strong>{eventInfo.count}</strong>个数据点。</div>}
-                            {eventInfo.origin !== eventInfo.count &&
-                                <div>为了优化性能，从{eventInfo.origin}数据中采样了<strong>{eventInfo.count}</strong>个数据点。
-                                </div>}
+                            由于服务器限制，数据有缺失。
+                            {/*{eventInfo.origin === eventInfo.count &&*/}
+                            {/*    <div>共<strong>{eventInfo.count}</strong>个数据点。</div>}*/}
+                            {/*{eventInfo.origin !== eventInfo.count &&*/}
+                            {/*    <div>为了优化性能，从{eventInfo.origin}数据中采样了<strong>{eventInfo.count}</strong>个数据点。*/}
+                            {/*    </div>}*/}
                             {/*估算的活动冲榜难度为<strong>{eventHot}%</strong>。*/}
                         </Alert>
                     </Grid>}
@@ -133,13 +135,14 @@ export default function Page() {
                             <Select
                                 labelId="event-select-label"
                                 id="event-select"
-                                value={eventInfo.id}
+                                value={eventInfo}
                                 label="活动"
                                 onChange={handleChange}
                                 style={{minWidth: "300px"}}
                             >
                                 {events.map(it => (
-                                    <MenuItem key={it.id} value={it.id}>{it.id} - {it.name}</MenuItem>
+                                    // <MenuItem key={it.id} value={it.id}>{it.id} - {it.name}</MenuItem>
+                                    <MenuItem key={it} value={it}>{it}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
@@ -155,7 +158,7 @@ export default function Page() {
                 </Grid>
                 {option &&
                     <Grid item xs={12}>
-                        <EChartsReact style={{height: '700px', maxHeight: '75%', width: '100%'}} option={option}/>
+                        <DynamicEcharts option={option}/>
                     </Grid>
                 }
             </Grid>

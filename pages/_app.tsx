@@ -8,4 +8,4 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 export default MyApp
 
-axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE;
+// axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE;

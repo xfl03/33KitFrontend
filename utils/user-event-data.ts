@@ -95,7 +95,7 @@ export function processDetailMessages(
 }
 
 export async function getEventRank(eventId: string, rank: string) {
-    let res = await axios.get(`${process.env.NEXT_PUBLIC_USER_EVENT_BASE}/event-data/${eventId}/${rank}.json`);
+    let res = await axios.get(`${process.env.NEXT_PUBLIC_SEKAI_DATA_BASE}event/data/${eventId}/${rank}.json`);
     return res.data;
 }
 
