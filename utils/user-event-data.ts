@@ -94,20 +94,26 @@ export function processDetailMessages(
     }
 }
 
-export async function getEventRank(eventId: string, rank: string) {
-    let res = await axios.get(`${process.env.NEXT_PUBLIC_SEKAI_DATA_BASE}event/data/${eventId}/${rank}.json`);
+export async function getEventRank(eventId: string, rank: string, type = Type.STANDARD) {
+    const dir = type === Type.STANDARD ? "data" : "world-bloom"
+    let res = await axios.get(`${process.env.NEXT_PUBLIC_SEKAI_DATA_BASE}event/${dir}/${eventId}/${rank}.json`);
     return res.data;
 }
 
-export async function getEventRanks(eventId: string, ranks: string[]) {
+export async function getEventRanks(eventId: string, ranks: string[], type = Type.STANDARD) {
     let ret: Array<{ rank: string, data: Array<EventRankData> }> = [];
     for (let rank of ranks) {
         ret.push({
             rank: rank,
-            data: await getEventRank(eventId, rank),
+            data: await getEventRank(eventId, rank, type),
         });
     }
     return ret;
+}
+
+export enum Type {
+    STANDARD = 0,
+    WORLD_LINK = 1
 }
 
 export const eventRanks = [

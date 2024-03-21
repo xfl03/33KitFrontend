@@ -1,26 +1,25 @@
 import * as React from 'react';
+import {MouseEvent, useEffect, useState} from 'react';
 import AppBase from "../components/AppBase";
 import {
     Alert,
-    AlertTitle, Box, Chip,
+    AlertTitle,
     FormControl,
     Grid,
-    // IconButton,
-    InputLabel, MenuItem, OutlinedInput,
-    Select, SelectChangeEvent, Theme, useTheme
+    InputLabel,
+    MenuItem,
+    OutlinedInput,
+    Select,
+    SelectChangeEvent,
+    Theme,
+    ToggleButton,
+    ToggleButtonGroup,
+    useTheme
 } from "@mui/material";
-import {useEffect, useState} from "react";
-import EChartsReact from "echarts-for-react";
 // import axios from "axios";
 // import {useRouter} from "next/router";
 // import {Refresh} from "@mui/icons-material";
-import {
-    eventRanks,
-    getEventRanks,
-    // processDetailMessages,
-    // UserDetailMessage,
-    // UserEventData
-} from "../utils/user-event-data";
+import {getEventRanks, Type,} from "../utils/user-event-data";
 import {DynamicEcharts} from "../components/dynamic-echarts";
 
 const ITEM_HEIGHT = 48;
@@ -44,6 +43,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 }
 
 export default function Page() {
+    const [mode, setMode] = useState<string>("0")
     const [eventId, setEventId] = useState<string>("");
     const [ranks, setRanks] = useState<Array<string>>([]);
     const [allRanks, setAllRanks] = useState<Array<string>>([]);
@@ -56,6 +56,7 @@ export default function Page() {
     // const [refreshFlag, setRefreshFlag] = useState<boolean>(false);
     // const [echartRef, setEchartRef] = useState<EChartsReact>();
     const [index, setIndex] = useState<any>({});
+    const [worldLinkIndex, setWorldLinkIndex] = useState<any>({});
     // const router = useRouter()
     const theme = useTheme();
 
@@ -64,45 +65,47 @@ export default function Page() {
             .then(res => res.json())
             .then(json => {
                 setIndex(json)
-                const events0 = Object.keys(json).map(it => parseInt(it))
-                setEvents(events0)
-                setEventId(events0[events0.length - 1].toString())
-                setOption({
-                    tooltip: {
-                        trigger: 'axis',
-                    },
-                    toolbox: {
-                        feature: {
-                            dataZoom: {
-                                yAxisIndex: 'none'
-                            },
-                            restore: {}
-                        }
-                    },
-                    dataZoom: [
-                        {
-                            type: 'inside',
-                            start: 0,
-                            end: 100
-                        },
-                        {
-                            start: 0,
-                            end: 100
-                        }
-                    ],
-                    xAxis: {
-                        type: 'time',
-                        boundaryGap: false,
-                        // data: res.data.map((it: any) => it.t)
-                    },
-                    yAxis: [{
-                        name: "PT",
-                        type: 'value',
-                        boundaryGap: false,
-                    }]
-                })
             })
-    }, [setIndex, setEvents, setEventId])
+        fetch(process.env.NEXT_PUBLIC_SEKAI_DATA_BASE + "event/world-bloom/index.json")
+            .then(res => res.json())
+            .then(json => {
+                setWorldLinkIndex(json)
+            })
+        setOption({
+            tooltip: {
+                trigger: 'axis',
+            },
+            toolbox: {
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: 'none'
+                    },
+                    restore: {}
+                }
+            },
+            dataZoom: [
+                {
+                    type: 'inside',
+                    start: 0,
+                    end: 100
+                },
+                {
+                    start: 0,
+                    end: 100
+                }
+            ],
+            xAxis: {
+                type: 'time',
+                boundaryGap: false,
+                // data: res.data.map((it: any) => it.t)
+            },
+            yAxis: [{
+                name: "PT",
+                type: 'value',
+                boundaryGap: false,
+            }]
+        })
+    }, [])
 
 // useEffect(() => {
 //     let userId0 = router.query.userId
@@ -171,17 +174,29 @@ export default function Page() {
 // }, [userId, setEvents, setOption])
 
     useEffect(() => {
-        if (index === undefined || eventId === "") return
-        setAllRanks(index[eventId].map((it: number) => it.toString()))
+        if (index === undefined || worldLinkIndex === undefined || eventId === "") return
+        const idx = mode === "0" ? index : worldLinkIndex
+        if (idx[eventId] === undefined) return;
+        // console.warn(idx[eventId])
+        setAllRanks(idx[eventId].map((it: number) => it.toString()))
         setRanks([])
-    }, [eventId, setRanks, setAllRanks, index])
+    }, [eventId, index, worldLinkIndex])
+
+    useEffect(() => {
+        if (index === undefined || worldLinkIndex === undefined) return
+        const idx = mode === "0" ? index : worldLinkIndex
+        const events0 = Object.keys(idx).map(it => parseInt(it))
+        // console.log(events0)
+        setEvents(events0)
+        if (events0.length > 0) setEventId(events0[events0.length - 1].toString())
+    }, [mode, index, worldLinkIndex]);
 
     useEffect(() => {
         // if (userId === "" || eventId === "") return;
         if (eventId === "" || ranks.length === 0) return;
 
         const series: any[] = [];
-        getEventRanks(eventId, ranks)
+        getEventRanks(eventId, ranks, mode === "0"? Type.STANDARD : Type.WORLD_LINK)
             .then(it => {
                 //Add compare rank data
                 it.forEach(rank => {
@@ -249,6 +264,19 @@ export default function Page() {
                     </Alert>
                 </Grid>
                 <Grid item xs={12}>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={mode}
+                        exclusive
+                        onChange={(event: MouseEvent<HTMLElement>, value: any) => {
+                            setMode(value)
+                        }}
+                        aria-label="Platform"
+                        style={{height:"56px"}}
+                    >
+                        <ToggleButton value="0">活动总榜</ToggleButton>
+                        <ToggleButton value="1">World Link单人榜</ToggleButton>
+                    </ToggleButtonGroup>
                     <FormControl>
                         {/*<InputLabel id="event-select-label">{userId}的活动</InputLabel>*/}
                         <InputLabel id="event-select-label">活动</InputLabel>
