@@ -76,9 +76,10 @@ export default function PjskDownloadButton({info, captcha=false}: DownloadProps)
                     <div>{info.name}<Chip icon={<CloudDone/>} label={info.version}/></div>
                 </Grid>
                 <Grid item xs={10}>
+                    {info.server === "jp" && <div>由于技术原因，日服暂时不可用</div>}
                     {loading === 0 &&
                         <Button variant="contained" startIcon={<CloudDownload/>}
-                            // disabled={token === undefined}
+                                disabled={info.server === "jp"}
                                 onClick={onDownloadButtonClicked}>下载{info.name}</Button>
                     }
                     {loading === 1 &&
