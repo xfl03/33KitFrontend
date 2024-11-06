@@ -31,8 +31,7 @@ export default function CslDownload() {
 
     const init = async () => {
         const editions0 = [
-            // TODO 等稳定版也发到R2之后，把这个也换掉
-            {name: "稳定版", url: `https://csl.littleservice.cn/detail.json`, detail: undefined},
+            {name: "稳定版", url: `${process.env.NEXT_PUBLIC_CSL_BASE}detail.json`, detail: undefined},
             // {name: "开发版", url: `${process.env.NEXT_PUBLIC_CSL_BASE}detail-beta.json`, detail: undefined},
             {name: "开发版", url: `${process.env.NEXT_PUBLIC_CSL_BASE}detail-canary.json`, detail: undefined},
         ];
