@@ -128,12 +128,12 @@ const drawItems = [
         "category": "Project SEKAI",
         "categoryShort": "SEKAI",
         "items": [
-            {
-                "name": "游戏下载",
-                "icon": <Download/>,
-                "path": "/pjsk-download",
-                "display": true,
-            },
+            // {
+            //     "name": "游戏下载",
+            //     "icon": <Download/>,
+            //     "path": "/pjsk-download",
+            //     "display": true,
+            // },
             {
                 "name": "活动预测",
                 "icon": <Analytics/>,

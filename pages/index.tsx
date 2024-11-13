@@ -37,14 +37,14 @@ export default function Home(
                         因时间、精力、能力有限，33 Kit主要服务使用<strong>简体中文</strong>的用户，「Project SEKAI」相关内容以<strong>日服</strong>为主。
                     </Alert>
                 </Grid>
-                {pjskDownloadInfo &&
-                    <PjskDownloadButton info={pjskDownloadInfo[0]}/>
-                }
-                <Grid item xs={12}>
-                    <Link href="/pjsk-download" underline="none">
-                        在寻找其他服务器？
-                    </Link>
-                </Grid>
+                {/*{pjskDownloadInfo &&*/}
+                {/*    <PjskDownloadButton info={pjskDownloadInfo[0]}/>*/}
+                {/*}*/}
+                {/*<Grid item xs={12}>*/}
+                {/*    <Link href="/pjsk-download" underline="none">*/}
+                {/*        在寻找其他服务器？*/}
+                {/*    </Link>*/}
+                {/*</Grid>*/}
                 {pjskPredict && ranks &&
                     <PjskPredictTable pjskPredict={pjskPredict} ranks={ranks}/>
                 }
