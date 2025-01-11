@@ -148,7 +148,7 @@ export default function Page() {
             dataProvider.preloadMasterData([
                 "areaItemLevels", "cards", "cardRarities", "skills", "cardEpisodes", "masterLessons", "characterRanks",
                 "events", "eventCards", "eventRarityBonusRates", "eventDeckBonuses", "gameCharacters",
-                "gameCharacterUnits", "honors", "worldBloomDifferentAttributeBonuses", "worldBloomSupportDeckBonuses"
+                "gameCharacterUnits", "honors"
             ])
         ])
         const musicMeta = await new LiveCalculator(dataProvider).getMusicMeta(music.id, difficulty)
@@ -219,6 +219,8 @@ export default function Page() {
                     「世界连接」活动只会组出完全同组合的卡组。
                     <br/>
                     「新FES」目前只能算觉醒后技能，觉醒前技能还在研究。
+                    <br/>
+                    「My SEKAI」的Canvas、家具、Gate加成均已支持。
                 </Alert>
             </Grid>
             <Grid item xs={12}>

@@ -49,7 +49,7 @@ export default function CardThumbnail({cardId, deckCard, size = 156}: CardThumbn
                 {`ID${cardId}`}
                 <br/>
                 {deckCard ?
-                    `综合${deckCard.power.total}${deckCard.skill ? ` 加分${deckCard.skill.scoreUp}` : ""}${deckCard.eventBonus ? ` 活动${deckCard.eventBonus}` : ""}` :
+                    `面板${deckCard.power.base + deckCard.power.canvasBonus} 实际${deckCard.power.total}${deckCard.skill ? ` 加分${deckCard.skill.scoreUp}` : ""}${deckCard.eventBonus ? ` 活动${deckCard.eventBonus}` : ""}` :
                     shortSkills[card.skillId]
                 }
             </title>
