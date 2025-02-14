@@ -50,7 +50,7 @@ export default function DeckRecommendTable({firstTitle, first, scoreTitle, score
                             </TableCell>
                         }
                         <TableCell style={{textAlign: "center", fontSize: "1rem"}}
-                                   title={`面板${it.power.base + it.power.canvasBonus}+区域${it.power.areaItemBonus}+角色${it.power.characterBonus}+称号${it.power.honorBonus}+家具${it.power.fixtureBonus}+大门${it.power.gateBonus}`}
+                                   title={`面板${it.power.base}+区域${it.power.areaItemBonus}+角色${it.power.characterBonus}+称号${it.power.honorBonus}+家具${it.power.fixtureBonus}+大门${it.power.gateBonus}`}
                         >
                             {it.power.total}
                         </TableCell>
