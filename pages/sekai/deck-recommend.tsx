@@ -9,7 +9,7 @@ import {
     Checkbox,
     FormControlLabel,
     FormGroup,
-    Grid,
+    Grid, Link,
     Stack,
     TextField,
     ToggleButton,
@@ -210,6 +210,8 @@ export default function Page() {
             <Grid item xs={12}>
                 <Alert severity="info">
                     <AlertTitle>关于自动组队</AlertTitle>
+                    使用自动组队前，请先将用户数据传到<Link href="https://haruki.seiunx.com/upload_suite">Haruki工具箱</Link> 。
+                    <br/>
                     33 Kit不会记录任何用户数据，计算过程全部在您的本地浏览器中进行。
                     <br/>
                     手机性能有限，自动组卡可能极慢，建议使用iPad或电脑组卡。
