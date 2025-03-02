@@ -2,7 +2,7 @@ import {useEffect, useState, MouseEvent} from "react";
 import {getMusicMetaDisplays, MusicMetaDisplay} from "../../utils/sekai/calculator/music-meta-display";
 import AppBase from "../../components/AppBase";
 import {Alert, AlertTitle, Grid, ToggleButton, ToggleButtonGroup} from "@mui/material";
-import {DataGrid, GridCell, GridColDef, GridRenderCellParams} from '@mui/x-data-grid';
+import {DataGrid, GridCell, GridColDef, GridRenderCellParams, GridToolbar} from '@mui/x-data-grid';
 import {formatFixed1, formatPercent, formatPercentForGrid} from "../../utils/common/value-formatter";
 
 export default function Page() {
@@ -25,7 +25,7 @@ export default function Page() {
             width: 80,
             headerAlign: "center",
             align: "center",
-            cellClassName: it => `music-${it.row.musicDifficulty}`
+            cellClassName: it => `music-${it.row.musicDifficulty}`,
         },
         {
             field: 'time',
@@ -33,7 +33,7 @@ export default function Page() {
             width: 80,
             headerAlign: "center",
             align: "center",
-            valueFormatter: formatFixed1
+            valueFormatter: formatFixed1,
         },
         {
             field: 'scoreRate',
@@ -50,9 +50,15 @@ export default function Page() {
             width: 80,
             headerAlign: "center",
             align: "center",
-            description: "计算活动PT时使用的「歌曲加成系数」"
+            description: "计算活动PT时使用的「歌曲加成系数」",
         },
-        {field: 'totalNoteCount', headerName: '音符', width: 80, headerAlign: "center", align: "center"},
+        {
+            field: 'totalNoteCount',
+            headerName: '音符',
+            width: 80,
+            headerAlign: "center",
+            align: "center",
+        },
         {
             field: 'tapPerSecond',
             headerName: '秒击',
@@ -99,6 +105,8 @@ export default function Page() {
                 <Grid item xs={12}>
                     {musicMetas && <DataGrid style={{height: 890, width: 790}} rows={musicMetas} columns={columns}
                                              autoPageSize={true}
+                                             disableColumnMenu={true}
+                                             slots={{ toolbar: GridToolbar }}
                                              initialState={{
                                                  sorting: {
                                                      sortModel: [{field: 'scoreRate', sort: 'desc'}],

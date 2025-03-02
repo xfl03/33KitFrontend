@@ -4,8 +4,8 @@ export function formatPercent(value: number | undefined): string {
     if (value === undefined) {
         return "NaN";
     }
-    const percent = Math.round(value * 100)
-    return `${percent}%`
+    const percent = value * 100
+    return `${percent.toFixed(1)}%`
 }
 export function formatPercentForGrid(params: GridValueFormatterParams<number>): string {
     return formatPercent(params.value)
