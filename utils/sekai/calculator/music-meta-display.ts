@@ -12,6 +12,7 @@ export interface MusicMetaDisplay {
     eventRate: number
     scoreRate: number
     skillRate: number
+    skillDetails: number[]
 }
 
 function getBaseScore(musicMeta: any, liveType: string): number {
@@ -57,6 +58,7 @@ function toMusicMetaDisplay(musics: Music[], musicDifficulties: MusicDifficulty[
         eventRate: musicMeta.event_rate,
         scoreRate: scoreSum,
         skillRate: skillSum / scoreSum,
+        skillDetails: skillScore,
     }
 }
 

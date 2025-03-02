@@ -1,8 +1,14 @@
 import {GridValueFormatterParams} from "@mui/x-data-grid/models/params/gridCellParams";
 
-export function formatPercent(params: GridValueFormatterParams<number>): string {
-    const percent = Math.round(params.value * 100)
+export function formatPercent(value: number | undefined): string {
+    if (value === undefined) {
+        return "NaN";
+    }
+    const percent = Math.round(value * 100)
     return `${percent}%`
+}
+export function formatPercentForGrid(params: GridValueFormatterParams<number>): string {
+    return formatPercent(params.value)
 }
 
 export function formatFixed1(params: GridValueFormatterParams<number>): string {

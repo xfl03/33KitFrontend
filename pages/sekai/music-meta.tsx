@@ -2,8 +2,8 @@ import {useEffect, useState, MouseEvent} from "react";
 import {getMusicMetaDisplays, MusicMetaDisplay} from "../../utils/sekai/calculator/music-meta-display";
 import AppBase from "../../components/AppBase";
 import {Alert, AlertTitle, Grid, ToggleButton, ToggleButtonGroup} from "@mui/material";
-import {DataGrid, GridColDef} from '@mui/x-data-grid';
-import {formatFixed1, formatPercent} from "../../utils/common/value-formatter";
+import {DataGrid, GridCell, GridColDef, GridRenderCellParams} from '@mui/x-data-grid';
+import {formatFixed1, formatPercent, formatPercentForGrid} from "../../utils/common/value-formatter";
 
 export default function Page() {
     const [musicMetas, setMusicMetas] = useState<MusicMetaDisplay[]>()
@@ -14,6 +14,9 @@ export default function Page() {
     const handleLiveTypeChange = (event: MouseEvent<HTMLElement>, value: any) => {
         setLiveType(value)
     };
+    const renderSkillCell = (params: GridRenderCellParams<MusicMetaDisplay, number>) => (
+        <Grid title={params.row.skillDetails.map(it => formatPercent(it)).join(" ")}>{formatPercent(params.value)}</Grid>
+    )
     const columns: GridColDef[] = [
         {field: 'title', headerName: '歌名', width: 220, sortable: false},
         {
@@ -38,7 +41,7 @@ export default function Page() {
             width: 80,
             headerAlign: "center",
             align: "center",
-            valueFormatter: formatPercent,
+            valueFormatter: formatPercentForGrid,
             description: "「Live分数」，技能按100%加分效果计算",
         },
         {
@@ -65,8 +68,9 @@ export default function Page() {
             width: 80,
             headerAlign: "center",
             align: "center",
-            valueFormatter: formatPercent,
+            valueFormatter: formatPercentForGrid,
             description: "「技能依赖度」，「Live分数」中有多少比例是技能贡献的",
+            renderCell: renderSkillCell,
         },
     ];
     return (
@@ -104,4 +108,3 @@ export default function Page() {
             </Grid>
         </AppBase>)
 }
-
