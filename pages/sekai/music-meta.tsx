@@ -66,7 +66,7 @@ export default function Page() {
             headerAlign: "center",
             align: "center",
             valueFormatter: formatFixed1,
-            description: "「每秒点击数」，不含长条中间与尾部",
+            description: "「每秒点击数」，不含长条中间、尾部和Trace",
         },
         {
             field: 'skillRate',
@@ -88,7 +88,7 @@ export default function Page() {
                         「<strong>分数</strong>」指的是「Live分数」，技能按100%加分效果计算。
                         「<strong>技能</strong>」指的是「Live分数」中有多少比例是技能贡献的，也可以叫做「技能依赖度」。
                         「<strong>活动</strong>」指的是计算活动PT时使用的「歌曲加成系数」。
-                        「<strong>秒击</strong>」指的是「每秒点击数」，不含长条中间与尾部。
+                        「<strong>秒击</strong>」指的是「每秒点击数」，不含长条中间、尾部和Trace。
                     </Alert>
                     <ToggleButtonGroup
                         color="primary"
