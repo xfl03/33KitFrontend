@@ -187,6 +187,7 @@ export default function Page() {
         if (calculating) return
         setCalculating(true)
         doCalculate().then(recommend0 => {
+            // console.log(recommend0)
             setError("")
             setRecommend(recommend0)
             setCalculating(false)

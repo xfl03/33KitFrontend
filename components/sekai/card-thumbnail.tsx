@@ -55,21 +55,21 @@ export default function CardThumbnail({cardId, deckCard, size = 156}: CardThumbn
             </title>
             <image
                 href={`${process.env.NEXT_PUBLIC_ASSET_BASE}startapp/thumbnail/chara/${card.assetbundleName}_${normal ? "normal" : "after_training"}.png`}
-                x="8"
-                y="8" height="140" width="140"/>
-            <image href={`/assets/frame/cardFrame_S_${rarity}.png`} x="0" y="0" height="156"
-                   width="156"/>
-            <image href={`/assets/icon_attribute_${card.attr}.png`} x="0" y="0" height="35"
-                   width="35"/>
+                x="0"
+                y="0" height="152" width="152"/>
+            <image href={`/assets/frame/cardFrame_S_${rarity}.png`} x="0" y="0" height="152"
+                   width="152"/>
+            <image href={`/assets/icon_attribute_${card.attr}_64.png`} x="0" y="0" height="36"
+                   width="38"/>
             {rarity === "bd" ?
                 <image href="/assets/rarity_birthday.png"
                        x="8"
-                       y="125" width="22"
+                       y="122" width="22"
                        height="22"/> :
                 Array.from(Array(rarity).keys()).map(i => (
                     <image key={i} href={`/assets/rarity_star_${normal ? "normal" : "afterTraining"}.png`}
-                           x={8 + i * 22}
-                           y="125" width="22"
+                           x={4 + i * 22}
+                           y="122" width="22"
                            height="22"/>
                 ))
             }

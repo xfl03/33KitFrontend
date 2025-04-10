@@ -46,7 +46,7 @@ export default function DeckRecommendTable({firstTitle, first, scoreTitle, score
                         </TableCell>
                         {it.eventBonus !== undefined &&
                             <TableCell style={{textAlign: "center", fontSize: "1rem"}}>
-                                {it.eventBonus}{it.supportDeckBonus ? `+${it.supportDeckBonus.toFixed(1)}` : ""}
+                                {it.eventBonus}{it.supportDeckBonus ? `+${it.supportDeckBonus.toFixed(2)}` : ""}
                             </TableCell>
                         }
                         <TableCell style={{textAlign: "center", fontSize: "1rem"}}
