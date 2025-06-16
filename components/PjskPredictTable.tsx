@@ -52,7 +52,8 @@ export default function PjskPredictTable({pjskPredict, ranks}: PjskPredictTableA
                                 <br/>
                                 预测模型来自<Link href="https://space.bilibili.com/5437778">涼风_青叶</Link>，<b>请谨慎参考预测结果！</b>
                                 <br/>
-
+                                World Link活动较为特殊，预测结果可能会有大幅偏差。
+                                <br/>
                             </TableCell>
                         </TableRow>
                         <TableRow>
