@@ -103,8 +103,8 @@ export default function Page() {
                 setChallengeHighScore(challengeHighScore)
             }
         }
-        worker1Ref.current = new Worker(new URL("./challenge-live-deck-recommend-worker.ts", import.meta.url))
-        worker2Ref.current = new Worker(new URL("./event-deck-recommend-worker.ts", import.meta.url))
+        worker1Ref.current = new Worker(new URL("../../utils/sekai/calculator/challenge-live-deck-recommend-worker.ts", import.meta.url))
+        worker2Ref.current = new Worker(new URL("../../utils/sekai/calculator/event-deck-recommend-worker.ts", import.meta.url))
         worker1Ref.current.onmessage = onWorkerMessage
         worker2Ref.current.onmessage = onWorkerMessage
         const uid = localStorage.getItem("userId")
