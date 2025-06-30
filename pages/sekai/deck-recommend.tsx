@@ -1,6 +1,6 @@
 import {useMusicDifficulties, useMusics} from "../../utils/sekai/master/music-hook";
-import * as React from "react";
-import {MouseEvent, useEffect, useState} from "react";
+import {MouseEvent, useEffect, useState, useRef} from "react";
+import type {ChangeEvent} from "react";
 import AppBase from "../../components/AppBase";
 import {
     Alert,
@@ -35,6 +35,9 @@ import useEvents, {getBloomEventCharacters} from "../../utils/sekai/master/event
 
 // const difficulties = ["easy", "normal", "hard", "expert", "master"]
 export default function Page() {
+    const worker1Ref = useRef<Worker>()
+    const worker2Ref = useRef<Worker>()
+    const resolvers = useRef<{ [key: string]: any }>({})
     const [userId, setUserId] = useState<string>("")
     const [mode, setMode] = useState<string>("2")
     const gameCharacters = useGameCharacters()
@@ -93,8 +96,23 @@ export default function Page() {
     const [supportCharacter, setSupportCharacter] = useState<GameCharacter | null>(null)
 
     useEffect(() => {
+        const onWorkerMessage = (event: MessageEvent<{ execId: string; challengeHighScore: number; result: any }>) => {
+            const {execId, challengeHighScore, result} = event.data
+            resolvers.current[execId](result)
+            if (typeof challengeHighScore !== "undefined") {
+                setChallengeHighScore(challengeHighScore)
+            }
+        }
+        worker1Ref.current = new Worker(new URL("./challenge-live-deck-recommend-worker.ts", import.meta.url))
+        worker2Ref.current = new Worker(new URL("./event-deck-recommend-worker.ts", import.meta.url))
+        worker1Ref.current.onmessage = onWorkerMessage
+        worker2Ref.current.onmessage = onWorkerMessage
         const uid = localStorage.getItem("userId")
         if (uid) setUserId(uid);
+        return () => {
+            worker1Ref.current?.terminate()
+            worker2Ref.current?.terminate()
+        }
     }, [])
 
     useEffect(() => {
@@ -128,7 +146,7 @@ export default function Page() {
     }, [event0])
 
     function handleCardConfig(rarity: string, key: "rankMax" | "episodeRead" | "skillMax" | "masterMax" | "disable") {
-        return (event: React.ChangeEvent<HTMLInputElement>) => {
+        return (event: ChangeEvent<HTMLInputElement>) => {
             const newCardConfig = JSON.parse(JSON.stringify(cardConfig));
             newCardConfig[rarity][key] = event.target.checked
             setCardConfig(newCardConfig);
@@ -140,47 +158,42 @@ export default function Page() {
         if (!userId) throw new Error("请填写用户ID")
         localStorage.setItem("userId", userId);
         if (!music || !difficulty) throw new Error("请选择歌曲")
-        const dataProvider = new CachedDataProvider(new KitDataProvider(userId))
-        // 并行预加载所有数据，加快速度
-        await Promise.all([
-            dataProvider.getUserDataAll(),
-            dataProvider.getMusicMeta(),
-            dataProvider.preloadMasterData([
-                "areaItemLevels", "cards", "cardRarities", "skills", "cardEpisodes", "masterLessons", "characterRanks",
-                "events", "eventCards", "eventRarityBonusRates", "eventDeckBonuses", "gameCharacters",
-                "gameCharacterUnits", "honors"
-            ])
-        ])
-        const musicMeta = await new LiveCalculator(dataProvider).getMusicMeta(music.id, difficulty)
+
         if (mode === "1") {
             if (!gameCharacter) throw new Error("请选择角色")
-            const userChallengeLiveSoloResults = await dataProvider.getUserData("userChallengeLiveSoloResults") as any[]
-            const userChallengeLiveSoloResult = userChallengeLiveSoloResults.find(it => it.characterId === gameCharacter.id)
-            if (userChallengeLiveSoloResult !== undefined) {
-                setChallengeHighScore(userChallengeLiveSoloResult.highScore)
-            }
-            return await new ChallengeLiveDeckRecommend(dataProvider).recommendChallengeLiveDeck(gameCharacter.id, {
-                musicMeta,
-                limit: 10,
-                member: 5,
-                cardConfig,
-                debugLog: (str: string) => {
-                    console.log(str)
-                },
+            return new Promise<RecommendDeck[]>((resolve, reject) => {
+                const execId = crypto.randomUUID()
+                resolvers.current[execId] = resolve
+                worker1Ref.current?.postMessage({
+                    execId: execId,
+                    args: {
+                        userId: userId,
+                        music: music,
+                        difficulty: difficulty,
+                        gameCharacter: gameCharacter,
+                        cardConfig: cardConfig
+                    }
+                })
             })
         }
 
         if (!event0) throw new Error("请选择活动")
-        const newLiveType =
-            (event0.eventType === "cheerful_carnival" && liveType === LiveType.MULTI) ? LiveType.CHEERFUL : liveType
-        return await new EventDeckRecommend(dataProvider).recommendEventDeck(event0.id, newLiveType, {
-            musicMeta,
-            limit: 10,
-            cardConfig,
-            debugLog: (str: string) => {
-                console.log(str)
-            },
-        }, supportCharacter?.id)
+        return new Promise<RecommendDeck[]>((resolve, reject) => {
+            const execId = crypto.randomUUID()
+            resolvers.current[execId] = resolve
+            worker2Ref.current?.postMessage({
+                execId: execId,
+                args: {
+                    userId: userId,
+                    music: music,
+                    difficulty: difficulty,
+                    event0: event0,
+                    liveType: liveType,
+                    cardConfig: cardConfig,
+                    supportCharacter: supportCharacter
+                }
+            })
+        })
     }
 
     function handleButton() {
@@ -204,6 +217,14 @@ export default function Page() {
             setRecommend([])
             setCalculating(false)
         })
+    }
+
+    function handleCancel() {
+        worker1Ref.current?.terminate()
+        worker2Ref.current?.terminate()
+        setError("")
+        setRecommend([])
+        setCalculating(false)
     }
 
     return (<AppBase subtitle={"自动组队"}>
@@ -231,7 +252,7 @@ export default function Page() {
                     style={{width: "457px", marginTop: "10px"}}
                     label="用户ID"
                     value={userId}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
                         setUserId(event.target.value);
                     }}
                 />
@@ -373,10 +394,10 @@ export default function Page() {
                         </Stack>
                     )}
                 </FormGroup>
-                <Button variant="outlined" onClick={() => handleButton()} disabled={calculating}
-                        style={{width: "457px", marginBottom: "10px", height: "56px"}}>
-                    {calculating ? "计算中...可能要等30秒" : "自动组卡！"}
-                </Button>
+                {calculating ?
+                  <Button variant="outlined" onClick={() => handleCancel()} style={{width: "457px", marginBottom: "10px", height: "56px"}}>取消（计算中...可能要等30秒）</Button> :
+                  <Button variant="outlined" onClick={() => handleButton()} style={{width: "457px", marginBottom: "10px", height: "56px"}}>自动组卡！</Button>
+                }
                 {error !== "" &&
                     <Alert severity="error">
                         <AlertTitle>无法推荐卡组</AlertTitle>
