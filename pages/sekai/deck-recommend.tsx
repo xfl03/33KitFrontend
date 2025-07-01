@@ -1,6 +1,6 @@
 import {useMusicDifficulties, useMusics} from "../../utils/sekai/master/music-hook";
-import {MouseEvent, useEffect, useState, useRef} from "react";
-import type {ChangeEvent} from "react";
+import {useEffect, useState, useRef} from "react";
+import type {MouseEvent, ChangeEvent} from "react";
 import AppBase from "../../components/AppBase";
 import {
     Alert,
@@ -15,29 +15,15 @@ import {
     ToggleButton,
     ToggleButtonGroup
 } from "@mui/material";
-import {
-    CachedDataProvider,
-    CardConfig,
-    ChallengeLiveDeckRecommend,
-    Event,
-    EventDeckRecommend,
-    GameCharacter,
-    LiveCalculator,
-    LiveType,
-    Music,
-    RecommendDeck
-} from "sekai-calculator";
+import {CardConfig, Event, GameCharacter, LiveType, Music, RecommendDeck} from "sekai-calculator";
 import useGameCharacters, {getCharacterName} from "../../utils/sekai/master/character-hook";
-import {KitDataProvider} from "../../utils/sekai/calculator/kit-data-provider";
 import Button from "@mui/material/Button";
 import DeckRecommendTable from "../../components/sekai/deck-recommend-table";
 import useEvents, {getBloomEventCharacters} from "../../utils/sekai/master/event-hook";
 
 // const difficulties = ["easy", "normal", "hard", "expert", "master"]
 export default function Page() {
-    const worker1Ref = useRef<Worker>()
-    const worker2Ref = useRef<Worker>()
-    const resolvers = useRef<{ [key: string]: any }>({})
+    const workerRef = useRef<Worker>()
     const [userId, setUserId] = useState<string>("")
     const [mode, setMode] = useState<string>("2")
     const gameCharacters = useGameCharacters()
@@ -96,22 +82,10 @@ export default function Page() {
     const [supportCharacter, setSupportCharacter] = useState<GameCharacter | null>(null)
 
     useEffect(() => {
-        const onWorkerMessage = (event: MessageEvent<{ execId: string; challengeHighScore: number; result: any }>) => {
-            const {execId, challengeHighScore, result} = event.data
-            resolvers.current[execId](result)
-            if (typeof challengeHighScore !== "undefined") {
-                setChallengeHighScore(challengeHighScore)
-            }
-        }
-        worker1Ref.current = new Worker(new URL("../../utils/sekai/calculator/challenge-live-deck-recommend-worker.ts", import.meta.url))
-        worker2Ref.current = new Worker(new URL("../../utils/sekai/calculator/event-deck-recommend-worker.ts", import.meta.url))
-        worker1Ref.current.onmessage = onWorkerMessage
-        worker2Ref.current.onmessage = onWorkerMessage
         const uid = localStorage.getItem("userId")
         if (uid) setUserId(uid);
         return () => {
-            worker1Ref.current?.terminate()
-            worker2Ref.current?.terminate()
+            workerRef.current?.terminate()
         }
     }, [])
 
@@ -153,20 +127,37 @@ export default function Page() {
         };
     }
 
-    async function doCalculate() {
+    function doCalculate() {
         setChallengeHighScore(0)
         if (!userId) throw new Error("请填写用户ID")
-        localStorage.setItem("userId", userId);
+        localStorage.setItem("userId", userId)
         if (!music || !difficulty) throw new Error("请选择歌曲")
-
         if (mode === "1") {
             if (!gameCharacter) throw new Error("请选择角色")
-            return new Promise<RecommendDeck[]>((resolve, reject) => {
-                const execId = crypto.randomUUID()
-                resolvers.current[execId] = resolve
-                worker1Ref.current?.postMessage({
-                    execId: execId,
+        } else {
+            if (!event0) throw new Error("请选择活动")
+        }
+
+        return new Promise<RecommendDeck[]>((resolve, reject) => {
+            workerRef.current = new Worker(new URL("../../utils/sekai/calculator/deck-recommend-worker.ts", import.meta.url))
+            workerRef.current.onmessage = (event) => {
+                const {challengeHighScore, result, error} = event.data
+                if (typeof error !== "undefined") {
+                    reject(error)
+                } else {
+                    resolve(result)
+                    if (typeof challengeHighScore !== "undefined") {
+                        setChallengeHighScore(challengeHighScore)
+                    }
+                }
+            }
+            workerRef.current.onmessageerror = (event) => {
+                reject(event.data)
+            }
+            if (mode === "1") {
+                workerRef.current.postMessage({
                     args: {
+                        mode: mode,
                         userId: userId,
                         music: music,
                         difficulty: difficulty,
@@ -174,25 +165,20 @@ export default function Page() {
                         cardConfig: cardConfig
                     }
                 })
-            })
-        }
-
-        if (!event0) throw new Error("请选择活动")
-        return new Promise<RecommendDeck[]>((resolve, reject) => {
-            const execId = crypto.randomUUID()
-            resolvers.current[execId] = resolve
-            worker2Ref.current?.postMessage({
-                execId: execId,
-                args: {
-                    userId: userId,
-                    music: music,
-                    difficulty: difficulty,
-                    event0: event0,
-                    liveType: liveType,
-                    cardConfig: cardConfig,
-                    supportCharacter: supportCharacter
-                }
-            })
+            } else {
+                workerRef.current.postMessage({
+                    args: {
+                        mode: mode,
+                        userId: userId,
+                        music: music,
+                        difficulty: difficulty,
+                        event0: event0,
+                        liveType: liveType,
+                        cardConfig: cardConfig,
+                        supportCharacter: supportCharacter
+                    }
+                })
+            }
         })
     }
 
@@ -220,8 +206,7 @@ export default function Page() {
     }
 
     function handleCancel() {
-        worker1Ref.current?.terminate()
-        worker2Ref.current?.terminate()
+        workerRef.current?.terminate()
         setError("")
         setRecommend([])
         setCalculating(false)
