@@ -129,13 +129,13 @@ export default function Page() {
 
     function doCalculate() {
         setChallengeHighScore(0)
-        if (!userId) throw new Error("请填写用户ID")
+        if (!userId) return Promise.reject(new Error("请填写用户ID"))
         localStorage.setItem("userId", userId)
-        if (!music || !difficulty) throw new Error("请选择歌曲")
+        if (!music || !difficulty) return Promise.reject(new Error("请选择歌曲"))
         if (mode === "1") {
-            if (!gameCharacter) throw new Error("请选择角色")
+            if (!gameCharacter) return Promise.reject(new Error("请选择角色"))
         } else {
-            if (!event0) throw new Error("请选择活动")
+            if (!event0) return Promise.reject(new Error("请选择活动"))
         }
 
         return new Promise<RecommendDeck[]>((resolve, reject) => {
