@@ -1,19 +1,7 @@
 import { useMusicDifficulties, useMusics } from "../../utils/sekai/master/music-hook";
 import { type MouseEvent, type ChangeEvent, useEffect, useState, useRef } from "react";
 import AppBase from "../../components/AppBase";
-import {
-    Alert,
-    AlertTitle,
-    Autocomplete,
-    Checkbox,
-    FormControlLabel,
-    FormGroup,
-    Grid, Link,
-    Stack,
-    TextField,
-    ToggleButton,
-    ToggleButtonGroup
-} from "@mui/material";
+import { Alert, AlertTitle, Autocomplete, Checkbox, FormControlLabel, FormGroup, Grid, Link, Stack, TextField, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { CardConfig, Event, GameCharacter, LiveType, Music, RecommendDeck } from "sekai-calculator";
 import useGameCharacters, { getCharacterName } from "../../utils/sekai/master/character-hook";
 import Button from "@mui/material/Button";
@@ -72,7 +60,7 @@ export default function Page() {
             skillMax: false
         }
     })
-    const [recommend, setRecommend] = useState<RecommendDeck[]>([])
+    const [recommend, setRecommend] = useState<RecommendDeck[] | null>(null)
     const [calculating, setCalculating] = useState<boolean>(false)
     const [error, setError] = useState<string>("")
     const [challengeHighScore, setChallengeHighScore] = useState<number>(0)
@@ -140,13 +128,16 @@ export default function Page() {
         return new Promise<RecommendDeck[]>((resolve, reject) => {
             workerRef.current = new Worker(new URL("../../utils/sekai/calculator/deck-recommend-worker.ts", import.meta.url))
             workerRef.current.onmessage = (event) => {
-                const { challengeHighScore, result, error } = event.data
+                const { challengeHighScore, result, error, duration } = event.data
                 if (typeof error !== "undefined") {
                     reject(error)
                 } else {
                     resolve(result)
                     if (typeof challengeHighScore !== "undefined") {
                         setChallengeHighScore(challengeHighScore)
+                    }
+                    if (duration > 0) {
+                        setDuration(duration)
                     }
                 }
             }
@@ -181,34 +172,14 @@ export default function Page() {
         })
     }
 
-    function calcDuration() {
-        function getNow() {
-            if (typeof performance.now === 'function') {
-                return performance.now()
-            } else {
-                return Date.now()
-            }
-        }
-
-        const startAt = getNow()
-
-        return {
-            startAt: startAt,
-            done() {
-                return getNow() - startAt
-            }
-        }
-    }
-
     function handleButton() {
         if (calculating) {
             workerRef.current?.terminate()
             setError("")
-            setRecommend([])
+            setRecommend(null)
             setCalculating(false)
         } else {
             setCalculating(true)
-            const currentDuration = calcDuration()
             doCalculate()
                 .then(recommend0 => {
                     // console.log(recommend0)
@@ -217,7 +188,6 @@ export default function Page() {
                 })
                 .finally(() => {
                     setCalculating(false)
-                    setDuration(currentDuration.done())
                 })
                 .catch(e => {
                     console.warn(e)
@@ -229,7 +199,7 @@ export default function Page() {
                     } else {
                         setError(errorStr)
                     }
-                    setRecommend([])
+                    setRecommend(null)
                 })
         }
     }
@@ -402,19 +372,19 @@ export default function Page() {
                     )}
                 </FormGroup>
                 <Button variant="outlined" onClick={() => handleButton()} style={{ width: "457px", marginBottom: "10px", height: "56px" }}>{calculating ? '取消（计算中...可能要等30秒）' : '自动组卡！'}</Button>
-                {error !== "" ?
+                {error !== "" &&
                     <Alert severity="error">
                         <AlertTitle>无法推荐卡组</AlertTitle>
                         如果你确信是33 Kit的问题，可以将本页面截图和拥有的卡牌发给33。
                         <br />
                         错误信息：<strong>{error}</strong>
-                        <br />
-                        耗时：<strong>{duration} 毫秒</strong>
-                    </Alert> :
+                    </Alert>
+                }
+                {recommend &&
                     <Alert severity="info">
                         <AlertTitle>计算完成</AlertTitle>
                         {mode === "1" && gameCharacter && challengeHighScore > 0 && <><strong>{getCharacterName(gameCharacter)}</strong><br />当前最高分：<strong>{challengeHighScore}</strong><br /></>}
-                        耗时：<strong>{duration} 毫秒</strong>
+                        计算耗时：<strong>{duration.toFixed(0)} 毫秒</strong>
                     </Alert>
                 }
             </Grid>

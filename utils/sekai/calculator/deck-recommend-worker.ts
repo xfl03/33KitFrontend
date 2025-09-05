@@ -1,14 +1,19 @@
-import {
-  CachedDataProvider,
-  ChallengeLiveDeckRecommend,
-  EventDeckRecommend,
-  LiveCalculator,
-  LiveType
-} from "sekai-calculator";
-import {KitDataProvider} from "./kit-data-provider";
+import { CachedDataProvider, ChallengeLiveDeckRecommend, EventDeckRecommend, LiveCalculator, LiveType } from "sekai-calculator";
+import { KitDataProvider } from "./kit-data-provider";
+
+function calcDuration() {
+  const startAt = performance.now()
+
+  return {
+    startAt: startAt,
+    done() {
+      return performance.now() - startAt
+    }
+  }
+}
 
 async function deckRecommendRunner(args: any) {
-  const {mode, userId, music, difficulty, gameCharacter, cardConfig, event0, liveType, supportCharacter} = args
+  const { mode, userId, music, difficulty, gameCharacter, cardConfig, event0, liveType, supportCharacter } = args
 
   const dataProvider = new CachedDataProvider(new KitDataProvider(userId))
   // 并行预加载所有数据，加快速度
@@ -21,11 +26,14 @@ async function deckRecommendRunner(args: any) {
       "gameCharacterUnits", "honors"
     ])
   ])
-  const musicMeta = await new LiveCalculator(dataProvider).getMusicMeta(music.id, difficulty)
+  const liveCalculator = new LiveCalculator(dataProvider)
+  const musicMeta = await liveCalculator.getMusicMeta(music.id, difficulty)
   if (mode === "1") {
     const userChallengeLiveSoloResults = await dataProvider.getUserData<any[]>("userChallengeLiveSoloResults")
     const userChallengeLiveSoloResult = userChallengeLiveSoloResults.find(it => it.characterId === gameCharacter.id)
-    const result = await new ChallengeLiveDeckRecommend(dataProvider).recommendChallengeLiveDeck(gameCharacter.id, {
+    const challengeLiveRecommend = new ChallengeLiveDeckRecommend(dataProvider)
+    const currentDuration = calcDuration()
+    const result = await challengeLiveRecommend.recommendChallengeLiveDeck(gameCharacter.id, {
       musicMeta,
       limit: 10,
       member: 5,
@@ -36,12 +44,15 @@ async function deckRecommendRunner(args: any) {
     })
     return {
       challengeHighScore: userChallengeLiveSoloResult,
-      result: result
+      result: result,
+      duration: currentDuration.done()
     }
   }
 
   const newLiveType = (event0.eventType === "cheerful_carnival" && liveType === LiveType.MULTI) ? LiveType.CHEERFUL : liveType
-  const result = await new EventDeckRecommend(dataProvider).recommendEventDeck(event0.id, newLiveType, {
+  const eventDeckRecommend = new EventDeckRecommend(dataProvider)
+  const currentDuration = calcDuration()
+  const result = await eventDeckRecommend.recommendEventDeck(event0.id, newLiveType, {
     musicMeta,
     limit: 10,
     cardConfig,
@@ -50,7 +61,8 @@ async function deckRecommendRunner(args: any) {
     },
   }, supportCharacter?.id)
   return {
-    result: result
+    result: result,
+    duration: currentDuration.done()
   }
 }
 
