@@ -21,9 +21,10 @@ async function deckRecommendRunner(args: any) {
     dataProvider.getUserDataAll(),
     dataProvider.getMusicMeta(),
     dataProvider.preloadMasterData([
-      "areaItemLevels", "cards", "cardRarities", "skills", "cardEpisodes", "masterLessons", "characterRanks",
-      "events", "eventCards", "eventRarityBonusRates", "eventDeckBonuses", "gameCharacters",
-      "gameCharacterUnits", "honors"
+      "areaItemLevels", "cards", "cardMysekaiCanvasBonuses", "cardRarities", "characterRanks", "cardEpisodes",
+      "events", "eventCards", "eventRarityBonusRates", "eventDeckBonuses", "gameCharacters", "gameCharacterUnits",
+      "honors", "masterLessons", "mysekaiGates", "mysekaiGateLevels","skills", "worldBloomDifferentAttributeBonuses",
+      "worldBloomSupportDeckBonuses", "worldBloomSupportDeckUnitEventLimitedBonuses"
     ])
   ])
   const liveCalculator = new LiveCalculator(dataProvider)
@@ -60,6 +61,7 @@ async function deckRecommendRunner(args: any) {
       console.log(str)
     },
   }, supportCharacter?.id)
+  console.log(result[0])
   return {
     result: result,
     duration: currentDuration.done()
