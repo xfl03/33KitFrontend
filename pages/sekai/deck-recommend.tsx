@@ -217,7 +217,7 @@ export default function Page() {
                     <br />
                     自动组卡不能保证100%是最优解，如果还有更好的方案，欢迎向33反馈。
                     <br />
-                    「World Link」活动只会组出完全同组合的卡组。
+                    「World Link」活动只会组出完全同组合的卡组，「World Link Final」活动必须选择队长。
                     <br />
                     「新FES」已经支持觉醒前后技能，会自动取最优技能。
                     <br />
