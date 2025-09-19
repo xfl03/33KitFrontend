@@ -34,7 +34,7 @@ __metadata:
     react-dom: "npm:^18.2.0"
     react-ga4: "npm:^2.1.0"
     react-google-recaptcha-v3: "npm:^1.10.1"
-    sekai-calculator: "npm:^0.17.5"
+    sekai-calculator: "npm:^0.17.6"
     typescript: "npm:^5.0.2"
   languageName: unknown
   linkType: soft
@@ -3746,10 +3746,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sekai-calculator@npm:^0.17.5":
-  version: 0.17.5
-  resolution: "sekai-calculator@npm:0.17.5"
-  checksum: 10c0/993501f43777d8a2c6231013094de0b456aeb6d7e53a91e92f80c7b87a14574c1b4f8a248a63ef44a6631ba925e8ae139d0ab65b8a07ca9f0d05c4f34d807fb8
+"sekai-calculator@npm:^0.17.6":
+  version: 0.17.6
+  resolution: "sekai-calculator@npm:0.17.6"
+  checksum: 10c0/b6d81c860175112a355311b679f45ed738a195a78df929ab786429b1d5b72cd87d0709b6c4f4e45d75a83e3349d6dce9edfef73a0d742799d96191234266981c
   languageName: node
   linkType: hard
 
