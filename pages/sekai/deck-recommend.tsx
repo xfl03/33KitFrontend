@@ -11,16 +11,17 @@ import useEvents, { getBloomEventCharacters } from "../../utils/sekai/master/eve
 // const difficulties = ["easy", "normal", "hard", "expert", "master"]
 export default function Page() {
     const workerRef = useRef<Worker>()
+    const [server, setServer] = useState<string>("jp")
     const [userId, setUserId] = useState<string>("")
     const [mode, setMode] = useState<string>("2")
-    const gameCharacters = useGameCharacters()
+    let gameCharacters = useGameCharacters(server)
     const [gameCharacter, setGameCharacter] = useState<GameCharacter | null>(null)
-    const events = useEvents()
+    let events = useEvents(server)
     const [event0, setEvent0] = useState<Event | null>(null)
     const [liveType, setLiveType] = useState<LiveType>(LiveType.MULTI)
-    const musics = useMusics()
+    let musics = useMusics(server)
     const [music, setMusic] = useState<Music | null>(null)
-    const musicDifficulties = useMusicDifficulties()
+    let musicDifficulties = useMusicDifficulties(server)
     const [difficulties, setDifficulties] = useState<Array<string>>([])
     const [difficulty, setDifficulty] = useState<string | null>("master")
     const [cardConfig, setCardConfig] = useState<Record<string, CardConfig>>({
@@ -148,6 +149,7 @@ export default function Page() {
                 workerRef.current.postMessage({
                     args: {
                         mode: mode,
+                        server,
                         userId: userId,
                         music: music,
                         difficulty: difficulty,
@@ -159,6 +161,7 @@ export default function Page() {
                 workerRef.current.postMessage({
                     args: {
                         mode: mode,
+                        server,
                         userId: userId,
                         music: music,
                         difficulty: difficulty,
@@ -225,21 +228,38 @@ export default function Page() {
                 </Alert>
             </Grid>
             <Grid item xs={12}>
-                <TextField
-                    style={{ width: "457px", marginTop: "10px" }}
-                    label="用户ID"
-                    value={userId}
-                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                        setUserId(event.target.value)
-                    }}
-                />
+                <Stack direction="row" spacing={1} style={{ marginTop: "10px" }}>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={server}
+                        exclusive
+                        onChange={(event: MouseEvent<HTMLElement>, value: any) => {
+                            if (value) setServer(value)
+                        }}
+                        aria-label="Platform"
+                    >
+                        <ToggleButton value="jp">日</ToggleButton>
+                        <ToggleButton value="cn">简</ToggleButton>
+                        <ToggleButton value="tc">繁</ToggleButton>
+                        <ToggleButton value="en">英</ToggleButton>
+                        <ToggleButton value="kr">韩</ToggleButton>
+                    </ToggleButtonGroup>
+                    <TextField
+                        style={{ width: "262px" }}
+                        label="用户ID"
+                        value={userId}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                            setUserId(event.target.value)
+                        }}
+                    />
+                </Stack>
                 <Stack direction="row" spacing={1} style={{ marginTop: "10px" }}>
                     <ToggleButtonGroup
                         color="primary"
                         value={mode}
                         exclusive
                         onChange={(event: MouseEvent<HTMLElement>, value: any) => {
-                            setMode(value)
+                            if (value) setMode(value)
                         }}
                         aria-label="Platform"
                     >
@@ -292,7 +312,7 @@ export default function Page() {
                         value={liveType}
                         exclusive
                         onChange={(event: MouseEvent<HTMLElement>, value: LiveType) => {
-                            setLiveType(value)
+                            if (value) setLiveType(value)
                         }}
                         aria-label="Platform"
                     >
@@ -393,7 +413,7 @@ export default function Page() {
                     <DeckRecommendTable firstTitle="排名"
                         first={(_, i) => i + 1}
                         scoreTitle="分数" score={(it) => it.score}
-                        recommend={recommend} />
+                        recommend={recommend} server={server}/>
                 }
             </Grid>
         </Grid>

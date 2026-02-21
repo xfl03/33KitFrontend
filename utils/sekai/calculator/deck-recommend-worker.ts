@@ -1,4 +1,4 @@
-import { CachedDataProvider, ChallengeLiveDeckRecommend, EventDeckRecommend, LiveCalculator, LiveType } from "sekai-calculator";
+import { ChallengeLiveDeckRecommend, EventDeckRecommend, LiveCalculator, LiveType } from "sekai-calculator";
 import { KitDataProvider } from "./kit-data-provider";
 
 function calcDuration() {
@@ -13,9 +13,9 @@ function calcDuration() {
 }
 
 async function deckRecommendRunner(args: any) {
-  const { mode, userId, music, difficulty, gameCharacter, cardConfig, event0, liveType, supportCharacter } = args
+  const { mode, server, userId, music, difficulty, gameCharacter, cardConfig, event0, liveType, supportCharacter } = args
 
-  const dataProvider = new CachedDataProvider(new KitDataProvider(userId))
+  const dataProvider = KitDataProvider.getCachedInstance(server, userId)
   // 并行预加载所有数据，加快速度
   await Promise.all([
     dataProvider.getUserDataAll(),
@@ -23,8 +23,9 @@ async function deckRecommendRunner(args: any) {
     dataProvider.preloadMasterData([
       "areaItemLevels", "cards", "cardMysekaiCanvasBonuses", "cardRarities", "characterRanks", "cardEpisodes",
       "events", "eventCards", "eventRarityBonusRates", "eventDeckBonuses", "gameCharacters", "gameCharacterUnits",
-      "honors", "masterLessons", "mysekaiGates", "mysekaiGateLevels","skills", "worldBloomDifferentAttributeBonuses",
-      "worldBloomSupportDeckBonuses", "worldBloomSupportDeckUnitEventLimitedBonuses"
+      "honors", "masterLessons", "mysekaiGates", "mysekaiGateLevels","skills",
+      // "worldBloomDifferentAttributeBonuses",
+      // "worldBloomSupportDeckBonuses", "worldBloomSupportDeckUnitEventLimitedBonuses",
     ])
   ])
   const liveCalculator = new LiveCalculator(dataProvider)

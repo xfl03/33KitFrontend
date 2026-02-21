@@ -1,17 +1,23 @@
 import {useEffect, useState, MouseEvent} from "react";
 import {getMusicMetaDisplays, MusicMetaDisplay} from "../../utils/sekai/calculator/music-meta-display";
 import AppBase from "../../components/AppBase";
-import {Alert, AlertTitle, Grid, ToggleButton, ToggleButtonGroup} from "@mui/material";
-import {DataGrid, GridCell, GridColDef, GridRenderCellParams, GridToolbar} from '@mui/x-data-grid';
+import {Alert, AlertTitle, Grid, Stack, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import {DataGrid, GridColDef, GridRenderCellParams, GridToolbar} from '@mui/x-data-grid';
 import {formatFixed1, formatPercent, formatPercentForGrid} from "../../utils/common/value-formatter";
 
 export default function Page() {
     const [musicMetas, setMusicMetas] = useState<MusicMetaDisplay[]>()
+    const [server, setServer] = useState<string>("jp")
     const [liveType, setLiveType] = useState<string>("solo")
     useEffect(() => {
-        getMusicMetaDisplays(liveType).then(it => setMusicMetas(it))
-    }, [liveType])
-    const handleLiveTypeChange = (event: MouseEvent<HTMLElement>, value: any) => {
+        getMusicMetaDisplays(server, liveType).then(it => setMusicMetas(it))
+    }, [server, liveType])
+    const handleServerChange = (event: MouseEvent<HTMLElement>, value: string | null) => {
+        if (value === null) return
+        setServer(value)
+    };
+    const handleLiveTypeChange = (event: MouseEvent<HTMLElement>, value: string | null) => {
+        if (value === null) return
         setLiveType(value)
     };
     const renderSkillCell = (params: GridRenderCellParams<MusicMetaDisplay, number>) => (
@@ -90,17 +96,34 @@ export default function Page() {
                         「<strong>活动</strong>」指的是计算活动PT时使用的「歌曲加成系数」。
                         「<strong>秒击</strong>」指的是「每秒点击数」，不含长条中间、尾部和Trace。
                     </Alert>
-                    <ToggleButtonGroup
-                        color="primary"
-                        value={liveType}
-                        exclusive
-                        onChange={handleLiveTypeChange}
-                        aria-label="Platform"
-                    >
-                        <ToggleButton value="solo">单人Live</ToggleButton>
-                        <ToggleButton value="multi">多人Live</ToggleButton>
-                        <ToggleButton value="auto">自动Live</ToggleButton>
-                    </ToggleButtonGroup>
+                    <Stack direction="row" spacing={1} style={{ marginTop: "10px" }}>
+                        <ToggleButtonGroup
+                            color="primary"
+                            value={server}
+                            exclusive
+                            onChange={handleServerChange}
+                            aria-label="Platform"
+                        >
+                            <ToggleButton value="jp">日</ToggleButton>
+                            <ToggleButton value="cn">简</ToggleButton>
+                            <ToggleButton value="tc">繁</ToggleButton>
+                            <ToggleButton value="en">英</ToggleButton>
+                            <ToggleButton value="kr">韩</ToggleButton>
+                        </ToggleButtonGroup>
+                    </Stack>
+                    <Stack direction="row" spacing={1} style={{ marginTop: "10px" }}>
+                        <ToggleButtonGroup
+                            color="primary"
+                            value={liveType}
+                            exclusive
+                            onChange={handleLiveTypeChange}
+                            aria-label="Platform"
+                        >
+                            <ToggleButton value="solo">单人Live</ToggleButton>
+                            <ToggleButton value="multi">多人Live</ToggleButton>
+                            <ToggleButton value="auto">自动Live</ToggleButton>
+                        </ToggleButtonGroup>
+                    </Stack>
                 </Grid>
                 <Grid item xs={12}>
                     {musicMetas && <DataGrid style={{height: 890, width: 790}} rows={musicMetas} columns={columns}

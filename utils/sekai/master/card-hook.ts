@@ -1,20 +1,17 @@
 import {useEffect, useState} from "react";
 import {Card} from "sekai-calculator";
-import {KitDataProvider} from "../calculator/kit-data-provider";
 import useMasterData from "./common";
 
-const dataProvider = KitDataProvider.DEFAULT_INSTANCE
-
-export default function useCards() {
-    return useMasterData<Card>("cards")
+export default function useCards(server: string = "jp") {
+    return useMasterData<Card>("cards", server)
 }
 
-export function useCard(cardId: number) {
+export function useCard(cardId: number, server: string = "jp") {
+    const cards = useCards(server);
     const [card, setCard] = useState<Card>()
     useEffect(() => {
-        dataProvider.getMasterData<Card>("cards").then(cards => {
-            setCard(cards.find(it => it.id === cardId))
-        })
-    }, [cardId])
+        if (cards === undefined) return
+        setCard(cards.find(it => it.id === cardId))
+    }, [cardId, cards])
     return card
 }

@@ -67,8 +67,8 @@ function toMusicMetaDisplays(musics: Music[], musicDifficulties: MusicDifficulty
     return musicMetas.map(it => toMusicMetaDisplay(musics, musicDifficulties, it, liveType, ++id))
 }
 
-export async function getMusicMetaDisplays(liveType: string) {
-    const dataProvider = KitDataProvider.DEFAULT_INSTANCE
+export async function getMusicMetaDisplays(server: string, liveType: string) {
+    const dataProvider = KitDataProvider.getCachedInstance(server)
     const musics = await dataProvider.getMasterData("musics") as Music[]
     const musicDifficulties = await dataProvider.getMasterData("musicDifficulties") as MusicDifficulty[]
     const musicMetas = await dataProvider.getMusicMeta() as MusicMeta[]

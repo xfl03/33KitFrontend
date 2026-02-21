@@ -4,20 +4,16 @@ import DeckThumbnail from "./deck-thumbnail";
 import * as React from "react";
 
 type DeckThumbnailProps = {
+    server: string,
     firstTitle: string,
     first: (t: RecommendDeck, i: number) => number | string,
     scoreTitle: string,
     score: (t: RecommendDeck, i: number) => number | string,
-    recommend: RecommendDeck[]
+    recommend: RecommendDeck[],
 }
 
-export default function DeckRecommendTable({firstTitle, first, scoreTitle, score, recommend}: DeckThumbnailProps) {
+export default function DeckRecommendTable({server = "jp", firstTitle, first, scoreTitle, score, recommend}: DeckThumbnailProps) {
     if (recommend.length === 0) return (<div></div>)
-    // TODO 兼容一下改名了，之后删
-    recommend.forEach(it => {
-        // @ts-ignore
-        if (it.deckCards) it.cards = it.deckCards
-    })
     return (<TableContainer component={Paper} style={{maxWidth: "900px"}}>
         <Table size="small">
             <TableHead>
@@ -42,7 +38,7 @@ export default function DeckRecommendTable({firstTitle, first, scoreTitle, score
                         </TableCell>
                         <TableCell style={{paddingTop: "5px", paddingBottom: "5px"}}>
                             <DeckThumbnail cardIds={it.cards.map(it => it.cardId)}
-                                           deckCards={it.cards} size={80}/>
+                                           deckCards={it.cards} size={80} server={server}/>
                         </TableCell>
                         {it.eventBonus !== undefined &&
                             <TableCell style={{textAlign: "center", fontSize: "1rem"}}>

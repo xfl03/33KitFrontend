@@ -4,9 +4,10 @@ import {shortSkills} from "../../utils/sekai/master/skill";
 import useCards from "../../utils/sekai/master/card-hook";
 
 type CardThumbnailProps = {
+    server: string,
     cardId: number,
     deckCard?: DeckCardDetail,
-    size?: number
+    size?: number,
 }
 
 function getIsNormal(card: Card) {
@@ -36,8 +37,8 @@ function getRarity(card: Card) {
     }
 }
 
-export default function CardThumbnail({cardId, deckCard, size = 156}: CardThumbnailProps) {
-    const cards = useCards()
+export default function CardThumbnail({server = "jp", cardId, deckCard, size = 156}: CardThumbnailProps) {
+    const cards = useCards(server)
     if (cards === undefined) return (<div>卡牌{cardId}</div>)
     const card = getById(cards, cardId)
     if (card === undefined) return (<div>卡牌{cardId}</div>)

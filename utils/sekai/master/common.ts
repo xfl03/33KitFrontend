@@ -7,18 +7,17 @@ export function getById<T extends { id: number }>(data: T[], id: number) {
     return ret
 }
 
-const dataProvider = KitDataProvider.DEFAULT_INSTANCE
-export default function useMasterData<T>(key: string) {
+export default function useMasterData<T>(key: string, server: string = "jp") {
     const [data, setData] = useState<T[]>()
     useEffect(() => {
-        if (data !== undefined) return
-        getMasterData<T>(key).then(data0 => {
+        getMasterData<T>(key, server).then(data0 => {
             setData(data0)
         })
-    }, [key, data])
+    }, [key, server])
     return data
 }
 
-export async function getMasterData<T>(key: string) {
+export async function getMasterData<T>(key: string, server: string = "jp") {
+    const dataProvider = KitDataProvider.getCachedInstance(server)
     return await dataProvider.getMasterData<T>(key)
 }
