@@ -4,7 +4,7 @@ import DeckThumbnail from "./deck-thumbnail";
 import * as React from "react";
 
 type DeckThumbnailProps = {
-    server: string,
+    server?: string,
     firstTitle: string,
     first: (t: RecommendDeck, i: number) => number | string,
     scoreTitle: string,

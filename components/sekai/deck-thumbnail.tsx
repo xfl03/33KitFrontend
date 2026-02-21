@@ -3,7 +3,7 @@ import {Stack} from "@mui/material";
 import {DeckCardDetail} from "sekai-calculator";
 
 type DeckThumbnailProps = {
-    server: string,
+    server?: string,
     cardIds: number[],
     deckCards?: DeckCardDetail[],
     size?: number,

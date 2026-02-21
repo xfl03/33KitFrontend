@@ -4,7 +4,7 @@ import {shortSkills} from "../../utils/sekai/master/skill";
 import useCards from "../../utils/sekai/master/card-hook";
 
 type CardThumbnailProps = {
-    server: string,
+    server?: string,
     cardId: number,
     deckCard?: DeckCardDetail,
     size?: number,
