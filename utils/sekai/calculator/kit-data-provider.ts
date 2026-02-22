@@ -22,11 +22,19 @@ export class KitDataProvider implements DataProvider {
 
     async getMasterData<T>(key: string): Promise<T> {
         try {
-            return (await axios.get(`${this.getMasterBase()}/${key}.json`)).data
+            let url = `${this.getMasterBase()}/${key}.json`
+            // 英文服、韩服数据CDN有缓存问题，需要绕过缓存
+            if (["en", "kr"].includes(this.server)) {
+                url += `?t=${Date.now()}`
+            }
+            return (await axios.get(url)).data
         } catch (e: any) {
             console.warn(e);
             // 强行兼容不存在的Master
-            return [] as T
+            if (["eventHonorBonuses"].includes(key)) {
+                return [] as T
+            }
+            throw e;
         }
     }
 
