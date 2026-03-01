@@ -1,4 +1,4 @@
-import { ChallengeLiveDeckRecommend, EventDeckRecommend, LiveCalculator, LiveType } from "sekai-calculator";
+import { CachedDataProvider, ChallengeLiveDeckRecommend, EventDeckRecommend, LiveCalculator, LiveType } from "sekai-calculator";
 import { KitDataProvider } from "./kit-data-provider";
 
 function calcDuration() {
@@ -13,9 +13,11 @@ function calcDuration() {
 }
 
 async function deckRecommendRunner(args: any) {
-  const { mode, server, userId, music, difficulty, gameCharacter, cardConfig, event0, liveType, supportCharacter } = args
+  const { mode, server, userId, music, difficulty, gameCharacter, cardConfig, event0, liveType, userData, supportCharacter } = args
 
-  const dataProvider = KitDataProvider.getCachedInstance(server, userId)
+  const kitDataProvider = new KitDataProvider(server, userId)
+  kitDataProvider.setUserDataAll(userData) // 预加载的用户数据
+  const dataProvider = new CachedDataProvider(kitDataProvider)
   // 并行预加载所有数据，加快速度
   await Promise.all([
     dataProvider.getUserDataAll(),

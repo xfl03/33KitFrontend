@@ -129,8 +129,9 @@ export default function Page() {
         } else {
             if (!event0) return Promise.reject(new Error("请选择活动"))
         }
-        // 预加载用户信息
-        await KitDataProvider.loadUserDataAll(server, userId)
+        // 预加载用户信息（Service Worker无法读取LocalStorage）
+        const kitDataProvider = new KitDataProvider(server, userId)
+        const userData = await kitDataProvider.getUserDataAll()
 
         return new Promise<RecommendDeck[]>((resolve, reject) => {
             workerRef.current = new Worker(new URL("../../utils/sekai/calculator/deck-recommend-worker.ts", import.meta.url))
@@ -160,7 +161,8 @@ export default function Page() {
                         music: music,
                         difficulty: difficulty,
                         gameCharacter: gameCharacter,
-                        cardConfig: cardConfig
+                        cardConfig: cardConfig,
+                        userData
                     }
                 })
             } else {
@@ -174,6 +176,7 @@ export default function Page() {
                         event0: event0,
                         liveType: liveType,
                         cardConfig: cardConfig,
+                        userData,
                         supportCharacter: supportCharacter
                     }
                 })

@@ -50,14 +50,16 @@ export class KitDataProvider implements DataProvider {
 
     async getUserDataAll(): Promise<Record<string, any>> {
         if (this.userId === undefined) throw new Error("User not specialized.")
-        return await KitDataProvider.loadUserDataAll(this.server, this.userId)
+        if (KitDataProvider.profileCache.has(this.userId)) return KitDataProvider.profileCache.get(this.userId)
+        const data = await KitDataProvider.requestUserDataAll(this.server, this.userId);
+        KitDataProvider.profileCache.set(this.userId, data)
+        return data;
     }
 
-    public static async loadUserDataAll(server: string, userId: string): Promise<Record<string, any>> {
-        if (KitDataProvider.profileCache.has(userId)) return KitDataProvider.profileCache.get(userId)
-        const data = await KitDataProvider.requestUserDataAll(server, userId);
-        KitDataProvider.profileCache.set(userId, data)
-        return data;
+    async setUserDataAll(data: Record<string, any>) {
+        if (this.userId && data) {
+            KitDataProvider.profileCache.set(this.userId, data)
+        }
     }
 
     private static async requestUserDataAll(server: string, userId: string): Promise<Record<string, any>> {

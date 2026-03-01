@@ -127,9 +127,7 @@ export class HarukiOAuth {
   async getAuthorizationUrl(scopes: string[]): Promise<string> {
     const state = this.generateState();
     const verifier = this.generateCodeVerifier();
-    console.log(verifier);
     const codeChallenge = await this.generateCodeChallenge(verifier);
-    console.log(codeChallenge);
 
     const params = new URLSearchParams({
       response_type: "code",
