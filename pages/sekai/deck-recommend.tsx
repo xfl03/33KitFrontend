@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import DeckRecommendTable from "../../components/sekai/deck-recommend-table";
 import useEvents, { getBloomEventCharacters } from "../../utils/sekai/master/event-hook";
 import HarukiOAuth from "../../components/oauth/HarukiOAuth";
+import { KitDataProvider } from "../../utils/sekai/calculator/kit-data-provider";
 
 // const difficulties = ["easy", "normal", "hard", "expert", "master"]
 export default function Page() {
@@ -117,9 +118,10 @@ export default function Page() {
         }
     }
 
-    function doCalculate() {
+    async function doCalculate() {
         setChallengeHighScore(0)
         if (!userId) return Promise.reject(new Error("请填写用户ID"))
+        localStorage.setItem("server", server)
         localStorage.setItem("userId", userId)
         if (!music || !difficulty) return Promise.reject(new Error("请选择歌曲"))
         if (mode === "1") {
@@ -127,6 +129,8 @@ export default function Page() {
         } else {
             if (!event0) return Promise.reject(new Error("请选择活动"))
         }
+        // 预加载用户信息
+        await KitDataProvider.loadUserDataAll(server, userId)
 
         return new Promise<RecommendDeck[]>((resolve, reject) => {
             workerRef.current = new Worker(new URL("../../utils/sekai/calculator/deck-recommend-worker.ts", import.meta.url))
@@ -201,7 +205,7 @@ export default function Page() {
                     if (errorStr.includes("404")) {
                         setError("玩家数据需要上传")
                     } else if (errorStr.includes("403")) {
-                        setError("玩家数据需要启用「允许公开API访问」或完成授权")
+                        setError("玩家数据需要启用「允许公开API访问」或授权对应账号")
                         setIsNotAuthorized(true)
                     } else {
                         setError(errorStr)

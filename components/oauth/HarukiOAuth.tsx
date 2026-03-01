@@ -102,7 +102,7 @@ export default function HarukiOAuth({
         </Avatar>
         <Typography variant="body2">{user.name}</Typography>
         <Button size="small" variant="outlined" onClick={handleLogout}>
-          退出登录
+          解除授权/切换账号
         </Button>
       </Box>
     );
@@ -111,7 +111,7 @@ export default function HarukiOAuth({
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
       <Button variant="outlined" onClick={login} style={{ width: "457px" }}>
-        点这里关联Haruki工具箱账号，授权给33Kit读取（可选）
+        关联Haruki工具箱账号，授权给33Kit读取（可选）
       </Button>
     </Box>
   );

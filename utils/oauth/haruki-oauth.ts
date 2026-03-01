@@ -99,6 +99,7 @@ export class HarukiOAuth {
   }
 
   getTokens(): HarukiOAuthStoredTokens | null {
+    if (typeof localStorage === 'undefined') return null;
     const stored = localStorage.getItem(TOKEN_STORAGE_KEY);
     if (!stored) return null;
     return JSON.parse(stored);
