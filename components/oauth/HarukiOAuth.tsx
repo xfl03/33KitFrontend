@@ -109,8 +109,10 @@ export default function HarukiOAuth({
   }
 
   return (
-    <Button variant="contained" color="primary" onClick={login}>
-      使用 Haruki 账号登录
-    </Button>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+      <Button variant="outlined" onClick={login} style={{ width: "457px" }}>
+        点这里关联Haruki工具箱账号，授权给33Kit读取（可选）
+      </Button>
+    </Box>
   );
 }

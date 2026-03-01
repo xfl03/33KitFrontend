@@ -1,5 +1,6 @@
 import {CachedDataProvider, DataProvider, MusicMeta} from "sekai-calculator";
 import axios from "axios";
+import { harukiOAuth } from "../../oauth/haruki-oauth";
 
 export class KitDataProvider implements DataProvider {
     constructor(private server: string = "jp", private userId?: string) {
@@ -50,8 +51,21 @@ export class KitDataProvider implements DataProvider {
     async getUserDataAll(): Promise<Record<string, any>> {
         if (this.userId === undefined) throw new Error("User not specialized.")
         if (KitDataProvider.profileCache.has(this.userId)) return KitDataProvider.profileCache.get(this.userId)
-        const data = (await axios.get(`${process.env.NEXT_PUBLIC_USER_DATA_BASE}/${this.server == "tc" ? "tw" : this.server}/suite/${this.userId}`)).data;
+        const data = await this.requestUserDataAll();
         KitDataProvider.profileCache.set(this.userId, data)
         return data
+    }
+    private async requestUserDataAll(): Promise<Record<string, any>> {
+        const server = this.server == "tc" ? "tw" : this.server
+        // 如果授权过，先试试授权的
+        if (typeof localStorage !== 'undefined' && harukiOAuth.isAuthenticated()) {
+            try {
+                return await harukiOAuth.getGameData(server, "suite", this.userId!)
+            } catch(e) {
+                console.warn(e);
+            }
+        }
+        // 统一走公开API兜底
+        return (await axios.get(`${process.env.NEXT_PUBLIC_USER_DATA_BASE}/${server}/suite/${this.userId}`)).data;
     }
 }

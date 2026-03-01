@@ -7,6 +7,7 @@ import useGameCharacters, { getCharacterName } from "../../utils/sekai/master/ch
 import Button from "@mui/material/Button";
 import DeckRecommendTable from "../../components/sekai/deck-recommend-table";
 import useEvents, { getBloomEventCharacters } from "../../utils/sekai/master/event-hook";
+import HarukiOAuth from "../../components/oauth/HarukiOAuth";
 
 // const difficulties = ["easy", "normal", "hard", "expert", "master"]
 export default function Page() {
@@ -68,6 +69,7 @@ export default function Page() {
     const [supportCharacters, setSupportCharacters] = useState<GameCharacter[]>([])
     const [supportCharacter, setSupportCharacter] = useState<GameCharacter | null>(null)
     const [duration, setDuration] = useState(0)
+    const [isNotAuthorized, setIsNotAuthorized] = useState(false);
 
     useEffect(() => {
         const uid = localStorage.getItem("userId")
@@ -188,6 +190,7 @@ export default function Page() {
                     // console.log(recommend0)
                     setError("")
                     setRecommend(recommend0)
+                    setIsNotAuthorized(false)
                 })
                 .finally(() => {
                     setCalculating(false)
@@ -196,9 +199,10 @@ export default function Page() {
                     console.warn(e)
                     let errorStr = e.toString()
                     if (errorStr.includes("404")) {
-                        setError("玩家数据未上传到指定地点")
+                        setError("玩家数据需要上传")
                     } else if (errorStr.includes("403")) {
-                        setError("玩家数据上传时未选择「公开API读取」")
+                        setError("玩家数据需要启用「允许公开API访问」或完成授权")
+                        setIsNotAuthorized(true)
                     } else {
                         setError(errorStr)
                     }
@@ -219,12 +223,6 @@ export default function Page() {
                     手机性能有限，自动组卡可能极慢，建议使用iPad或电脑组卡。
                     <br />
                     自动组卡不能保证100%是最优解，如果还有更好的方案，欢迎向33反馈。
-                    <br />
-                    「World Link」活动只会组出完全同组合的卡组，「World Link Final」活动必须选择队长。
-                    <br />
-                    「新FES」已经支持觉醒前后技能，会自动取最优技能。
-                    <br />
-                    「My SEKAI」的Canvas、家具、Gate加成均已支持。
                 </Alert>
             </Grid>
             <Grid item xs={12}>
@@ -391,7 +389,7 @@ export default function Page() {
                         </Stack>
                     )}
                 </FormGroup>
-                <Button variant="outlined" onClick={() => handleButton()} style={{ width: "457px", marginBottom: "10px", height: "56px" }}>{calculating ? '取消（计算中...可能要等30秒）' : '自动组卡！'}</Button>
+                <Button variant="contained" onClick={() => handleButton()} style={{ width: "457px", marginBottom: "10px", height: "56px", fontSize: "18px" }}>{calculating ? '取消（计算中...可能要等30秒）' : '自动组卡！'}</Button>
                 {error !== "" &&
                     <Alert severity="error">
                         <AlertTitle>无法推荐卡组</AlertTitle>
@@ -414,6 +412,10 @@ export default function Page() {
                         first={(_, i) => i + 1}
                         scoreTitle="分数" score={(it) => it.score}
                         recommend={recommend} server={server}/>
+                }
+
+                {isNotAuthorized &&
+                    <HarukiOAuth/>
                 }
             </Grid>
         </Grid>
