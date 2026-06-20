@@ -206,9 +206,7 @@ export default function Page() {
                     console.warn(e)
                     let errorStr = e.toString()
                     if (errorStr.includes("404")) {
-                        setError("玩家数据需要上传")
-                    } else if (errorStr.includes("403")) {
-                        setError("玩家数据需要启用「允许公开API访问」或授权对应账号")
+                        setError("玩家数据需要上传并启用「允许公开API访问」或授权对应账号")
                         setIsNotAuthorized(true)
                     } else {
                         setError(errorStr)
